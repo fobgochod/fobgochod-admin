@@ -1,0 +1,6 @@
+spring:
+  profiles:
+    active: {profile_active}
+  data:
+    mongodb:
+      uri: "{mongodb_uri}"
