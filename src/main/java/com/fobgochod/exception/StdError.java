@@ -84,7 +84,7 @@ public class StdError extends AppError {
         return new StdError(sourceId);
     }
 
-    public static StdError of(String sourceId, DapException e) {
+    public static StdError of(String sourceId, FghException e) {
         StdError stdError = new StdError(sourceId);
         stdError.setErrorType(e.getErrorType().name());
         stdError.setErrorCode(e.getErrorCode());
@@ -93,7 +93,7 @@ public class StdError extends AppError {
         return stdError;
     }
 
-    public static StdError of(String sourceId, DapException e, String path) {
+    public static StdError of(String sourceId, FghException e, String path) {
         StdError stdError = of(sourceId, e);
         stdError.setPath(path);
         return stdError;

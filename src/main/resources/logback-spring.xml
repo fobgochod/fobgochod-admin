@@ -2,8 +2,8 @@
 <configuration>
     <!-- 参考：http://logback.qos.ch/manual/layouts.html  -->
     <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
-    <property name="LOG_PATH" value=".logs"/>
-    <contextName>DMC</contextName>
+    <property name="LOG_PATH" value="logs"/>
+    <contextName>ADMIN</contextName>
 
     <!--@formatter:off-->
     <property name="CONSOLE_LOG" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %green(%contextName) %magenta(${PID}) [%thread] %highlight(%-5level) %cyan(%logger) %red(Line:%line) --- %msg%n"/>
@@ -33,12 +33,14 @@
         <encoder>
             <pattern>${FILE_LOG}</pattern>
         </encoder>
-        <!-- 日志器滚动策略，按日期，按大小记录 -->
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/debug/log-debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-            <totalSizeCap>2GB</totalSizeCap>
+        <!-- 日志器滚动策略，按日期，按大小记录
+         maxHistory 删除7天前的文件
+         totalSizeCap文件总大小大于2G，就会删除大于2G的部分，不管是否是7天前的日志，当只有当天一个文件，即使大于2G也不会被删
+         -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/debug/debug-log-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
@@ -52,11 +54,10 @@
         <encoder>
             <pattern>${FILE_LOG}</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/info/log-info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-            <totalSizeCap>2GB</totalSizeCap>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/info/info-log-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
@@ -70,11 +71,10 @@
         <encoder>
             <pattern>${FILE_LOG}</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/warn/log-warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>7</maxHistory>
-            <totalSizeCap>2GB</totalSizeCap>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/warn/warn-log-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
@@ -88,47 +88,23 @@
         <encoder>
             <pattern>${FILE_LOG}</pattern>
         </encoder>
-        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/error/log-error-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
-            <maxFileSize>10MB</maxFileSize>
-            <maxHistory>30</maxHistory>
-            <totalSizeCap>2GB</totalSizeCap>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/error/error-log-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
 
-    <appender name="ASYNC-DEBUG" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="DEBUG"/>
-    </appender>
-    <appender name="ASYNC-INFO" class="ch.qos.logback.classic.AsyncAppender">
-        <appender-ref ref="INFO"/>
-    </appender>
-    <appender name="ASYNC-WARN" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <appender-ref ref="WARN"/>
-    </appender>
-    <appender name="ASYNC-ERROR" class="ch.qos.logback.classic.AsyncAppender">
-        <discardingThreshold>0</discardingThreshold>
-        <appender-ref ref="ERROR"/>
-    </appender>
-
     <springProfile name="dev">
-        <logger name="io.netty" level="INFO"/>
-        <logger name="io.lettuce" level="INFO"/>
-        <logger name="org.apache" level="INFO"/>
-        <logger name="org.mybatis.spring" level="INFO"/>
-        <logger name="org.springframework" level="WARN"/>
-        <logger name="org.hibernate.type.descriptor.sql.BasicBinder" level="TRACE"/>
-        <logger name="org.hibernate.type.descriptor.sql.BasicExtractor" level="DEBUG"/>
-        <logger name="org.hibernate.SQL" level="DEBUG"/>
-        <logger name="org.hibernate" level="INFO"/>
+        <logger name="org.springframework" level="INFO"/>
 
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ASYNC-DEBUG"/>
-            <appender-ref ref="ASYNC-INFO"/>
-            <appender-ref ref="ASYNC-WARN"/>
-            <appender-ref ref="ASYNC-ERROR"/>
+            <appender-ref ref="DEBUG"/>
+            <appender-ref ref="INFO"/>
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
         </root>
     </springProfile>
 
@@ -136,17 +112,23 @@
         <logger name="org.apache.coyote" level="INFO"/>
         <logger name="com.digiwin.dap.middleware" level="INFO"/>
 
-        <root level="ERROR">
+        <root level="WARN">
             <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="ASYNC-INFO"/>
-            <appender-ref ref="ASYNC-WARN"/>
-            <appender-ref ref="ASYNC-ERROR"/>
+            <appender-ref ref="INFO"/>
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
         </root>
     </springProfile>
 
     <springProfile name="test">
-        <root level="INFO">
+        <logger name="org.apache.coyote" level="INFO"/>
+        <logger name="com.digiwin.dap.middleware" level="INFO"/>
+
+        <root level="WARN">
             <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="INFO"/>
+            <appender-ref ref="WARN"/>
+            <appender-ref ref="ERROR"/>
         </root>
     </springProfile>
 </configuration>

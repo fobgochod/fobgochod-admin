@@ -1,7 +1,7 @@
 package com.fobgochod.api.admin;
 
 import com.fobgochod.auth.domain.JwtUser;
-import com.fobgochod.constant.DmcConstants;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.StdData;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
@@ -182,7 +182,7 @@ public class BucketApi {
     }
 
     @GetMapping("/option")
-    public StdData bucketSelect(@RequestAttribute(DmcConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public StdData bucketSelect(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
         List<Options> optionGroup = new ArrayList<>();
         List<Bucket> myBuckets = bucketRepository.findByOwner(userInfo.getUsername());
         Options myOptions = new Options();

@@ -19,7 +19,7 @@ import java.io.IOException;
  * @date 2021/3/8
  */
 @Service
-@CacheConfig(cacheNames = "login:token")
+@CacheConfig(cacheNames = "login.token")
 public class UserTokenService {
 
     private final static ObjectMapper objectMapper = JsonUtils.createObjectMapper();

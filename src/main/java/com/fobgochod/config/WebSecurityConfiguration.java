@@ -2,7 +2,7 @@ package com.fobgochod.config;
 
 import com.fobgochod.auth.FobAuthenticationFilter;
 import com.fobgochod.auth.handler.AuthService;
-import com.fobgochod.auth.handler.FobAuthenticationEntryPoint;
+import com.fobgochod.auth.handler.FghAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -41,7 +41,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Autowired
     private AuthService authService;
     @Autowired
-    private FobAuthenticationEntryPoint authenticationEntryPoint;
+    private FghAuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

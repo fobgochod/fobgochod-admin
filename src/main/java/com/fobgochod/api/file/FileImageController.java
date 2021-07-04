@@ -1,6 +1,6 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.constant.DmcConstants;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.ImageHandle;
 import com.fobgochod.domain.ImageInfo;
 import com.fobgochod.domain.StdData;
@@ -79,7 +79,7 @@ public class FileImageController {
     public ResponseEntity<?> uploadImage(@RequestParam(defaultValue = "0") Boolean shrink,
                                          @RequestParam(defaultValue = "0") Integer width,
                                          @RequestParam(defaultValue = "0") Integer height,
-                                         @RequestHeader(value = DmcConstants.HTTP_HEADER_API_ARG_KEY) String fileJson,
+                                         @RequestHeader(value = FghConstants.HTTP_HEADER_API_ARG_KEY) String fileJson,
                                          HttpServletRequest req) throws Exception {
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setWidth(width);

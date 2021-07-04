@@ -1,6 +1,6 @@
 package com.fobgochod.config;
 
-import com.fobgochod.auth.handler.FobLocaleResolver;
+import com.fobgochod.auth.handler.FghLocaleResolver;
 import com.fobgochod.util.JsonUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.MessageSource;
@@ -33,7 +33,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2020/4/27
  */
 @Configuration
-public class FobConfiguration {
+public class FghConfiguration {
 
     @Bean
     @Primary
@@ -44,7 +44,7 @@ public class FobConfiguration {
     @Bean
     @Primary
     public LocaleResolver localeResolver() {
-        return new FobLocaleResolver();
+        return new FghLocaleResolver();
     }
 
     @Bean

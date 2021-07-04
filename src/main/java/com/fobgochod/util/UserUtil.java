@@ -1,7 +1,7 @@
 package com.fobgochod.util;
 
 import com.fobgochod.auth.domain.JwtUser;
-import com.fobgochod.constant.DmcConstants;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -49,7 +49,7 @@ public class UserUtil {
             }
         }
         // 匿名用户
-        return new JwtUser(DmcConstants.ANONYMOUS_USER, DmcConstants.ANONYMOUS_USER);
+        return new JwtUser(FghConstants.ANONYMOUS_USER, FghConstants.ANONYMOUS_USER);
     }
 
     public static long getUserSid() {

@@ -3,20 +3,16 @@
     <service>
         <jsr107:defaults enable-management="true" enable-statistics="true"/>
     </service>
-    <cache-template name="defaultCache">
+    <cache-template name="commonTemplate">
         <resources>
             <heap unit="entries">10000</heap>
             <offheap unit="MB">100</offheap>
         </resources>
     </cache-template>
-    <cache alias="login:token" uses-template="defaultCache">
+
+    <cache alias="login.token" uses-template="commonTemplate">
         <expiry>
-            <ttl unit="seconds">7200</ttl>
-        </expiry>
-    </cache>
-    <cache alias="drive:token" uses-template="defaultCache">
-        <expiry>
-            <ttl unit="seconds">7200</ttl>
+            <ttl unit="hours">2</ttl>
         </expiry>
     </cache>
 </config>

@@ -2,7 +2,7 @@ package com.fobgochod.api;
 
 import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.constant.DmcConstants;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.constant.I18nError;
 import com.fobgochod.domain.StdData;
 import com.fobgochod.exception.UnauthorizedException;
@@ -54,7 +54,7 @@ public class LoginController {
      * @return
      */
     @PostMapping(value = "/token/analyze")
-    public StdData login(@RequestAttribute(DmcConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public StdData login(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
         return StdData.ofSuccess(userInfo);
     }
 }

@@ -1,19 +1,16 @@
 package com.fobgochod.service.mongo;
 
 import com.fobgochod.constant.BaseField;
-import com.fobgochod.domain.EnvProperties;
 import com.fobgochod.domain.FileReference;
 import com.fobgochod.entity.File;
 import com.fobgochod.exception.BusinessException;
 import com.fobgochod.util.IdUtil;
 import com.mongodb.DBObject;
-import com.mongodb.QueryBuilder;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
 import com.mongodb.client.gridfs.model.GridFSUploadOptions;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +33,6 @@ import java.util.Map;
 @Service
 public class FileStorage {
 
-    @Autowired
-    private EnvProperties env;
-    @Autowired
-    private GridFS gridFS;
     @Autowired
     private GridFSBucket gridFSBucket;
     @Autowired
@@ -165,12 +158,6 @@ public class FileStorage {
         return this.getGridFile(fileId).getLength();
     }
 
-    private void endUpload(ObjectId fileId) {
-        GridFSDBFile gridFSDBFile = this.getGridFile(fileId);
-        gridFSDBFile.getMetaData().put(BaseField.COMPLETED, true);
-        gridFSDBFile.save();
-    }
-
     /**
      * 创建空文件
      *
@@ -192,9 +179,9 @@ public class FileStorage {
      * @return 返回元数据信息
      */
     public int getFileMetadataCount(ObjectId fileId) {
-        GridFSDBFile gridFile = this.getGridFile0(fileId);
-        if (gridFile != null && gridFile.getMetaData() != null) {
-            DBObject reference = (DBObject) gridFile.getMetaData().get(BaseField.REFERENCE);
+        GridFSFile gridFile = this.getGridFile0(fileId);
+        if (gridFile != null && gridFile.getMetadata() != null) {
+            DBObject reference = (DBObject) gridFile.getMetadata().get(BaseField.REFERENCE);
             if (reference != null) {
                 return Integer.parseInt(reference.get(BaseField.COUNT).toString());
             }
@@ -221,20 +208,6 @@ public class FileStorage {
     }
 
     /**
-     * 获取文件的输入流
-     *
-     * @param fileId 文件Id
-     * @return 输入流
-     */
-    public InputStream getInputStream(ObjectId fileId) {
-        GridFSDBFile gridFile = this.getGridFile(fileId);
-        if (gridFile.getMetaData() != null) {
-            return gridFile.getInputStream();
-        }
-        return null;
-    }
-
-    /**
      * 获取文件信息
      *
      * @param fileId 文件id
@@ -248,17 +221,16 @@ public class FileStorage {
         return new File(this.getGridFile(fileId));
     }
 
-    private GridFSDBFile getGridFile(String fileId) {
+    private GridFSFile getGridFile(String fileId) {
         return getGridFile(IdUtil.getObjectId(fileId));
     }
 
-    private GridFSDBFile getGridFile0(ObjectId fileId) {
-        QueryBuilder query = QueryBuilder.start(BaseField.ID).is(fileId);
-        return gridFS.findOne(query.get());
+    private GridFSFile getGridFile0(ObjectId fileId) {
+        return gridFSBucket.find(Filters.eq(BaseField.ID, fileId)).first();
     }
 
-    private GridFSDBFile getGridFile(ObjectId fileId) {
-        GridFSDBFile gridFile = getGridFile0(fileId);
+    private GridFSFile getGridFile(ObjectId fileId) {
+        GridFSFile gridFile = getGridFile0(fileId);
         if (gridFile == null) {
             throw new BusinessException("文件相关的信息已经被删除：" + fileId);
         }

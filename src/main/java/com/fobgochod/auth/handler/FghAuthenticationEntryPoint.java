@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.Serializable;
 
 @Component
-public class FobAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
+public class FghAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
 
     @Value("${spring.application.name}")
     private String sourceId;

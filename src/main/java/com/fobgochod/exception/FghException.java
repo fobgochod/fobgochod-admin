@@ -11,46 +11,46 @@ import org.springframework.http.HttpStatus;
  * @author seven
  * @date 2020/5/17
  */
-public abstract class DapException extends RuntimeException {
+public abstract class FghException extends RuntimeException {
 
     protected String errorCode;
     protected String errorMessage;
     protected ErrorHandler errorHandler;
     protected int code = HttpStatus.INTERNAL_SERVER_ERROR.value();
 
-    public DapException() {
+    public FghException() {
         super();
     }
 
-    public DapException(ErrorHandler errorHandler) {
+    public FghException(ErrorHandler errorHandler) {
         super(errorHandler.getErrorMessage());
         this.setErrorHandler(errorHandler);
     }
 
-    public DapException(ErrorHandler errorHandler, Object[] args) {
+    public FghException(ErrorHandler errorHandler, Object[] args) {
         super(errorHandler.getErrorMessage(args));
         this.setErrorHandler(errorHandler, args);
     }
 
-    public DapException(ErrorHandler errorHandler, String message) {
+    public FghException(ErrorHandler errorHandler, String message) {
         this(message);
         this.setErrorHandler(errorHandler);
     }
 
-    public DapException(ErrorHandler errorHandler, Object[] args, String message) {
+    public FghException(ErrorHandler errorHandler, Object[] args, String message) {
         this(message);
         this.setErrorHandler(errorHandler, args);
     }
 
-    public DapException(String message) {
+    public FghException(String message) {
         super(message);
     }
 
-    public DapException(String message, Throwable cause) {
+    public FghException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public DapException(Throwable cause) {
+    public FghException(Throwable cause) {
         super(cause);
     }
 

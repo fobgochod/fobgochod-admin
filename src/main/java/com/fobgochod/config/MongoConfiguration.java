@@ -1,11 +1,11 @@
 package com.fobgochod.config;
 
 import com.fobgochod.domain.EnvProperties;
-import com.mongodb.MongoClient;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSBuckets;
-import com.mongodb.gridfs.GridFS;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +26,9 @@ public class MongoConfiguration {
     @Bean
     public MongoDatabase mongoDatabase() {
         MongoDatabase mongoDatabase = mongoClient.getDatabase(env.getDatabase());
-        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClient.getDefaultCodecRegistry(),
+        CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()));
         return mongoDatabase.withCodecRegistry(pojoCodecRegistry);
-    }
-
-    @Bean
-    public GridFS gridFS() {
-        return new GridFS(mongoClient.getDB(env.getDatabase()));
     }
 
     @Bean

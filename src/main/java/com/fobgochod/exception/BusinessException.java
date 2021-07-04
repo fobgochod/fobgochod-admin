@@ -10,7 +10,7 @@ import com.fobgochod.domain.ErrorType;
  * @author seven
  * @date 2020/5/16
  */
-public class BusinessException extends DapException {
+public class BusinessException extends FghException {
 
     public BusinessException() {
         super();

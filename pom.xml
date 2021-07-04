@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.1.17.RELEASE</version>
+        <version>2.5.0</version>
         <relativePath/>
     </parent>
 
@@ -13,8 +13,8 @@
     <artifactId>fobgochod-admin</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
-    <name>Fobgochod Admin</name>
-    <description>Fobgochod Admin project for Spring Boot</description>
+    <name>fobgochod admin</name>
+    <description>fobgochod admin project for Spring Boot</description>
 
     <properties>
         <timestamp>${maven.build.timestamp}</timestamp>
@@ -23,14 +23,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>deploymentRepo</id>
-            <name>dapware-core-release</name>
-            <url>http://nexus.digiwincloud.com.cn:22699/content/repositories/releases/</url>
-        </repository>
-    </repositories>
 
     <dependencies>
         <dependency>
@@ -59,7 +51,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -83,6 +83,10 @@
             <artifactId>cache-api</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.3.0</version>
@@ -101,10 +105,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-compress</artifactId>
             <version>1.20</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
@@ -148,7 +148,7 @@
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.2.0</version>
                 <configuration>
-                    <imageName>${project.artifactId}</imageName>
+                    <imageName>fobgochod/${project.artifactId}</imageName>
                     <imageTags>
                         <imageTag>${project.version}</imageTag>
                     </imageTags>
@@ -196,14 +196,11 @@
                 <version>0.8.2</version>
                 <configuration>
                     <includes>
-                        <include>**/dmc/**</include>
+                        <include>com/fobgochod/**</include>
                     </includes>
                     <excludes>
-                        <exclude>**/dmc/domain/**</exclude>
-                        <exclude>**/dmc/entity/**</exclude>
-                        <exclude>**/dmc/DatabaseInitializer.java</exclude>
-                        <exclude>**/dmc/ApplicationRunnerImpl.java</exclude>
-                        <exclude>**/dmc/api/QueryFileInfoTestController.java</exclude>
+                        <exclude>com/fobgochod/domain/**</exclude>
+                        <exclude>com/fobgochod/entity/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -238,12 +235,14 @@
                 <activeByDefault>true</activeByDefault>
             </activation>
         </profile>
+
         <profile>
             <id>prod</id>
             <properties>
                 <profileActive>prod</profileActive>
             </properties>
         </profile>
+
         <profile>
             <id>test</id>
             <properties>

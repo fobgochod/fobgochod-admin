@@ -4,7 +4,7 @@ import com.fobgochod.util.TokenUtils;
 
 import javax.servlet.http.HttpServletRequest;
 
-public class DapLog {
+public class FghLog {
 
     private String handler;
     private String message;
@@ -53,23 +53,23 @@ public class DapLog {
     }
 
     public static String getLog(String message, String path) {
-        DapLog dapLog = new DapLog();
-        dapLog.setHandler(DapExceptionHandler.Handler.UNEXPECTED.getName());
-        dapLog.setMessage(message);
-        dapLog.setMethod(null);
-        dapLog.setPath(path);
-        dapLog.setUserToken(TokenUtils.getToken());
-        return dapLog.toString();
+        FghLog fghLog = new FghLog();
+        fghLog.setHandler(FghExceptionHandler.Handler.UNEXPECTED.getName());
+        fghLog.setMessage(message);
+        fghLog.setMethod(null);
+        fghLog.setPath(path);
+        fghLog.setUserToken(TokenUtils.getToken());
+        return fghLog.toString();
     }
 
     public static String getLog(String handler, String message, HttpServletRequest req) {
-        DapLog dapLog = new DapLog();
-        dapLog.setHandler(handler);
-        dapLog.setMessage(message);
-        dapLog.setMethod(req.getMethod());
-        dapLog.setPath(req.getRequestURI());
-        dapLog.setUserToken(TokenUtils.getToken());
-        return dapLog.toString();
+        FghLog fghLog = new FghLog();
+        fghLog.setHandler(handler);
+        fghLog.setMessage(message);
+        fghLog.setMethod(req.getMethod());
+        fghLog.setPath(req.getRequestURI());
+        fghLog.setUserToken(TokenUtils.getToken());
+        return fghLog.toString();
     }
 
     @Override

@@ -18,6 +18,8 @@ spring:
       authentication-database: admin
   mvc:
     throw-exception-if-no-handler-found: true
+  main:
+    allow-bean-definition-overriding: true
   servlet:
     multipart:
       enabled: true
@@ -27,6 +29,21 @@ spring:
     type: jcache
     jcache:
       config: classpath:/ehcache.xml
+management:
+  endpoints:
+    web:
+      base-path: /actuator
+      exposure:
+        include: "*"
+        exclude: metrics
+  endpoint:
+    shutdown:
+      enabled: false
+    health:
+      show-details: always
+    logfile:
+      enabled: true
+      external-file: logs/error
 app:
   base-uri: http://localhost:31725
   version: @project.version@

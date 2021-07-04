@@ -1,7 +1,7 @@
 package com.fobgochod.auth.handler;
 
 import com.fobgochod.auth.domain.JwtUser;
-import com.fobgochod.constant.DmcConstants;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.entity.admin.Bucket;
 import com.fobgochod.exception.BusinessException;
 import com.fobgochod.repository.BucketRepository;
@@ -26,7 +26,7 @@ public class AuthService {
     private BucketRepository bucketRepository;
 
     public void getAuth(HttpServletRequest request) {
-        String userToken = request.getHeader(DmcConstants.HTTP_HEADER_USER_TOKEN_KEY);
+        String userToken = request.getHeader(FghConstants.HTTP_HEADER_USER_TOKEN_KEY);
         JwtUser jwtUser = this.analysisUserToken(userToken);
         if (jwtUser != null) {
             // 设置用户持有的bucket
@@ -34,7 +34,7 @@ public class AuthService {
             for (Bucket bucket : buckets) {
                 jwtUser.getBuckets().add(bucket.getCode());
             }
-            request.setAttribute(DmcConstants.HTTP_HEADER_USER_INFO_KEY, jwtUser);
+            request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY, jwtUser);
             AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(jwtUser, null, jwtUser.getAuthorities());
             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authentication);

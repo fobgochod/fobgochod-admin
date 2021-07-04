@@ -6,17 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-/**
- * 这里通过设定value的值来指定执行顺序
- */
 @Component
-@Order(value = 1)
-public class ApplicationRunnerImpl implements ApplicationRunner {
+public class FghRunner implements ApplicationRunner {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationRunnerImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FghRunner.class);
 
     @Autowired
     private TaskManager taskManager;

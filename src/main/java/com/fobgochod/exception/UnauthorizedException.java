@@ -9,7 +9,7 @@ import com.fobgochod.domain.ErrorType;
  * @author seven
  * @date 2020/5/16
  */
-public class UnauthorizedException extends DapException {
+public class UnauthorizedException extends FghException {
 
     public UnauthorizedException() {
         super();

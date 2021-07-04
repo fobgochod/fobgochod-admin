@@ -15,7 +15,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-class DatabaseInitialization implements ApplicationListener<ContextRefreshedEvent> {
+class FghListener implements ApplicationListener<ContextRefreshedEvent> {
 
     @Autowired
     private UserRepository userRepository;

@@ -8,7 +8,7 @@ import com.fobgochod.repository.BucketRepository;
 import com.fobgochod.repository.StatsRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import com.fobgochod.util.DataUtil;
-import com.mongodb.MongoClient;
+import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;

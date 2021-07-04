@@ -3,8 +3,8 @@ package com.fobgochod.util;
 import com.fobgochod.constant.GlobalConstants;
 import com.fobgochod.domain.ErrorHandler;
 import com.fobgochod.domain.ErrorType;
-import com.fobgochod.exception.DapException;
-import com.fobgochod.exception.DapLog;
+import com.fobgochod.exception.FghException;
+import com.fobgochod.exception.FghLog;
 import com.fobgochod.exception.StdError;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -92,7 +92,7 @@ public class ExceptionUtils {
     }
 
     public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, String sourceId, ErrorHandler errorHandler) {
-        logger.error(DapLog.getLog("Token验证异常", null, request));
+        logger.error(FghLog.getLog("Token验证异常", null, request));
 
         StdError stdError = StdError.of(sourceId.toUpperCase());
         stdError.setErrorType(ErrorType.System.name());
@@ -103,8 +103,8 @@ public class ExceptionUtils {
         println(response, HttpServletResponse.SC_UNAUTHORIZED, stdError);
     }
 
-    public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, String sourceId, DapException e) {
-        logger.error(DapLog.getLog("Token验证异常", e.getMessage(), request));
+    public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, String sourceId, FghException e) {
+        logger.error(FghLog.getLog("Token验证异常", e.getMessage(), request));
 
         StdError stdError = StdError.of(sourceId.toUpperCase());
         stdError.setMessage(e.getMessage());
@@ -115,7 +115,7 @@ public class ExceptionUtils {
         println(response, HttpServletResponse.SC_UNAUTHORIZED, stdError);
     }
 
-    public static void println(HttpServletResponse response, String sourceId, DapException e) {
+    public static void println(HttpServletResponse response, String sourceId, FghException e) {
         StdError stdError = StdError.of(sourceId.toUpperCase());
         stdError.setErrorType(e.getErrorType().name());
         stdError.setErrorCode(e.getErrorCode());

@@ -5,7 +5,7 @@ package com.fobgochod.constant;
  * @date: 2018-6-6 19:21
  * @Description:
  */
-public class DmcConstants {
+public class FghConstants {
 
     /**
      * 在HttpHeader中传递的IAM Token信息

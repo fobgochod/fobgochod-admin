@@ -2,9 +2,9 @@ package com.fobgochod.util;
 
 import com.fobgochod.constant.GlobalConstants;
 import com.fobgochod.domain.CommonErrorCode;
-import com.fobgochod.exception.DapException;
-import com.fobgochod.support.DapCommonMessageSource;
-import com.fobgochod.support.DapMessageSource;
+import com.fobgochod.exception.FghException;
+import com.fobgochod.support.FghCommonMessageSource;
+import com.fobgochod.support.FghMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,8 +26,8 @@ public class I18nUtils {
     private static final Logger logger = LoggerFactory.getLogger(I18nUtils.class);
     private static String language;
     private static String country;
-    private static final MessageSourceAccessor messageSource = DapMessageSource.getAccessor();
-    private static final MessageSourceAccessor messages = DapCommonMessageSource.getAccessor();
+    private static final MessageSourceAccessor messageSource = FghMessageSource.getAccessor();
+    private static final MessageSourceAccessor messages = FghCommonMessageSource.getAccessor();
 
     public static Locale getLocale(HttpServletRequest request) {
         if (request.getHeader(GlobalConstants.ACCEPT_LANGUAGE) != null) {
@@ -73,7 +73,7 @@ public class I18nUtils {
         return defaultMessage;
     }
 
-    public static String getMessage(DapException custom, Object[] args, String defaultMessage) {
+    public static String getMessage(FghException custom, Object[] args, String defaultMessage) {
         String code = custom.getErrorHandler().getCode();
         try {
             if (CommonErrorCode.containsCode(code)) {

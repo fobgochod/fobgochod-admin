@@ -1,6 +1,6 @@
 package com.fobgochod.entity;
 
-import com.mongodb.gridfs.GridFSDBFile;
+import com.mongodb.client.gridfs.model.GridFSFile;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
@@ -27,13 +27,12 @@ public class File {
     public File() {
     }
 
-    public File(GridFSDBFile dbFile) {
-        this.id = (ObjectId) dbFile.getId();
+    public File(GridFSFile dbFile) {
+        this.id = dbFile.getId().asObjectId().getValue();
         this.filename = dbFile.getFilename();
         this.length = dbFile.getLength();
         this.chunkSize = dbFile.getChunkSize();
         this.uploadDate = dbFile.getUploadDate();
-        this.md5 = dbFile.getMD5();
     }
 
     public ObjectId getId() {

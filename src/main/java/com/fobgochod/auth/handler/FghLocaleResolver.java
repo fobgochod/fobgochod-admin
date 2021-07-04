@@ -13,7 +13,7 @@ import java.util.Locale;
  * @author seven
  * @date 2020/6/13
  */
-public class FobLocaleResolver implements LocaleResolver {
+public class FghLocaleResolver implements LocaleResolver {
 
     /**
      * 处理逻辑

@@ -9,11 +9,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @EnableCaching
 @SpringBootApplication
-public class AdminApplication {
+public class FghApplication {
 
     public static ConfigurableApplicationContext ac;
 
     public static void main(String[] args) {
-        AdminApplication.ac = SpringApplication.run(AdminApplication.class, args);
+        FghApplication.ac = SpringApplication.run(FghApplication.class, args);
     }
 }

@@ -1,6 +1,6 @@
 package com.fobgochod.auth.domain;
 
-import com.fobgochod.constant.DmcConstants;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.entity.admin.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -115,7 +115,7 @@ public class JwtUser implements UserDetails {
     }
 
     public String uniqueKey() {
-        return String.format("%s::%s", username, tenantId == null ? DmcConstants.DEFAULT_TENANT : tenantId);
+        return String.format("%s::%s", username, tenantId == null ? FghConstants.DEFAULT_TENANT : tenantId);
     }
 
     @Override

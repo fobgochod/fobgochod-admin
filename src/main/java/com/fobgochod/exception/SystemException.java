@@ -9,7 +9,7 @@ import com.fobgochod.domain.ErrorType;
  * @author seven
  * @date 2020/5/17
  */
-public class SystemException extends DapException {
+public class SystemException extends FghException {
 
     public SystemException() {
         super();

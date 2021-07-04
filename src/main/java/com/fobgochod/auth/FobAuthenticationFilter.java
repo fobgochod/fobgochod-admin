@@ -4,7 +4,7 @@ import com.fobgochod.auth.handler.AuthService;
 import com.fobgochod.domain.v2.FileOpTreeContextHolder;
 import com.fobgochod.domain.CommonCode;
 import com.fobgochod.domain.CommonErrorCode;
-import com.fobgochod.exception.DapException;
+import com.fobgochod.exception.FghException;
 import com.fobgochod.util.ExceptionUtils;
 import com.fobgochod.util.I18nUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -37,7 +37,7 @@ public class FobAuthenticationFilter extends OncePerRequestFilter {
             LocaleContextHolder.setLocale(I18nUtils.getLocale(request));
             authService.getAuth(request);
             chain.doFilter(request, response);
-        } catch (DapException e) {
+        } catch (FghException e) {
             ExceptionUtils.writeUnAuth(request, response, CommonCode.DMC.name(), e);
         } catch (Exception e) {
             ExceptionUtils.writeUnAuth(request, response, CommonCode.DMC.name(), CommonErrorCode.USER_TOKEN_INVALID);

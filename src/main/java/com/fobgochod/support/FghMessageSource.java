@@ -3,14 +3,14 @@ package com.fobgochod.support;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
-public class DapMessageSource extends ReloadableResourceBundleMessageSource {
+public class FghMessageSource extends ReloadableResourceBundleMessageSource {
 
-    public DapMessageSource() {
+    public FghMessageSource() {
         setBasename("classpath:i18n/messages");
         setDefaultEncoding("UTF-8");
     }
 
     public static MessageSourceAccessor getAccessor() {
-        return new MessageSourceAccessor(new DapMessageSource());
+        return new MessageSourceAccessor(new FghMessageSource());
     }
 }

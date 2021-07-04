@@ -31,9 +31,9 @@ import java.util.List;
  */
 @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
 @RestControllerAdvice
-public class DapExceptionHandler {
+public class FghExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(DapExceptionHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(FghExceptionHandler.class);
 
     @Value("${spring.application.name}")
     private String sourceId;
@@ -42,7 +42,7 @@ public class DapExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public StdError unexpected(HttpServletRequest req, Exception e) {
-        logger.error(DapLog.getLog(Handler.UNEXPECTED.getName(), e.getMessage(), req), e);
+        logger.error(FghLog.getLog(Handler.UNEXPECTED.getName(), e.getMessage(), req), e);
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), ErrorType.Unexpected.name(), CommonErrorCode.UNEXPECTED, req.getRequestURI());
         stdError.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -59,7 +59,7 @@ public class DapExceptionHandler {
             HttpRequestMethodNotSupportedException.class
     })
     public StdError notFound(HttpServletRequest req, ServletException e) {
-        logger.error(DapLog.getLog(Handler.NOT_FOUND.getName(), e.getMessage(), req));
+        logger.error(FghLog.getLog(Handler.NOT_FOUND.getName(), e.getMessage(), req));
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), ErrorType.System.name(), CommonErrorCode.NOT_FOUND, req.getRequestURI());
         stdError.setCode(HttpStatus.NOT_FOUND.value());
@@ -69,7 +69,7 @@ public class DapExceptionHandler {
 
     @ExceptionHandler(DataAccessException.class)
     public StdError dataAccess(HttpServletRequest req, DataAccessException e) {
-        logger.error(DapLog.getLog(Handler.DATA_ACCESS.getName(), e.getMessage(), req), e);
+        logger.error(FghLog.getLog(Handler.DATA_ACCESS.getName(), e.getMessage(), req), e);
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), ErrorType.System.name(), CommonErrorCode.DATA_ACCESS, req.getRequestURI());
         stdError.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
@@ -85,7 +85,7 @@ public class DapExceptionHandler {
             MethodArgumentNotValidException.class
     })
     public StdError validation(HttpServletRequest req, Exception e) {
-        logger.error(DapLog.getLog(Handler.VALIDATION.getName(), e.getMessage(), req));
+        logger.error(FghLog.getLog(Handler.VALIDATION.getName(), e.getMessage(), req));
 
         StdError stdError = StdError.of(sourceId.toUpperCase());
         if (e instanceof ConstraintViolationException) {
@@ -115,9 +115,9 @@ public class DapExceptionHandler {
         return stdError;
     }
 
-    @ExceptionHandler(DapException.class)
-    public StdError dapBase(HttpServletRequest req, DapException e) {
-        logger.error(DapLog.getLog(Handler.DAP_BASE.getName(), e.getMessage(), req), e);
+    @ExceptionHandler(FghException.class)
+    public StdError dapBase(HttpServletRequest req, FghException e) {
+        logger.error(FghLog.getLog(Handler.DAP_BASE.getName(), e.getMessage(), req), e);
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), e, req.getRequestURI());
         stdError.setMessage(e.getMessage());
@@ -129,8 +129,8 @@ public class DapExceptionHandler {
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
-    public StdError unauthorized(HttpServletRequest req, DapException e) {
-        logger.error(DapLog.getLog(Handler.UNAUTHORIZED.getName(), e.getMessage(), req), e);
+    public StdError unauthorized(HttpServletRequest req, FghException e) {
+        logger.error(FghLog.getLog(Handler.UNAUTHORIZED.getName(), e.getMessage(), req), e);
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), e, req.getRequestURI());
         stdError.setMessage(e.getMessage());
