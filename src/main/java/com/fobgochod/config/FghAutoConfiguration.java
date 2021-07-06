@@ -1,8 +1,9 @@
 package com.fobgochod.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fobgochod.auth.handler.FghLocaleResolver;
 import com.fobgochod.util.JsonUtils;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,7 +34,8 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @date 2020/4/27
  */
 @Configuration
-public class FghConfiguration {
+@EnableConfigurationProperties(AppProperties.class)
+public class FghAutoConfiguration {
 
     @Bean
     @Primary

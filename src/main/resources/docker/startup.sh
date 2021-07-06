@@ -1,6 +1,7 @@
 #!/bin/sh
 sed -i "s#{profile_active}#${profile_active:-prod}#g" /usr/local/fobgochod/application.yml
 sed -i "s#{mongodb_uri}#${mongodb_uri:-}#g" /usr/local/fobgochod/application.yml
+sed -i "s#{base_uri}#${base_uri:-}#g" /usr/local/fobgochod/application.yml
 
 # set java opts parameters
 JAVA_OPTS="${java_opts}"

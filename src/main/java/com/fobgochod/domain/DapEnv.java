@@ -14,7 +14,7 @@ public class DapEnv extends SystemEnv {
 
     @Value("${app.version:}")
     private String version;
-    @Value("${app.build.time}")
+    @Value("${app.build-time}")
     private String buildTime;
     @Value("${app.language:}")
     private String language;

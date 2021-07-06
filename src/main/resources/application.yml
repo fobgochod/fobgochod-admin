@@ -1,11 +1,12 @@
 server:
-  port: 31725
+  port: 8080
   tomcat:
     max-connections: 1000
-    max-threads: 10
     accept-count: 100
+    threads:
+      max: 10
   servlet:
-    context-path: /api/dmc/v2
+    context-path: /api/v1
 spring:
   application:
     name: admin
@@ -45,7 +46,6 @@ management:
       enabled: true
       external-file: logs/error
 app:
-  base-uri: http://localhost:31725
+  base-uri: http://localhost:8080
   version: @project.version@
-  build:
-    time: @timestamp@
+  build-time: @timestamp@
