@@ -19,6 +19,8 @@ public class EnvProperties extends DapEnv {
 
     @Value("${app.base-uri:}")
     private String baseUri;
+    @Value("${server.servlet.context-path:}")
+    private String contextPath;
 
     public String getMongodbUri() {
         return mongodbUri;
@@ -42,5 +44,13 @@ public class EnvProperties extends DapEnv {
 
     public void setBaseUri(String baseUri) {
         this.baseUri = baseUri;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
     }
 }

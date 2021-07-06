@@ -4,3 +4,5 @@ spring:
   data:
     mongodb:
       uri: "{mongodb_uri}"
+app:
+  base-uri: {base_uri}

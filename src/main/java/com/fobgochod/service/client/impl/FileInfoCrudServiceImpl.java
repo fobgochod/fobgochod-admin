@@ -307,7 +307,7 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
             ImageOption option = new ImageOption();
             option.setFileId(fileInfo.getId());
             option.setFileName(fileInfo.getName());
-            option.setUri(String.format("%s/api/dmc/v2/file/preview/%s", envProperties.getBaseUri(), fileInfo.getId()));
+            option.setUri(String.format("%s%s/file/preview/%s", envProperties.getBaseUri(), envProperties.getContextPath(), fileInfo.getId()));
             lists.add(option);
         }
         return PageData.data(total, lists);
