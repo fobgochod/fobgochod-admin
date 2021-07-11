@@ -1,12 +1,12 @@
 package com.fobgochod.api.fileinfo;
 
-import com.fobgochod.domain.StdData;
 import com.fobgochod.domain.v2.Page;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.exception.BusinessException;
 import com.fobgochod.service.client.DirectoryCrudService;
 import com.fobgochod.service.client.FileInfoCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,29 +31,8 @@ public class FileInfoApi {
     @Autowired
     private DirectoryCrudService directoryCrudService;
 
-    /**
-     * 更新文件状态
-     *
-     * @param id
-     * @return
-     */
-    @PutMapping("/{id}/{completed}")
-    public StdData modify(@PathVariable String id,
-                          @PathVariable boolean completed) {
-        FileInfo fileInfo = fileInfoCrudService.findById(id);
-        fileInfo.setCompleted(completed);
-        fileInfoCrudService.update(fileInfo);
-        return StdData.ofSuccess(fileInfo);
-    }
-
-    /**
-     * 修改
-     *
-     * @param body
-     * @return
-     */
     @PutMapping
-    public StdData modify(@RequestBody FileInfo body) {
+    public ResponseEntity<?> modify(@RequestBody FileInfo body) {
         FileInfo fileInfo = fileInfoCrudService.findById(body.getId());
         if (fileInfo == null) {
             throw new BusinessException("文件不存在" + body.getId());
@@ -75,56 +54,50 @@ public class FileInfoApi {
         fileInfo.setExpireDate(body.getExpireDate());
         fileInfo.setDirectoryId(body.getDirectoryId());
         fileInfo.setMetadata(body.getMetadata());
+        fileInfo.setTenantId(body.getTenantId());
         fileInfoCrudService.update(fileInfo);
-        return StdData.ofSuccess(fileInfo);
+        return ResponseEntity.ok(fileInfo);
     }
 
-    /**
-     * 查询
-     *
-     * @param id
-     * @return
-     */
     @GetMapping("/{id}")
-    public StdData findById(@PathVariable String id) {
-        return StdData.ofSuccess(fileInfoCrudService.findById(id));
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(fileInfoCrudService.findById(id));
     }
 
-    /**
-     * 查询
-     *
-     * @return
-     */
-    @GetMapping
-    public StdData find() {
-        return StdData.ofSuccess(fileInfoCrudService.findAll());
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param body
-     * @return
-     */
     @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(fileInfoCrudService.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(fileInfoCrudService.findByPage(body));
     }
 
     @DeleteMapping("/drop")
-    public StdData dropCollection() {
+    public ResponseEntity<?> drop() {
         fileInfoCrudService.dropCollection();
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     /**
-     * 查询目录下文件
+     * 更新文件状态
      *
-     * @param directoryId
-     * @return
+     * @param id 文件id
      */
-    @GetMapping("/directory/{directoryId}")
-    public StdData findByDirectoryId(@PathVariable String directoryId) {
-        return StdData.ofSuccess(fileInfoCrudService.findByDirId(directoryId));
+    @PostMapping("/{id}/{completed}")
+    public ResponseEntity<?> modify(@PathVariable String id,
+                                    @PathVariable boolean completed) {
+        FileInfo fileInfo = fileInfoCrudService.findById(id);
+        fileInfo.setCompleted(completed);
+        fileInfoCrudService.update(fileInfo);
+        return ResponseEntity.ok(fileInfo);
+    }
+
+    /**
+     * 修改文件名
+     */
+    @PostMapping("/name/{id}")
+    public ResponseEntity<?> changeName(@PathVariable String id,
+                                        @RequestBody FileInfo body) {
+        FileInfo fileInfo = fileInfoCrudService.findById(id);
+        fileInfo.setName(body.getName());
+        fileInfoCrudService.update(fileInfo);
+        return ResponseEntity.ok(fileInfoCrudService.findById(id));
     }
 }

@@ -13,6 +13,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,7 @@ public class LoginController {
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUser body) {
         String userToken = loginService.login(body);
-        if (StringUtils.isEmpty(userToken)) {
+        if (!StringUtils.hasText(userToken)) {
             throw new UnauthorizedException(I18nError.ERROR_LOGIN);
         }
         return ResponseEntity.ok(Collections.singletonMap("userToken", userToken));
@@ -54,7 +55,21 @@ public class LoginController {
      * @return
      */
     @PostMapping(value = "/token/analyze")
-    public StdData login(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public StdData analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
         return StdData.ofSuccess(userInfo);
+    }
+
+    /**
+     * 租户刷新token
+     *
+     * @param userToken
+     * @param body
+     * @return
+     */
+    @PostMapping(value = "/token/refresh")
+    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN_KEY) String userToken,
+                                     @RequestBody LoginUser body) {
+        String refresh = loginService.refresh(userToken, body.getTenantId());
+        return ResponseEntity.ok(Collections.singletonMap("userToken", refresh));
     }
 }

@@ -5,7 +5,6 @@ import com.fobgochod.domain.FileReference;
 import com.fobgochod.entity.File;
 import com.fobgochod.exception.BusinessException;
 import com.fobgochod.util.IdUtil;
-import com.mongodb.DBObject;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
 import com.mongodb.client.gridfs.model.GridFSFile;
@@ -181,7 +180,7 @@ public class FileStorage {
     public int getFileMetadataCount(ObjectId fileId) {
         GridFSFile gridFile = this.getGridFile0(fileId);
         if (gridFile != null && gridFile.getMetadata() != null) {
-            DBObject reference = (DBObject) gridFile.getMetadata().get(BaseField.REFERENCE);
+            Document reference = (Document) gridFile.getMetadata().get(BaseField.REFERENCE);
             if (reference != null) {
                 return Integer.parseInt(reference.get(BaseField.COUNT).toString());
             }
@@ -204,7 +203,10 @@ public class FileStorage {
      * @param fileId 文件id
      */
     public void deleteFile(ObjectId fileId) {
-        gridFSBucket.delete(fileId);
+        GridFSFile file = this.getGridFile0(fileId);
+        if (file != null) {
+            gridFSBucket.delete(fileId);
+        }
     }
 
     /**

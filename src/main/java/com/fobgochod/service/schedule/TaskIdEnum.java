@@ -1,5 +1,6 @@
 package com.fobgochod.service.schedule;
 
+import com.fobgochod.service.schedule.impl.StatsTask;
 import com.fobgochod.service.schedule.impl.TestTask;
 
 /**
@@ -15,5 +16,11 @@ public enum TaskIdEnum {
      *
      * @see TestTask
      */
-    TS001;
+    TS001,
+    /**
+     * 系统统计
+     *
+     * @see StatsTask
+     */
+    ST001;
 }

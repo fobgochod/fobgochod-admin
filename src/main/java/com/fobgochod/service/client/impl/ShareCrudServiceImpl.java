@@ -1,6 +1,5 @@
 package com.fobgochod.service.client.impl;
 
-import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.EnvProperties;
 import com.fobgochod.domain.enumeration.ShareType;
 import com.fobgochod.domain.v2.BatchFid;
@@ -17,14 +16,12 @@ import com.fobgochod.util.UserUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.result.DeleteResult;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -41,13 +38,6 @@ public class ShareCrudServiceImpl extends BaseEntityService<ShareRecord> impleme
     public void deleteByFileId(String fileInfoId) {
         MongoCollection<ShareRecord> mongoCollection = this.getCollection();
         mongoCollection.deleteMany(Filters.eq("fileId", fileInfoId));
-    }
-
-    @Override
-    public long deleteByIdIn(Collection<String> ids) {
-        MongoCollection<ShareRecord> mongoCollection = this.getCollection();
-        DeleteResult deleteResult = mongoCollection.deleteMany(Filters.in(BaseField.ID, ids));
-        return deleteResult.getDeletedCount();
     }
 
     @Override
@@ -115,6 +105,6 @@ public class ShareCrudServiceImpl extends BaseEntityService<ShareRecord> impleme
     }
 
     private String getShareUrl(String shareId) {
-        return String.format("%s/api/dmc/v2/file/share/%s", envProperties.getBaseUri(), shareId);
+        return String.format("%s%s/file/share/%s", envProperties.getBaseUri(), envProperties.getContextPath(), shareId);
     }
 }

@@ -183,7 +183,7 @@ public class StatsRepositoryImpl extends BaseEntityRepository<Stats> implements 
         }
         stats.setCollections(collections);
         stats.setIndexes(indexes);
-        stats.setFiles(databaseClient.getCollection(stats.getName() + ".fileInfos").estimatedDocumentCount());
+        stats.setFiles(databaseClient.getCollection("fileinfo").estimatedDocumentCount());
         return stats;
     }
 }

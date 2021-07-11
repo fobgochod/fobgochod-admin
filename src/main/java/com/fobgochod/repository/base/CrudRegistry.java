@@ -4,6 +4,7 @@ import com.fobgochod.domain.v2.Page;
 import com.fobgochod.domain.v2.PageData;
 import com.fobgochod.entity.BaseEntity;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -28,6 +29,13 @@ public interface CrudRegistry<T extends BaseEntity> {
      * @param id 主键
      */
     void deleteById(String id);
+
+    /**
+     * 根据ids批量删除Entity
+     *
+     * @param ids 主键集合
+     */
+    long deleteByIdIn(Collection<String> ids);
 
     /**
      * 修改Entity

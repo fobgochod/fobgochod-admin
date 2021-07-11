@@ -28,11 +28,11 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent arg0) {
         if (!userRepository.existsByCode("admin")) {
             User user = new User();
-            user.setPassword(AESCipher.getSHA256("fobgochod"));
             user.setCode("admin");
             user.setName("管理员");
             user.setEmail("admin@noneboy.com");
             user.setTelephone("16800000001");
+            user.setPassword(AESCipher.getSHA256("test"));
             user.setRole(RoleEnum.Admin);
             userRepository.insert(user);
         }
@@ -51,7 +51,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent> {
             user.setCode("zhoux");
             user.setName("萧周");
             user.setEmail("zhoux@noneboy.com");
-            user.setTelephone("16800000002");
+            user.setTelephone("16800000003");
             user.setPassword(AESCipher.getSHA256("test"));
             user.setRole(RoleEnum.Owner);
             userRepository.insert(user);
@@ -61,7 +61,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent> {
             Tenant tenant = new Tenant();
             tenant.setCode("fobgochod");
             tenant.setName("山有扶苏");
-            tenant.setEmail("admin@noneboy.com");
+            tenant.setEmail("fobgochod@noneboy.com");
             tenant.setTelephone("16800000001");
             tenant.setOwner("admin");
             tenantRepository.insert(tenant);
@@ -77,12 +77,12 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent> {
         }
 
         if (!bucketRepository.existsByCode("ddd")) {
-            Bucket tenant = new Bucket();
-            tenant.setCode("ddd");
-            tenant.setName("领域驱动设计");
-            tenant.setOwner("zhouxx");
-            tenant.setTask(TaskIdEnum.TS001.name());
-            bucketRepository.insert(tenant);
+            Bucket bucket = new Bucket();
+            bucket.setCode("ddd");
+            bucket.setName("领域驱动设计");
+            bucket.setOwner("zhouxx");
+            bucket.setTask(TaskIdEnum.TS001.name());
+            bucketRepository.insert(bucket);
         }
     }
 }

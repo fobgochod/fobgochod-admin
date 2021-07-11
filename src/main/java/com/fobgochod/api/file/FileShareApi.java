@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2021/3/9
  */
 @RestController
-@RequestMapping("/file")
+@RequestMapping("/file/share")
 public class FileShareApi {
 
     @Autowired
@@ -29,21 +29,10 @@ public class FileShareApi {
      * @param body 文件ID、目录ID
      * @return 分享地址
      */
-    @PostMapping("/share")
+    @PostMapping
     public StdData share(@RequestBody BatchFid body) {
         body.afterPropertiesSet();
         ShareRecord shareRecord = shareCrudService.shareFile(body);
         return StdData.ofSuccess(shareRecord);
-    }
-
-    /**
-     * 文件分享-分享文件、文件夹
-     *
-     * @param body 文件ID、目录ID
-     * @return 分享地址
-     */
-    @PostMapping("/share/delete")
-    public StdData shareDelete(@RequestBody BatchFid body) {
-        return StdData.ofSuccess(shareCrudService.deleteByIdIn(body.getShareIds()));
     }
 }

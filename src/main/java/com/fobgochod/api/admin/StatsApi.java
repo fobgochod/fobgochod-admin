@@ -1,12 +1,15 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.domain.StdData;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.v2.BucketStats;
 import com.fobgochod.domain.v2.Page;
-import com.fobgochod.entity.admin.Stats;
+import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.repository.StatsRepository;
+import com.fobgochod.service.client.FileInfoCrudService;
 import com.fobgochod.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,67 +38,73 @@ public class StatsApi {
 
     @Autowired
     private StatsRepository statsRepository;
+    @Autowired
+    private FileInfoCrudService fileInfoCrudService;
 
-    @GetMapping
-    public StdData stats() {
-        return StdData.ofSuccess(statsRepository.findAll());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable String id) {
+        statsRepository.deleteById(id);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(statsRepository.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(statsRepository.findByPage(body));
     }
 
     @GetMapping("/increment/{prev}/{next}")
-    public StdData increment(@PathVariable String prev,
-                             @PathVariable String next) {
-        return StdData.ofSuccess(statsRepository.getBucketInc(prev, next));
-    }
-
-    @DeleteMapping("/{id}")
-    public StdData delete(@PathVariable String id) {
-        statsRepository.deleteById(id);
-        return StdData.ok();
+    public ResponseEntity<?> increment(@PathVariable String prev,
+                                       @PathVariable String next) {
+        return ResponseEntity.ok(statsRepository.getBucketInc(prev, next));
     }
 
     @GetMapping("/count")
-    public StdData count() {
-        return StdData.ofSuccess(statsRepository.findNewest());
+    public ResponseEntity<?> count() {
+        return ResponseEntity.ok(statsRepository.findNewest());
     }
 
     @GetMapping("/total")
-    public StdData total(@RequestParam(value = "limit", defaultValue = "10") Long limit) {
-        Stats stats = statsRepository.findNewest();
-        List<BucketStats> buckets = stats.getBuckets();
+    public ResponseEntity<?> total(@RequestParam(value = "limit", defaultValue = "10") Long limit) {
+        List<FileInfo> fileInfos = fileInfoCrudService.findAll();
+        Map<String, List<FileInfo>> fileMap = fileInfos.stream().collect(Collectors.groupingBy(FileInfo::getTenantId));
+        List<BucketStats> buckets = new ArrayList<>();
 
-        List<BucketStats> buckets1 = buckets.stream().sorted(Comparator.comparing(BucketStats::getSize).reversed()).limit(limit).collect(Collectors.toList());
+        for (Map.Entry<String, List<FileInfo>> entry : fileMap.entrySet()) {
+            BucketStats stats = new BucketStats();
+            stats.setName(StringUtils.hasText(entry.getKey()) ? entry.getKey() : FghConstants.DEFAULT_TENANT);
+            stats.setSize(entry.getValue().stream().mapToLong(FileInfo::getSize).sum());
+            stats.setFiles((long) entry.getValue().size());
+            buckets.add(stats);
+        }
 
-        List<String> bucketSizes = new ArrayList<>();
+        List<BucketStats> sizeStats = buckets.stream().sorted(Comparator.comparing(BucketStats::getSize).reversed()).limit(limit).collect(Collectors.toList());
+
+        List<String> tenantSizes = new ArrayList<>();
         List<Map<String, Object>> sizes = new ArrayList<>();
 
-        buckets1.forEach(o -> {
-            bucketSizes.add(o.getName());
+        sizeStats.forEach(o -> {
+            tenantSizes.add(o.getName());
             Map<String, Object> temp = new HashMap<>();
-            temp.put("value", DataUtil.byte2Gb(o.getSize()));
+            temp.put("value", DataUtil.toFixed(o.getSize(), DataUtil.BIG_MB));
             temp.put("name", o.getName());
             sizes.add(temp);
         });
 
-        List<BucketStats> buckets2 = buckets.stream().sorted(Comparator.comparing(BucketStats::getFiles).reversed()).limit(limit).collect(Collectors.toList());
+        List<BucketStats> countStats = buckets.stream().sorted(Comparator.comparing(BucketStats::getFiles).reversed()).limit(limit).collect(Collectors.toList());
 
-        List<String> bucketFiles = new ArrayList<>();
+        List<String> tenantFiles = new ArrayList<>();
         List<Long> files = new ArrayList<>();
 
-        buckets2.forEach(o -> {
-            bucketFiles.add(o.getName());
+        countStats.forEach(o -> {
+            tenantFiles.add(o.getName());
             files.add(o.getFiles());
         });
 
         Map<String, Object> result = new HashMap<>();
-        result.put("bucketSizes", bucketSizes);
+        result.put("tenantSizes", tenantSizes);
         result.put("sizes", sizes);
-        result.put("bucketFiles", bucketFiles);
+        result.put("tenantFiles", tenantFiles);
         result.put("files", files);
-        return StdData.ofSuccess(result);
+        return ResponseEntity.ok(result);
     }
 }

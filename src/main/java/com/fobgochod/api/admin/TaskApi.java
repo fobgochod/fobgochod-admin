@@ -1,10 +1,10 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.domain.StdData;
 import com.fobgochod.domain.v2.Page;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,82 +27,37 @@ public class TaskApi {
     @Autowired
     private TaskRepository taskRepository;
 
-    /**
-     * 新增
-     *
-     * @param body
-     * @return
-     */
     @PostMapping
-    public StdData create(@RequestBody Task body) {
+    public ResponseEntity<?> create(@RequestBody Task body) {
         String id = taskRepository.insert(body);
-        return StdData.ofSuccess(taskRepository.findById(id));
+        return ResponseEntity.ok(taskRepository.findById(id));
     }
 
-    /**
-     * 删除
-     *
-     * @param id
-     * @return
-     */
     @DeleteMapping("/{id}")
-    public StdData delete(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         taskRepository.deleteById(id);
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
-    /**
-     * 修改
-     *
-     * @param body
-     * @return
-     */
     @PutMapping
-    public StdData modify(@RequestBody Task body) {
+    public ResponseEntity<?> modify(@RequestBody Task body) {
         taskRepository.update(body);
-        return StdData.ofSuccess(taskRepository.findById(body.getId()));
+        return ResponseEntity.ok(taskRepository.findById(body.getId()));
     }
 
-    /**
-     * 查询
-     *
-     * @param id
-     * @return
-     */
     @GetMapping("/{id}")
-    public StdData findById(@PathVariable String id) {
-        return StdData.ofSuccess(taskRepository.findById(id));
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(taskRepository.findById(id));
     }
 
-    /**
-     * 查询
-     *
-     * @return
-     */
-    @GetMapping
-    public StdData find(@RequestBody(required = false) Task body) {
-        return StdData.ofSuccess(taskRepository.findAll(body));
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param body
-     * @return
-     */
     @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(taskRepository.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(taskRepository.findByPage(body));
     }
 
-    /**
-     * 删除表
-     *
-     * @return
-     */
     @DeleteMapping("/drop")
-    public StdData dropCollection() {
+    public ResponseEntity<?> dropCollection() {
         taskRepository.dropCollection();
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 }

@@ -94,7 +94,7 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
             RecentFile recentFile = new RecentFile();
             try {
                 BeanUtils.copyProperties(fileInfo, recentFile);
-                if (BaseField.EMPTY_UUID_STR.equals(fileInfo.getDirectoryId())) {
+                if (BaseField.ROOT_DIR.equals(fileInfo.getDirectoryId())) {
                     recentFile.setDirectoryName("根目录");
                 } else {
                     DirInfo dirInfo = directoryCrudService.findById(fileInfo.getDirectoryId());

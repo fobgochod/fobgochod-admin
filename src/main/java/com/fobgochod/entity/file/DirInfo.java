@@ -38,10 +38,10 @@ public class DirInfo extends BaseEntity {
         if (StringUtils.isEmpty(source) || StringUtils.isEmpty(target)) {
             return true;
         }
-        if (BaseField.EMPTY_UUID_STR.equals(source) && "0".equals(target)) {
+        if (BaseField.ROOT_DIR.equals(source) && "0".equals(target)) {
             return true;
         }
-        if (BaseField.EMPTY_UUID_STR.equals(target) && "0".equals(source)) {
+        if (BaseField.ROOT_DIR.equals(target) && "0".equals(source)) {
             return true;
         }
         return source.equals(target);

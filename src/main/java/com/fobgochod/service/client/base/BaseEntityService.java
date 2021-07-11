@@ -11,10 +11,12 @@ import com.fobgochod.util.UserUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.DeleteResult;
 import org.bson.conversions.Bson;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -36,6 +38,13 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     public void deleteById(String id) {
         MongoCollection<T> mongoCollection = this.getCollection();
         mongoCollection.deleteOne(Filters.eq(BaseField.ID, id));
+    }
+
+    @Override
+    public long deleteByIdIn(Collection<String> ids) {
+        MongoCollection<T> mongoCollection = this.getCollection();
+        DeleteResult deleteResult = mongoCollection.deleteMany(Filters.in(BaseField.ID, ids));
+        return deleteResult.getDeletedCount();
     }
 
     @Override

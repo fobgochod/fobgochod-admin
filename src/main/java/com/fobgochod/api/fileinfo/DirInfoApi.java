@@ -1,10 +1,16 @@
 package com.fobgochod.api.fileinfo;
 
-import com.fobgochod.domain.StdData;
+import com.fobgochod.constant.BaseField;
+import com.fobgochod.domain.Directory;
+import com.fobgochod.domain.v2.BatchFid;
 import com.fobgochod.domain.v2.Page;
 import com.fobgochod.entity.file.DirInfo;
+import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.service.client.DirectoryCrudService;
+import com.fobgochod.service.client.FileInfoCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +18,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * Directory 目录
@@ -24,62 +32,53 @@ import org.springframework.web.bind.annotation.RestController;
 public class DirInfoApi {
 
     @Autowired
+    private FileInfoCrudService fileInfoCrudService;
+    @Autowired
     private DirectoryCrudService directoryCrudService;
 
-    /**
-     * 新增
-     *
-     * @param body
-     * @return
-     */
     @PostMapping
-    public StdData create(@RequestBody DirInfo body) {
-        body.setParentId(body.getParentId());
+    public ResponseEntity<?> create(@RequestBody DirInfo body) {
+        DirInfo parent = directoryCrudService.findById(body.getParentId());
+        if (parent != null) {
+            body.setParentId(parent.getId());
+        } else {
+            body.setParentId(BaseField.ROOT_DIR);
+        }
         String id = directoryCrudService.insert(body);
-        return StdData.ofSuccess(directoryCrudService.findById(id));
+        return ResponseEntity.ok(directoryCrudService.findById(id));
     }
 
-    /**
-     * 修改
-     *
-     * @param body
-     * @return
-     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteById(@PathVariable String id) {
+        directoryCrudService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
     @PutMapping
-    public StdData modify(@RequestBody DirInfo body) {
+    public ResponseEntity<?> modify(@RequestBody DirInfo body) {
         directoryCrudService.update(body);
-        return StdData.ofSuccess(directoryCrudService.findById(body.getId()));
+        return ResponseEntity.ok(directoryCrudService.findById(body.getId()));
     }
 
-    /**
-     * 查询
-     *
-     * @param id
-     * @return
-     */
     @GetMapping("/{id}")
-    public StdData findById(@PathVariable String id) {
-        return StdData.ofSuccess(directoryCrudService.findById(id));
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(directoryCrudService.findById(id));
     }
 
-    /**
-     * 查询
-     *
-     * @return
-     */
-    @GetMapping
-    public StdData find() {
-        return StdData.ofSuccess(directoryCrudService.findAll());
-    }
-
-    /**
-     * 分页查询
-     *
-     * @param body
-     * @return
-     */
     @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(directoryCrudService.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(directoryCrudService.findByPage(body));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(directoryCrudService.deleteByIdIn(body.getDirIds()));
+    }
+
+    @GetMapping("/list/{id}")
+    public ResponseEntity<?> list(@PathVariable String id) {
+        List<DirInfo> dirs = directoryCrudService.findByParentId(id);
+        List<FileInfo> files = fileInfoCrudService.findByDirId(id);
+        return ResponseEntity.ok(Directory.build(dirs, files));
     }
 }

@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
  */
 public class BatchFid implements InitializingBean {
 
+    private String id;
+    private List<String> ids;
     /**
      * 文件信息ID
      * 表FileInfo的ID，即fileInfoId
@@ -50,6 +52,7 @@ public class BatchFid implements InitializingBean {
     private LocalDateTime expireDate;
 
     public BatchFid() {
+        this.ids = new ArrayList<>();
         this.fileIds = new ArrayList<>();
         this.dirIds = new ArrayList<>();
         this.shareIds = new ArrayList<>();
@@ -70,6 +73,22 @@ public class BatchFid implements InitializingBean {
 
     private static String format(LocalDateTime date) {
         return date == null ? null : String.format("\"%s\"", Constants.DATETIME_FORMATTER.format(date));
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public List<String> getIds() {
+        return ids;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
     }
 
     public String getFileId() {

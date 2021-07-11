@@ -7,7 +7,6 @@ import com.fobgochod.entity.file.FileInfo;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,17 +118,13 @@ public class FileUtil {
     }
 
     public static String getPaths(String dir, List<DirInfo> dirInfos) {
-        return getPaths(UUID.fromString(dir), dirInfos);
-    }
-
-    public static String getPaths(UUID dir, List<DirInfo> dirInfos) {
-        if (BaseField.EMPTY_UUID.equals(dir)) {
+        if (BaseField.ROOT_DIR.equals(dir)) {
             return "/";
         } else {
             Optional<DirInfo> optional = dirInfos.stream().filter(o -> o.getId().equals(dir)).findFirst();
             if (optional.isPresent()) {
                 DirInfo dirInfo = optional.get();
-                if ((BaseField.EMPTY_UUID.equals(dirInfo.getParentId()))) {
+                if ((BaseField.ROOT_DIR.equals(dirInfo.getParentId()))) {
                     return "/" + dirInfo.getName();
                 } else {
                     return getPaths(dirInfo.getParentId(), dirInfos) + "/" + dirInfo.getName();

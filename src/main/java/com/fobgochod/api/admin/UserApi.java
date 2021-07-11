@@ -1,14 +1,15 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.domain.StdData;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
+import com.fobgochod.domain.v2.BatchFid;
 import com.fobgochod.domain.v2.Page;
 import com.fobgochod.domain.v2.PasswordVO;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,88 +39,99 @@ public class UserApi {
     private UserRepository userRepository;
 
     @PostMapping
-    public StdData create(@RequestBody User body) {
+    public ResponseEntity<?> create(@RequestBody User body) {
         String id = userRepository.insert(body);
-        return StdData.ofSuccess(userRepository.findById(id));
+        return ResponseEntity.ok(userRepository.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public StdData delete(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         userRepository.deleteById(id);
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public StdData modify(@RequestBody User body) {
+    public ResponseEntity<?> modify(@RequestBody User body) {
         User user = userRepository.findById(body.getId());
         if (user != null) {
             user.setEmail(body.getEmail());
             user.setRole(body.getRole());
             userRepository.update(body);
         }
-        return StdData.ofSuccess(user);
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(userRepository.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<?> find(@RequestBody(required = false) User body) {
+        return ResponseEntity.ok(userRepository.findAll(body));
+    }
+
+    @PostMapping("/search")
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(userRepository.findByPage(body));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(userRepository.deleteByIdIn(body.getIds()));
+    }
+
+    @DeleteMapping("/drop")
+    public ResponseEntity<?> dropCollection() {
+        userRepository.dropCollection();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/name")
-    public StdData modifyName(@RequestBody User body) {
+    public ResponseEntity<?> modifyName(@RequestBody User body) {
         User user = userRepository.findById(body.getId());
         if (user != null) {
             user.setEmail(body.getEmail());
             userRepository.update(user);
         }
-        return StdData.ofSuccess(user);
-    }
-
-    @GetMapping("/{id}")
-    public StdData findById(@PathVariable String id) {
-        return StdData.ofSuccess(userRepository.findById(id));
-    }
-
-    @GetMapping
-    public StdData find(@RequestBody(required = false) User body) {
-        return StdData.ofSuccess(userRepository.findAll(body));
-    }
-
-    @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(userRepository.findByPage(body));
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/password/check")
-    public StdData checkPassword(@RequestBody PasswordVO body) {
+    public ResponseEntity<?> checkPassword(@RequestBody PasswordVO body) {
         User user = userRepository.findByCode(body.getName());
         if (user.getPassword().equals(body.getPwdHash())) {
-            return StdData.ofSuccess(true);
+            return ResponseEntity.ok(true);
         }
-        return StdData.ofSuccess(false);
+        return ResponseEntity.ok(false);
     }
 
     @PostMapping("/password/change")
-    public StdData changePassword(@RequestBody PasswordVO body) {
+    public ResponseEntity<?> changePassword(@RequestBody PasswordVO body) {
         User user = userRepository.findByCode(body.getName());
         if (user.getPassword().equals(body.getOldPwdHash())) {
             user.setPassword(body.getPwdHash());
             userRepository.update(user);
         }
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/password/reset")
-    public StdData resetPassword(@RequestBody PasswordVO body) {
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordVO body) {
         User user = userRepository.findByCode(body.getName());
         user.setPassword(body.getPwdHash());
         userRepository.update(user);
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/name/{name}")
-    public StdData findByName(@PathVariable String name) {
+    public ResponseEntity<?> findByName(@PathVariable String name) {
         User user = userRepository.findByCode(name);
-        return StdData.ofSuccess(user);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/option")
-    public StdData userSelect(@RequestBody(required = false) User body) {
+    public ResponseEntity<?> userSelect(@RequestBody(required = false) User body) {
         List<User> users = userRepository.findAll(body);
         Map<RoleEnum, List<User>> userMap = users.stream().collect(Collectors.groupingBy(User::getRole));
         List<Options> optionGroup = new ArrayList<>();
@@ -132,6 +144,6 @@ public class UserApi {
             }
             optionGroup.add(options);
         }
-        return StdData.ofSuccess(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
+        return ResponseEntity.ok(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
     }
 }

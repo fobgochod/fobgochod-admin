@@ -2,10 +2,10 @@ package com.fobgochod.api.admin;
 
 import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.constant.FghConstants;
-import com.fobgochod.domain.StdData;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
+import com.fobgochod.domain.v2.BatchFid;
 import com.fobgochod.domain.v2.BucketVO;
 import com.fobgochod.domain.v2.Page;
 import com.fobgochod.entity.admin.Bucket;
@@ -18,6 +18,7 @@ import com.fobgochod.util.AESCipher;
 import com.fobgochod.util.UserUtil;
 import com.mongodb.MongoNamespace;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -52,37 +53,43 @@ public class BucketApi {
     private BucketRepository bucketRepository;
 
     @PostMapping
-    public StdData create(@RequestBody Bucket body) {
+    public ResponseEntity<?> create(@RequestBody Bucket body) {
         MongoNamespace.checkDatabaseNameValidity(body.getCode());
         String id = bucketRepository.insert(body);
-        return StdData.ofSuccess(bucketRepository.findById(id));
+        return ResponseEntity.ok(bucketRepository.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public StdData delete(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         bucketRepository.deleteById(id);
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public StdData modify(@RequestBody Bucket body) {
+    public ResponseEntity<?> modify(@RequestBody Bucket body) {
         bucketRepository.update(body);
-        return StdData.ofSuccess(bucketRepository.findById(body.getId()));
+        return ResponseEntity.ok(bucketRepository.findById(body.getId()));
     }
 
     @GetMapping("/{id}")
-    public StdData findById(@PathVariable String id) {
-        return StdData.ofSuccess(bucketRepository.findById(id));
-    }
-
-    @GetMapping
-    public StdData find(@RequestBody(required = false) Bucket body) {
-        return StdData.ofSuccess(bucketRepository.findAll(body));
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(bucketRepository.findById(id));
     }
 
     @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(bucketRepository.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(bucketRepository.findByPage(body));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(bucketRepository.deleteByIdIn(body.getIds()));
+    }
+
+    @DeleteMapping("/drop")
+    public ResponseEntity<?> dropCollection() {
+        bucketRepository.dropCollection();
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -92,7 +99,7 @@ public class BucketApi {
      * @return
      */
     @PostMapping("/apply")
-    public StdData applyBucket(@RequestBody BucketVO body) {
+    public ResponseEntity<?> applyBucket(@RequestBody BucketVO body) {
         MongoNamespace.checkDatabaseNameValidity(body.getBucket());
         if (StringUtils.isEmpty(body.getOwner()) || StringUtils.isEmpty(body.getPassword())) {
             throw new BusinessException("所有者和密码都不能为空");
@@ -128,7 +135,7 @@ public class BucketApi {
             user.setRole(RoleEnum.Owner);
             userRepository.insert(user);
         }
-        return StdData.ofSuccess(pwdHash);
+        return ResponseEntity.ok(pwdHash);
     }
 
     /**
@@ -137,14 +144,14 @@ public class BucketApi {
      * @return
      */
     @PostMapping("/task")
-    public StdData modifyTask(@RequestBody BucketVO body) {
+    public ResponseEntity<?> modifyTask(@RequestBody BucketVO body) {
         Bucket bucket = bucketRepository.findByCode(body.getBucket());
         if (body.getTask() != null && !taskRepository.existsByCode(body.getTask())) {
             throw new BusinessException("策略不存在" + body.getTask());
         }
         bucket.setTask(body.getTask());
         bucketRepository.update(bucket);
-        return StdData.ofSuccess(bucket);
+        return ResponseEntity.ok(bucket);
     }
 
     /**
@@ -154,7 +161,7 @@ public class BucketApi {
      * @return
      */
     @PostMapping("/edit")
-    public StdData modify(@RequestBody BucketVO body) {
+    public ResponseEntity<?> modify(@RequestBody BucketVO body) {
         Bucket bucket = bucketRepository.findByCode(body.getBucket());
         if (body.getTask() != null && !taskRepository.existsByCode(body.getTask())) {
             throw new BusinessException("策略不存在" + body.getTask());
@@ -163,12 +170,12 @@ public class BucketApi {
         bucket.setTask(body.getTask());
         bucket.setTenantId(body.getTenantId());
         bucketRepository.update(bucket);
-        return StdData.ofSuccess(bucket);
+        return ResponseEntity.ok(bucket);
     }
 
     @GetMapping("/owner")
-    public StdData owner() {
-        return StdData.ofSuccess(bucketRepository.findByOwner(UserUtil.getUserName()));
+    public ResponseEntity<?> owner() {
+        return ResponseEntity.ok(bucketRepository.findByOwner(UserUtil.getUserName()));
     }
 
     /**
@@ -177,12 +184,12 @@ public class BucketApi {
      * @return
      */
     @GetMapping("/task")
-    public StdData bucketTasks() {
-        return StdData.ofSuccess(taskRepository.findAll());
+    public ResponseEntity<?> bucketTasks() {
+        return ResponseEntity.ok(taskRepository.findAll());
     }
 
     @GetMapping("/option")
-    public StdData bucketSelect(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public ResponseEntity<?> bucketSelect(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
         List<Options> optionGroup = new ArrayList<>();
         List<Bucket> myBuckets = bucketRepository.findByOwner(userInfo.getUsername());
         Options myOptions = new Options();
@@ -204,6 +211,6 @@ public class BucketApi {
             options.setLabel("存储区");
             optionGroup.add(options);
         }
-        return StdData.ofSuccess(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
+        return ResponseEntity.ok(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
     }
 }

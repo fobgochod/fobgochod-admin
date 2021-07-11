@@ -7,6 +7,7 @@ import com.fobgochod.entity.BaseEntity;
 import com.fobgochod.util.QueryUtil;
 import com.fobgochod.util.SnowFlake;
 import com.fobgochod.util.UserUtil;
+import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,6 +15,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -38,6 +40,12 @@ public abstract class BaseEntityRepository<T extends BaseEntity> implements Enti
     @Override
     public void deleteById(String id) {
         mongoTemplate.remove(Query.query(Criteria.where(BaseField.ID).is(id)), getEntityClass());
+    }
+
+    @Override
+    public long deleteByIdIn(Collection<String> ids) {
+        DeleteResult deleteResult = mongoTemplate.remove(Query.query(Criteria.where(BaseField.ID).in(ids)), getEntityClass());
+        return deleteResult.getDeletedCount();
     }
 
     @Override

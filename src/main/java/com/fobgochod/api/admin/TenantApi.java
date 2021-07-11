@@ -2,16 +2,17 @@ package com.fobgochod.api.admin;
 
 import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.constant.FghConstants;
-import com.fobgochod.domain.StdData;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
+import com.fobgochod.domain.v2.BatchFid;
 import com.fobgochod.domain.v2.Page;
 import com.fobgochod.entity.admin.Tenant;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,45 +44,50 @@ public class TenantApi {
     private TenantRepository tenantRepository;
 
     @PostMapping
-    public StdData create(@RequestBody Tenant body) {
+    public ResponseEntity<?> create(@RequestBody Tenant body) {
         String id = tenantRepository.insert(body);
-        return StdData.ofSuccess(tenantRepository.findById(id));
+        return ResponseEntity.ok(tenantRepository.findById(id));
     }
 
     @DeleteMapping("/{id}")
-    public StdData delete(@PathVariable String id) {
+    public ResponseEntity<?> delete(@PathVariable String id) {
         tenantRepository.deleteById(id);
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public StdData modify(@RequestBody Tenant body) {
+    public ResponseEntity<?> modify(@RequestBody Tenant body) {
         Tenant tenant = tenantRepository.findById(body.getId());
         if (tenant != null) {
             tenant.setEmail(body.getEmail());
             tenantRepository.update(body);
         }
-        return StdData.ofSuccess(tenant);
+        return ResponseEntity.ok(tenant);
     }
-
 
     @GetMapping("/{id}")
-    public StdData findById(@PathVariable String id) {
-        return StdData.ofSuccess(tenantRepository.findById(id));
-    }
-
-    @GetMapping
-    public StdData find(@RequestBody(required = false) Tenant body) {
-        return StdData.ofSuccess(tenantRepository.findAll(body));
+    public ResponseEntity<?> findById(@PathVariable String id) {
+        return ResponseEntity.ok(tenantRepository.findById(id));
     }
 
     @PostMapping("/search")
-    public StdData search(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(tenantRepository.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(tenantRepository.findByPage(body));
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(tenantRepository.deleteByIdIn(body.getIds()));
+    }
+
+    @DeleteMapping("/drop")
+    public ResponseEntity<?> dropCollection() {
+        tenantRepository.dropCollection();
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/option")
-    public StdData select(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public ResponseEntity<?> select(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
 
         List<Options> optionGroup = new ArrayList<>();
         List<Tenant> myBuckets = tenantRepository.findByOwner(userInfo.getUsername());
@@ -105,7 +111,6 @@ public class TenantApi {
             options.setLabel("租户");
             optionGroup.add(options);
         }
-        return StdData.ofSuccess(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
-
+        return ResponseEntity.ok(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
     }
 }

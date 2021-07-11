@@ -26,9 +26,10 @@ public class SnowFlake {
     }
 
     /**
-     * 起始的时间戳
+     * 时间起始标记点，作为基准，一般取系统的最近时间（一旦确定不能变动）
+     * 2020-02-20 02:02:02
      */
-    private final static long START_STAMP = 1544965696000L;
+    private final static long START_STAMP = 1582135322000L;
 
     /**
      * 每一部分占用的位数

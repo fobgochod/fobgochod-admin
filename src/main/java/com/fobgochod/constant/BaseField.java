@@ -1,7 +1,5 @@
 package com.fobgochod.constant;
 
-import java.util.UUID;
-
 /**
  * 常用字段
  *
@@ -11,13 +9,9 @@ import java.util.UUID;
 public interface BaseField {
 
     /**
-     * 空UUID对象的字符串
+     * 根目录
      */
-    String EMPTY_UUID_STR = "00000000-0000-0000-0000-000000000000";
-    /**
-     * 空UUID对象
-     */
-    UUID EMPTY_UUID = UUID.fromString(EMPTY_UUID_STR);
+    String ROOT_DIR = "0";
 
     String PID = "id";
     String ID = "_id";

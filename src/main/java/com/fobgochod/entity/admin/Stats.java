@@ -17,8 +17,8 @@ public class Stats extends BaseEntity {
 
     private Integer year;
     private Integer month;
-    private Integer bucketCount;
     private Integer userCount;
+    private Integer tenantCount;
     private Long fileCount;
     private Long totalSize;
     private String totalSizeReadable;
@@ -40,20 +40,20 @@ public class Stats extends BaseEntity {
         this.month = month;
     }
 
-    public Integer getBucketCount() {
-        return bucketCount;
-    }
-
-    public void setBucketCount(Integer bucketCount) {
-        this.bucketCount = bucketCount;
-    }
-
     public Integer getUserCount() {
         return userCount;
     }
 
     public void setUserCount(Integer userCount) {
         this.userCount = userCount;
+    }
+
+    public Integer getTenantCount() {
+        return tenantCount;
+    }
+
+    public void setTenantCount(Integer tenantCount) {
+        this.tenantCount = tenantCount;
     }
 
     public Long getFileCount() {
