@@ -32,7 +32,7 @@ public class FileMoveApi {
      * @return 空
      */
     @PostMapping("/move/{fileId}/{targetDirId}")
-    public ResponseEntity moveFile(@PathVariable String fileId,
+    public ResponseEntity<?> moveFile(@PathVariable String fileId,
                                    @PathVariable String targetDirId) {
         fileService.moveFile(fileId, IdUtil.getDirId(targetDirId));
         return ResponseEntity.ok().build();
@@ -47,7 +47,7 @@ public class FileMoveApi {
      * @return 是否成功
      */
     @PostMapping("/move/dir/{dirId}/{targetDirId}")
-    public ResponseEntity moveDir(@PathVariable String dirId,
+    public ResponseEntity<?> moveDir(@PathVariable String dirId,
                                   @PathVariable String targetDirId) {
         fileService.moveDir(dirId, targetDirId);
         return ResponseEntity.ok().build();
@@ -61,7 +61,7 @@ public class FileMoveApi {
      * @return 是否成功
      */
     @PostMapping("/move/{targetDirId}")
-    public ResponseEntity moveManyFileInfo(@RequestBody BatchFid body,
+    public ResponseEntity<?> moveManyFileInfo(@RequestBody BatchFid body,
                                            @PathVariable String targetDirId) {
         body.afterPropertiesSet();
         for (String fileId : body.getFileIds()) {

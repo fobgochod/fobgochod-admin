@@ -1,6 +1,7 @@
 package com.fobgochod.api.admin;
 
 import com.fobgochod.domain.base.Page;
+import com.fobgochod.domain.select.Option;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Task 定时任务
@@ -59,5 +63,13 @@ public class TaskApi {
     public ResponseEntity<?> dropCollection() {
         taskRepository.dropCollection();
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/option")
+    public ResponseEntity<?> option() {
+        List<Option> options = new ArrayList<>();
+        List<Task> tasks = taskRepository.findAll();
+        tasks.forEach(o -> options.add(new Option(o.getCode(), o.getName())));
+        return ResponseEntity.ok(options);
     }
 }

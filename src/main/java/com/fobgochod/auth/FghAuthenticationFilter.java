@@ -22,6 +22,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 /**
  * @author chenxsa
@@ -46,7 +47,7 @@ public class FghAuthenticationFilter extends OncePerRequestFilter {
             JwtUser jwtUser = this.analysisUserToken(userToken);
             if (jwtUser != null) {
                 request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY, jwtUser);
-                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(jwtUser, null);
+                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(jwtUser, null, Collections.emptyList());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }

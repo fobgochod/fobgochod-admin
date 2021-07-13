@@ -9,7 +9,6 @@ public interface TaskManager {
      * 根据任务code 启动任务
      *
      * @param taskCode
-     * @return
      */
     boolean start(String taskCode);
 
@@ -17,7 +16,6 @@ public interface TaskManager {
      * 根据任务code 停止任务
      *
      * @param taskCode
-     * @return
      */
     boolean stop(String taskCode);
 
@@ -25,7 +23,6 @@ public interface TaskManager {
      * 根据任务code 重启任务
      *
      * @param taskCode
-     * @return
      */
     boolean restart(String taskCode);
 

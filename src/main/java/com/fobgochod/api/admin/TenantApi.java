@@ -2,11 +2,11 @@ package com.fobgochod.api.admin;
 
 import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.constant.FghConstants;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
-import com.fobgochod.domain.base.BatchFid;
-import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.admin.Tenant;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.TenantRepository;
@@ -87,7 +87,15 @@ public class TenantApi {
     }
 
     @GetMapping("/option")
-    public ResponseEntity<?> select(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public ResponseEntity<?> option() {
+        List<Option> options = new ArrayList<>();
+        List<Tenant> tenants = tenantRepository.findAll();
+        tenants.forEach(o -> options.add(new Option(o.getCode(), o.getName())));
+        return ResponseEntity.ok(options);
+    }
+
+    @GetMapping("/option/group")
+    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
 
         List<Options> optionGroup = new ArrayList<>();
         List<Tenant> myBuckets = tenantRepository.findByOwner(userInfo.getUsername());

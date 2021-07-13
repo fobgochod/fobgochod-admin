@@ -130,8 +130,8 @@ public class UserApi {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/option")
-    public ResponseEntity<?> userSelect(@RequestBody(required = false) User body) {
+    @GetMapping("/option/group")
+    public ResponseEntity<?> optionGroup(@RequestBody(required = false) User body) {
         List<User> users = userRepository.findAll(body);
         Map<RoleEnum, List<User>> userMap = users.stream().collect(Collectors.groupingBy(User::getRole));
         List<Options> optionGroup = new ArrayList<>();
