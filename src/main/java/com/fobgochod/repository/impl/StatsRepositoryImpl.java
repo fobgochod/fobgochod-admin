@@ -1,7 +1,7 @@
 package com.fobgochod.repository.impl;
 
-import com.fobgochod.domain.v2.BucketInc;
-import com.fobgochod.domain.v2.BucketStats;
+import com.fobgochod.domain.BucketInc;
+import com.fobgochod.domain.BucketStats;
 import com.fobgochod.entity.admin.Bucket;
 import com.fobgochod.entity.admin.Stats;
 import com.fobgochod.repository.BucketRepository;

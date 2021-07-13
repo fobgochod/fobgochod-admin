@@ -1,8 +1,8 @@
 package com.fobgochod.exception;
 
-import com.fobgochod.constant.GlobalConstants;
-import com.fobgochod.domain.CommonErrorCode;
-import com.fobgochod.domain.ErrorType;
+import com.fobgochod.constant.FghConstants;
+import com.fobgochod.domain.base.CommonErrorCode;
+import com.fobgochod.domain.enumeration.ErrorType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -47,7 +47,7 @@ public class FghExceptionHandler {
         StdError stdError = StdError.of(sourceId.toUpperCase(), ErrorType.Unexpected.name(), CommonErrorCode.UNEXPECTED, req.getRequestURI());
         stdError.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         stdError.setMessage(e.getMessage());
-        if (GlobalConstants.ENV_DEV.equals(active)) {
+        if (FghConstants.ENV_DEV.equals(active)) {
             stdError.setDebugInfo(StdError.getDebugInfo(req, e));
         }
         return stdError;
@@ -74,7 +74,7 @@ public class FghExceptionHandler {
         StdError stdError = StdError.of(sourceId.toUpperCase(), ErrorType.System.name(), CommonErrorCode.DATA_ACCESS, req.getRequestURI());
         stdError.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         stdError.setMessage(e.getMessage());
-        if (GlobalConstants.ENV_DEV.equals(active)) {
+        if (FghConstants.ENV_DEV.equals(active)) {
             stdError.setDebugInfo(StdError.getDebugInfo(req, e));
         }
         return stdError;
@@ -109,7 +109,7 @@ public class FghExceptionHandler {
             stdError.setMessage(builder.toString().trim());
         }
         stdError.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
-        if (GlobalConstants.ENV_DEV.equals(active)) {
+        if (FghConstants.ENV_DEV.equals(active)) {
             stdError.setDebugInfo(StdError.getDebugInfo(req, e));
         }
         return stdError;
@@ -121,7 +121,7 @@ public class FghExceptionHandler {
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), e, req.getRequestURI());
         stdError.setMessage(e.getMessage());
-        if (GlobalConstants.ENV_DEV.equals(active)) {
+        if (FghConstants.ENV_DEV.equals(active)) {
             stdError.setDebugInfo(StdError.getDebugInfo(req, e));
         }
         return stdError;
@@ -134,7 +134,7 @@ public class FghExceptionHandler {
 
         StdError stdError = StdError.of(sourceId.toUpperCase(), e, req.getRequestURI());
         stdError.setMessage(e.getMessage());
-        if (GlobalConstants.ENV_DEV.equals(active)) {
+        if (FghConstants.ENV_DEV.equals(active)) {
             stdError.setDebugInfo(StdError.getDebugInfo(req, e));
         }
         return stdError;

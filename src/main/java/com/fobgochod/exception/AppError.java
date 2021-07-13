@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
  * @author seven
  * @date 2020/5/16
  */
-@Deprecated
 public class AppError {
 
     public static final AppError FAIL = new AppError(500, "fail");
@@ -44,6 +43,26 @@ public class AppError {
     public AppError(int code, String message, String path) {
         this(code, message);
         this.path = path;
+    }
+
+    public static AppError fail() {
+        return FAIL;
+    }
+
+    public static AppError of(String message) {
+        return new AppError(message);
+    }
+
+    public static AppError of(String message, String path) {
+        return new AppError(message, path);
+    }
+
+    public static AppError of(int code, String message) {
+        return new AppError(code, message);
+    }
+
+    public static AppError of(int code, String message, String path) {
+        return new AppError(code, message, path);
     }
 
     public LocalDateTime getTimestamp() {
@@ -84,25 +103,5 @@ public class AppError {
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public static AppError fail() {
-        return FAIL;
-    }
-
-    public static AppError of(String message) {
-        return new AppError(message);
-    }
-
-    public static AppError of(String message, String path) {
-        return new AppError(message, path);
-    }
-
-    public static AppError of(int code, String message) {
-        return new AppError(code, message);
-    }
-
-    public static AppError of(int code, String message, String path) {
-        return new AppError(code, message, path);
     }
 }

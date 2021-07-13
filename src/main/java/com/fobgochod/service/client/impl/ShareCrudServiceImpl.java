@@ -1,8 +1,8 @@
 package com.fobgochod.service.client.impl;
 
-import com.fobgochod.domain.EnvProperties;
+import com.fobgochod.domain.base.EnvProperties;
 import com.fobgochod.domain.enumeration.ShareType;
-import com.fobgochod.domain.v2.BatchFid;
+import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.exception.BusinessException;

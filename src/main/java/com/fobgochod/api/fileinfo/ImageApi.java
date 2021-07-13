@@ -1,9 +1,9 @@
 package com.fobgochod.api.fileinfo;
 
-import com.fobgochod.domain.StdData;
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.service.client.FileInfoCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,7 +28,7 @@ public class ImageApi {
      * @return
      */
     @PostMapping("/search")
-    public StdData images(@RequestBody(required = false) Page body) {
-        return StdData.ofSuccess(fileInfoCrudService.getImageByPage(body));
+    public ResponseEntity<?> images(@RequestBody(required = false) Page body) {
+        return ResponseEntity.ok(fileInfoCrudService.getImageByPage(body));
     }
 }

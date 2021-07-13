@@ -1,17 +1,16 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.service.client.FileInfoCrudService;
-import com.fobgochod.service.client.ShareCrudService;
 import com.fobgochod.domain.enumeration.InlineAttachment;
 import com.fobgochod.domain.enumeration.ShareType;
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.FileTree;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.FileTree;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShareRecord;
+import com.fobgochod.exception.BusinessException;
 import com.fobgochod.service.business.FileHandlerService;
 import com.fobgochod.service.business.FileOpService;
-import com.fobgochod.domain.StdData;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.service.client.FileInfoCrudService;
+import com.fobgochod.service.client.ShareCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
@@ -48,15 +47,13 @@ public class FileOpenApi {
     /**
      * 分享预览
      *
-     * @param bucket 存储区
-     * @param bucket 分享ID
+     * @param shareId 分享ID
      * @return
      */
     @GetMapping("/share/{shareId}")
-    public StdData share(@PathVariable(required = false) String bucket,
-                         @PathVariable String shareId,
-                         HttpServletRequest request,
-                         HttpServletResponse response) {
+    public ResponseEntity<?> share(@PathVariable String shareId,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response) {
         ShareRecord shareRecord = shareCrudService.findById(shareId);
         if (shareCrudService.isShareExpired(shareRecord)) {
             throw new BusinessException("分享链接已失效或者过期");
@@ -65,19 +62,17 @@ public class FileOpenApi {
             fileOpService.downloadFile(shareRecord.getFileId(), InlineAttachment.inline, request, response);
         }
         List<FileTree> fileTrees = fileHandlerService.getFileTrees(new BatchFid(shareRecord));
-        return StdData.ofSuccess(fileTrees);
+        return ResponseEntity.ok(fileTrees);
     }
 
     /**
      * 下载文件
      *
-     * @param bucket
      * @param fileId
      * @return
      */
     @GetMapping("/download/2/{fileId}")
-    public ResponseEntity<Resource> download(@PathVariable(required = false) String bucket,
-                                             @PathVariable String fileId) {
+    public ResponseEntity<Resource> download(@PathVariable String fileId) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileId);
         byte[] bytes = fileOpService.downloadToBytes(fileId);
         Resource file = new ByteArrayResource(bytes);
@@ -89,13 +84,11 @@ public class FileOpenApi {
     /**
      * 预览文件
      *
-     * @param bucket 存储区
-     * @param bucket 文件ID
+     * @param fileId 文件ID
      * @return
      */
     @GetMapping("/preview/{fileId}")
-    public void preview(@PathVariable(required = false) String bucket,
-                        @PathVariable String fileId,
+    public void preview(@PathVariable String fileId,
                         HttpServletRequest request,
                         HttpServletResponse response) {
         fileOpService.downloadFile(fileId, InlineAttachment.inline, request, response);

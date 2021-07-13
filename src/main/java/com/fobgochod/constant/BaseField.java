@@ -8,15 +8,11 @@ package com.fobgochod.constant;
  */
 public interface BaseField {
 
-    /**
-     * 根目录
-     */
     String ROOT_DIR = "0";
 
     String PID = "id";
     String ID = "_id";
     String CREATE_DATE = "createDate";
-    String FULLTEXT = "fullText";
 
     String FILE_INFO_ID = "fileInfoId";
     String FILE_NAME = "fileName";
@@ -34,14 +30,6 @@ public interface BaseField {
     String METADATA_LOCATION = "metadata.location";
 
     String TENANT_ID = "tenantId";
-    /**
-     * filename字段
-     */
-    String FILES_NAME = "filename";
-    /**
-     * 记录需要上传的文件总大小
-     */
-    String FILE_INFO_SIZE = "size";
     /**
      * 父目录的字段名称
      */

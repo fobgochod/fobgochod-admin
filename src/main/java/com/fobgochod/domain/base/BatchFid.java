@@ -1,4 +1,4 @@
-package com.fobgochod.domain.v2;
+package com.fobgochod.domain.base;
 
 import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.serializer.Constants;
@@ -15,40 +15,13 @@ import java.util.stream.Collectors;
  * @author zhouxiao
  * @date 2021/2/23
  */
-public class BatchFid implements InitializingBean {
+public class BatchFid extends Fid implements InitializingBean {
 
-    private String id;
     private List<String> ids;
-    /**
-     * 文件信息ID
-     * 表FileInfo的ID，即fileInfoId
-     * 对外统一称为fileId
-     * 实际的File的ID不对外暴露
-     */
-    private String fileId;
-    /**
-     * 目录ID
-     */
-    private String dirId;
-    /**
-     * 文件ID集合
-     */
     private List<String> fileIds;
-    /**
-     * 目录ID集合
-     */
     private List<String> dirIds;
-    /**
-     * 分享ID集合
-     */
     private List<String> shareIds;
-    /**
-     * 回收站ID集合
-     */
     private List<String> recycleIds;
-    /**
-     * 过期时间
-     */
     private LocalDateTime expireDate;
 
     public BatchFid() {
@@ -67,44 +40,12 @@ public class BatchFid implements InitializingBean {
         }
     }
 
-    private static String format(List<String> ids) {
-        return ids.stream().map(o -> String.format("\"%s\"", o)).collect(Collectors.joining(",", "[", "]"));
-    }
-
-    private static String format(LocalDateTime date) {
-        return date == null ? null : String.format("\"%s\"", Constants.DATETIME_FORMATTER.format(date));
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public List<String> getIds() {
         return ids;
     }
 
     public void setIds(List<String> ids) {
         this.ids = ids;
-    }
-
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public String getDirId() {
-        return dirId;
-    }
-
-    public void setDirId(String dirId) {
-        this.dirId = dirId;
     }
 
     public List<String> getFileIds() {
@@ -147,6 +88,14 @@ public class BatchFid implements InitializingBean {
         this.expireDate = expireDate;
     }
 
+    private static String format(List<String> ids) {
+        return ids.stream().map(o -> String.format("\"%s\"", o)).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    private static String format(LocalDateTime date) {
+        return date == null ? null : String.format("\"%s\"", Constants.DATETIME_FORMATTER.format(date));
+    }
+
     @Override
     public void afterPropertiesSet() {
         if (fileIds == null) {
@@ -155,7 +104,7 @@ public class BatchFid implements InitializingBean {
         if (dirIds == null) {
             dirIds = new ArrayList<>();
         }
-        if (fileId != null) {
+        if (this.fileId != null) {
             if (!fileIds.contains(fileId)) {
                 fileIds.add(fileId);
             }

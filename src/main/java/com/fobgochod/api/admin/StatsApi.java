@@ -1,8 +1,8 @@
 package com.fobgochod.api.admin;
 
 import com.fobgochod.constant.FghConstants;
-import com.fobgochod.domain.v2.BucketStats;
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.BucketStats;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.repository.StatsRepository;
 import com.fobgochod.service.client.FileInfoCrudService;

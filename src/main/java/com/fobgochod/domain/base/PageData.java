@@ -1,4 +1,4 @@
-package com.fobgochod.domain.v2;
+package com.fobgochod.domain.base;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,12 +21,12 @@ public class PageData<T> implements Serializable {
         this.list = new ArrayList<>();
     }
 
-    public static PageData zero() {
-        return new PageData();
+    public static <T> PageData<T> zero() {
+        return new PageData<>();
     }
 
-    public static PageData data(long total, List list) {
-        PageData pageData = new PageData<>();
+    public static <T> PageData<T> data(long total, List<T> list) {
+        PageData<T> pageData = new PageData<>();
         pageData.setTotal(total);
         pageData.setList(list);
         return pageData;

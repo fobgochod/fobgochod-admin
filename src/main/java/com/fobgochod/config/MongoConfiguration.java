@@ -1,6 +1,6 @@
 package com.fobgochod.config;
 
-import com.fobgochod.domain.EnvProperties;
+import com.fobgochod.domain.base.EnvProperties;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoDatabase;

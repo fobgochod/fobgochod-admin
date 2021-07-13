@@ -1,13 +1,11 @@
 package com.fobgochod.service.client.impl;
 
-import com.fobgochod.constant.QueryOp;
+import com.fobgochod.entity.file.ShrinkImage;
 import com.fobgochod.service.client.ShrinkCrudService;
 import com.fobgochod.service.client.base.BaseEntityService;
-import com.fobgochod.entity.file.ShrinkImage;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.stereotype.Service;
 
@@ -30,17 +28,15 @@ public class ShrinkCrudServiceImpl extends BaseEntityService<ShrinkImage> implem
 
     @Override
     public ShrinkImage findByProperty(String sourceId, int width, int height) {
-        List<Document> conditions = new ArrayList<>();
-        Document field1 = new Document("sourceId", sourceId);
-        Document field2 = new Document("property.width", width);
-        Document field3 = new Document("property.height", height);
+        List<Bson> conditions = new ArrayList<>();
+        Bson field1 = Filters.eq("sourceId", sourceId);
+        Bson field2 = Filters.eq("property.width", width);
+        Bson field3 = Filters.eq("property.height", height);
         conditions.add(field1);
         conditions.add(field2);
         conditions.add(field3);
-        Document query = new Document();
-        query.put(QueryOp.AND, conditions);
         MongoCollection<ShrinkImage> mongoCollection = this.getCollection();
-        return mongoCollection.find(query).first();
+        return mongoCollection.find(Filters.and(conditions)).first();
     }
 
 

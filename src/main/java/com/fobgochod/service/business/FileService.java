@@ -1,7 +1,7 @@
 package com.fobgochod.service.business;
 
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.FileOpTree;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.FileOpTree;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.RecycleBin;
@@ -85,7 +85,7 @@ public interface FileService {
 
     FileInfo fileOpCheck(String fileInfoId);
 
-    List<FileOpTree> batchCopy(String bucket, BatchFid batchFid, String targetDirId);
+    List<FileOpTree> batchCopy(BatchFid batchFid, String targetDirId);
 
     boolean fileUnCompleted(FileInfo fileInfo);
 }

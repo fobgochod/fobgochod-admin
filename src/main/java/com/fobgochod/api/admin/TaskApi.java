@@ -1,6 +1,6 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;

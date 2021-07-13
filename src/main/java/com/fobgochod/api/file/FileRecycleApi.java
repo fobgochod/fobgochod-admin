@@ -1,8 +1,6 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.domain.annotation.FidCheck;
-import com.fobgochod.domain.enumeration.FidType;
-import com.fobgochod.domain.v2.BatchFid;
+import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.service.business.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +31,7 @@ public class FileRecycleApi {
      * @return 空
      */
     @DeleteMapping("/delete/{recycleId}")
-    public ResponseEntity<?> delete(@FidCheck(FidType.Recycle) @PathVariable String recycleId) {
+    public ResponseEntity<?> delete(@PathVariable String recycleId) {
         fileService.deleteRecycleBin(recycleId);
         return ResponseEntity.ok().build();
     }
@@ -56,7 +54,7 @@ public class FileRecycleApi {
      * @return 空
      */
     @PostMapping("/restore/{recycleId}")
-    public ResponseEntity<?> recycleRestore(@FidCheck(FidType.Recycle) @PathVariable String recycleId) {
+    public ResponseEntity<?> recycleRestore(@PathVariable String recycleId) {
         fileService.restoreFile(recycleId);
         return ResponseEntity.ok().build();
     }

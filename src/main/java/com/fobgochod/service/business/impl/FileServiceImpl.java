@@ -3,9 +3,9 @@ package com.fobgochod.service.business.impl;
 import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.DirTree;
 import com.fobgochod.domain.enumeration.FileTypeEnum;
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.FileOpTree;
-import com.fobgochod.domain.v2.FileOpTreeContextHolder;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.FileOpTree;
+import com.fobgochod.domain.FileOpTreeContextHolder;
 import com.fobgochod.entity.File;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
@@ -76,7 +76,7 @@ public class FileServiceImpl implements FileService {
             return fileInfo;
         } catch (Exception e) {
             this.deleteFile(fileInfoId, true);
-            throw new BusinessException("File upload failed !", e);
+            throw new BusinessException("File upload failed !");
         }
     }
 
@@ -316,7 +316,7 @@ public class FileServiceImpl implements FileService {
             return;
         }
         fileInfo.setName(this.getDupFileName(directoryId, fileInfo.getName()));
-        fileInfo.setDirectoryId(IdUtil.getDirectoryId(directoryId));
+        fileInfo.setDirectoryId(IdUtil.getDirId(directoryId));
         fileInfoCrudService.update(fileInfo);
     }
 
@@ -335,7 +335,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public String copyFile(String fileInfoId, String directoryId) {
         FileInfo fileInfo = this.fileOpCheck(fileInfoId, directoryId);
-        FileOpTree fileOpTree = this.copyFile0(fileInfo, IdUtil.getDirectoryId(directoryId));
+        FileOpTree fileOpTree = this.copyFile0(fileInfo, IdUtil.getDirId(directoryId));
         FileOpTreeContextHolder.getContext().add(fileOpTree);
         return fileOpTree.getTargetId().toString();
     }
@@ -349,7 +349,7 @@ public class FileServiceImpl implements FileService {
             FileInfo newFileInfo = fileInfo.clone();
             newFileInfo.setId(null);
             newFileInfo.setName(this.getDupFileName0(directoryId, fileInfo.getName(), false));
-            newFileInfo.setDirectoryId(IdUtil.getDirectoryId(directoryId));
+            newFileInfo.setDirectoryId(IdUtil.getDirId(directoryId));
             String newFileInfoId = fileInfoCrudService.insert(newFileInfo);
             incrReferenceCount(fileInfo.getFileId());
             // 记录复制结果
@@ -380,7 +380,7 @@ public class FileServiceImpl implements FileService {
         List<FileInfo> fileInfos = fileInfoCrudService.findByDirId(dirId);
         for (FileInfo fileInfo : fileInfos) {
             // 记录复制结果
-            FileOpTree fileOp = this.copyFile0(fileInfo, IdUtil.getDirectoryId(newDirId));
+            FileOpTree fileOp = this.copyFile0(fileInfo, IdUtil.getDirId(newDirId));
             fileOpTree.getFileOps().add(fileOp);
         }
         List<DirInfo> dirInfos = directoryCrudService.findByParentId(dirId);
@@ -483,12 +483,12 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileOpTree> batchCopy(String bucket, BatchFid batchFid, String targetDirId) {
+    public List<FileOpTree> batchCopy(BatchFid batchFid, String targetDirId) {
         for (String fileId : batchFid.getFileIds()) {
             try {
-                this.copyFile(IdUtil.getDirectoryId(fileId), IdUtil.getDirectoryId(targetDirId));
+                this.copyFile(IdUtil.getDirId(fileId), IdUtil.getDirId(targetDirId));
             } catch (Exception e) {
-                FileOpTree fileOpTree = FileOpTree.fileOpFail(IdUtil.getDirectoryId(fileId), e.getMessage());
+                FileOpTree fileOpTree = FileOpTree.fileOpFail(IdUtil.getDirId(fileId), e.getMessage());
                 FileOpTreeContextHolder.getContext().add(fileOpTree);
             }
         }

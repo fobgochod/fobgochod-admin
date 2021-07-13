@@ -1,7 +1,7 @@
 package com.fobgochod.service.business;
 
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.FileTree;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.FileTree;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
 import javax.servlet.http.HttpServletResponse;

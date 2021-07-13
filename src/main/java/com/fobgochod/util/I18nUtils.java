@@ -1,7 +1,7 @@
 package com.fobgochod.util;
 
-import com.fobgochod.constant.GlobalConstants;
-import com.fobgochod.domain.CommonErrorCode;
+import com.fobgochod.constant.FghConstants;
+import com.fobgochod.domain.base.CommonErrorCode;
 import com.fobgochod.exception.FghException;
 import com.fobgochod.support.FghCommonMessageSource;
 import com.fobgochod.support.FghMessageSource;
@@ -24,16 +24,16 @@ import java.util.Locale;
 public class I18nUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(I18nUtils.class);
-    private static String language;
-    private static String country;
     private static final MessageSourceAccessor messageSource = FghMessageSource.getAccessor();
     private static final MessageSourceAccessor messages = FghCommonMessageSource.getAccessor();
+    private static String language;
+    private static String country;
 
     public static Locale getLocale(HttpServletRequest request) {
-        if (request.getHeader(GlobalConstants.ACCEPT_LANGUAGE) != null) {
+        if (request.getHeader(FghConstants.ACCEPT_LANGUAGE) != null) {
             return request.getLocale();
-        } else if (request.getHeader(GlobalConstants.LOCALE) != null) {
-            return Locale.forLanguageTag(request.getHeader(GlobalConstants.LOCALE));
+        } else if (request.getHeader(FghConstants.LOCALE) != null) {
+            return Locale.forLanguageTag(request.getHeader(FghConstants.LOCALE));
         } else if (StringUtils.hasText(language)) {
             return new Locale(language, country);
         } else {
@@ -42,19 +42,19 @@ public class I18nUtils {
     }
 
     public static String getMessage(String code) {
-        return getMessage(code, null, GlobalConstants.EMPTY);
+        return getMessage(code, null, FghConstants.EMPTY);
     }
 
     public static String getMessage(String code, Locale locale) {
-        return getMessage(code, null, GlobalConstants.EMPTY, locale);
+        return getMessage(code, null, FghConstants.EMPTY, locale);
     }
 
     public static String getMessage(String code, Object[] args) {
-        return getMessage(code, args, GlobalConstants.EMPTY);
+        return getMessage(code, args, FghConstants.EMPTY);
     }
 
     public static String getMessage(String code, Object[] args, Locale locale) {
-        return getMessage(code, args, GlobalConstants.EMPTY, locale);
+        return getMessage(code, args, FghConstants.EMPTY, locale);
     }
 
     public static String getMessage(String code, Object[] args, String defaultMessage) {
@@ -74,7 +74,7 @@ public class I18nUtils {
     }
 
     public static String getMessage(FghException custom, Object[] args, String defaultMessage) {
-        String code = custom.getErrorHandler().getCode();
+        String code = custom.getHandler().getCode();
         try {
             if (CommonErrorCode.containsCode(code)) {
                 return messages.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());

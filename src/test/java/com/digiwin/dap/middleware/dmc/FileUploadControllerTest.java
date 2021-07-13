@@ -2,9 +2,9 @@ package com.digiwin.dap.middleware.dmc;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fobgochod.auth.FobAuthenticationFilter;
-import com.fobgochod.auth.handler.AuthService;
+import com.fobgochod.auth.FghAuthenticationFilter;
 import com.fobgochod.entity.file.FileInfo;
+import com.fobgochod.service.login.LoginService;
 import com.fobgochod.util.JsonUtils;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ public class FileUploadControllerTest {
     private final static ObjectMapper objectMapper = JsonUtils.createObjectMapper();
 
     @Autowired
-    private AuthService authService;
+    private LoginService loginService;
     @Autowired
     private WebApplicationContext webContext;
     private MockMvc mockMvc;
@@ -45,7 +45,7 @@ public class FileUploadControllerTest {
 
     @BeforeAll
     public void setupMockMvc() {
-        FobAuthenticationFilter authenticationFilter = new FobAuthenticationFilter(authService);
+        FghAuthenticationFilter authenticationFilter = new FghAuthenticationFilter(loginService);
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(webContext)
                 .addFilter(authenticationFilter, "/*")

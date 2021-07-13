@@ -2,8 +2,8 @@ package com.fobgochod.api.fileinfo;
 
 import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.Directory;
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.service.client.DirectoryCrudService;

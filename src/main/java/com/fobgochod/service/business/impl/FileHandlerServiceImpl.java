@@ -1,8 +1,8 @@
 package com.fobgochod.service.business.impl;
 
 import com.fobgochod.service.client.FileInfoCrudService;
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.FileTree;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.FileTree;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.service.business.FileHandlerService;
 import com.fobgochod.service.business.FileOpService;

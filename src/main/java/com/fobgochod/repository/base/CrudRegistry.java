@@ -1,7 +1,7 @@
 package com.fobgochod.repository.base;
 
-import com.fobgochod.domain.v2.Page;
-import com.fobgochod.domain.v2.PageData;
+import com.fobgochod.domain.base.Page;
+import com.fobgochod.domain.base.PageData;
 import com.fobgochod.entity.BaseEntity;
 
 import java.util.Collection;

@@ -1,8 +1,8 @@
 package com.fobgochod.service.client.base;
 
 import com.fobgochod.constant.BaseField;
-import com.fobgochod.domain.v2.Page;
-import com.fobgochod.domain.v2.PageData;
+import com.fobgochod.domain.base.Page;
+import com.fobgochod.domain.base.PageData;
 import com.fobgochod.entity.BaseEntity;
 import com.fobgochod.service.mongo.EntityCollection;
 import com.fobgochod.util.QueryUtil;
@@ -113,6 +113,12 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     }
 
     @Override
+    public void dropCollection() {
+        MongoCollection<T> mongoCollection = this.getCollection();
+        mongoCollection.drop();
+    }
+
+    @Override
     public T save(T data) {
         if (data.getId() == null) {
             data.setId(SnowFlake.getInstance().get());
@@ -126,11 +132,5 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     public void update(Bson filter, Bson update) {
         MongoCollection<T> mongoCollection = this.getCollection();
         mongoCollection.updateOne(filter, update);
-    }
-
-    @Override
-    public void dropCollection() {
-        MongoCollection<T> mongoCollection = this.getCollection();
-        mongoCollection.drop();
     }
 }

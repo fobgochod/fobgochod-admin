@@ -1,7 +1,7 @@
 package com.fobgochod.service.schedule.impl;
 
-import com.fobgochod.domain.EnvProperties;
-import com.fobgochod.domain.v2.BucketStats;
+import com.fobgochod.domain.base.EnvProperties;
+import com.fobgochod.domain.BucketStats;
 import com.fobgochod.entity.admin.Stats;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.StatsRepository;

@@ -1,89 +1,60 @@
 package com.fobgochod.exception;
 
-import com.fobgochod.domain.ErrorHandler;
-import com.fobgochod.domain.ErrorType;
-import org.springframework.http.HttpStatus;
-
+import com.fobgochod.domain.base.ErrorHandler;
+import com.fobgochod.domain.enumeration.ErrorType;
 
 /**
- * DAP异常基类
+ * 异常基类
  *
  * @author seven
  * @date 2020/5/17
  */
 public abstract class FghException extends RuntimeException {
 
-    protected String errorCode;
-    protected String errorMessage;
-    protected ErrorHandler errorHandler;
-    protected int code = HttpStatus.INTERNAL_SERVER_ERROR.value();
+    protected String code;
+    protected String message;
+    protected ErrorHandler handler;
 
     public FghException() {
         super();
     }
 
-    public FghException(ErrorHandler errorHandler) {
-        super(errorHandler.getErrorMessage());
-        this.setErrorHandler(errorHandler);
+    public FghException(ErrorHandler handler) {
+        super(handler.getErrorMessage());
+        this.setHandler(handler);
     }
 
-    public FghException(ErrorHandler errorHandler, Object[] args) {
-        super(errorHandler.getErrorMessage(args));
-        this.setErrorHandler(errorHandler, args);
-    }
-
-    public FghException(ErrorHandler errorHandler, String message) {
-        this(message);
-        this.setErrorHandler(errorHandler);
-    }
-
-    public FghException(ErrorHandler errorHandler, Object[] args, String message) {
-        this(message);
-        this.setErrorHandler(errorHandler, args);
-    }
-
-    public FghException(String message) {
-        super(message);
-    }
-
-    public FghException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public FghException(Throwable cause) {
-        super(cause);
+    public FghException(ErrorHandler handler, Object... args) {
+        super(handler.getErrorMessage(args));
+        this.setErrorHandler(handler, args);
     }
 
     public ErrorType getErrorType() {
         return ErrorType.Unexpected;
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
-
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public ErrorHandler getErrorHandler() {
-        return errorHandler;
-    }
-
-    @Deprecated
-    public int getCode() {
+    public String getCode() {
         return code;
     }
 
-    private void setErrorHandler(ErrorHandler errorHandler) {
-        this.errorCode = errorHandler.getErrorCode();
-        this.errorMessage = errorHandler.getErrorMessage();
-        this.errorHandler = errorHandler;
+    @Override
+    public String getMessage() {
+        return message;
     }
 
-    private void setErrorHandler(ErrorHandler errorHandler, Object[] args) {
-        this.errorCode = errorHandler.getErrorCode();
-        this.errorMessage = errorHandler.getErrorMessage(args);
-        this.errorHandler = errorHandler;
+    public ErrorHandler getHandler() {
+        return handler;
+    }
+
+    private void setHandler(ErrorHandler handler) {
+        this.code = handler.getErrorCode();
+        this.message = handler.getErrorMessage();
+        this.handler = handler;
+    }
+
+    private void setErrorHandler(ErrorHandler errorHandler, Object... args) {
+        this.code = errorHandler.getErrorCode();
+        this.message = errorHandler.getErrorMessage(args);
+        this.handler = errorHandler;
     }
 }

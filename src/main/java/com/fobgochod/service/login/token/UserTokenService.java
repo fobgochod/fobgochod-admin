@@ -1,11 +1,12 @@
 package com.fobgochod.service.login.token;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fobgochod.auth.domain.JwtUser;
+import com.fobgochod.config.CacheManagerConfig;
 import com.fobgochod.exception.BusinessException;
 import com.fobgochod.util.JsonUtils;
 import com.fobgochod.util.JwtUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.io.IOException;
  * @date 2021/3/8
  */
 @Service
-@CacheConfig(cacheNames = "login.token")
+@CacheConfig(cacheNames = CacheManagerConfig.JCacheNames.LOGIN_TOKEN)
 public class UserTokenService {
 
     private final static ObjectMapper objectMapper = JsonUtils.createObjectMapper();

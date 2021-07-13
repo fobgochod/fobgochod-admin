@@ -1,7 +1,7 @@
 package com.fobgochod;
 
-import com.fobgochod.domain.CommonErrorCode;
-import com.fobgochod.domain.ErrorType;
+import com.fobgochod.domain.base.CommonErrorCode;
+import com.fobgochod.domain.enumeration.ErrorType;
 import com.fobgochod.exception.FghLog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

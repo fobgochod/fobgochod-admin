@@ -3,7 +3,6 @@ package com.fobgochod.api.file;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.ImageHandle;
 import com.fobgochod.domain.ImageInfo;
-import com.fobgochod.domain.StdData;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.entity.file.ShrinkImage;
@@ -87,7 +86,7 @@ public class FileImageController {
         imageInfo.setShrink(shrink);
         ImageHandle imageHandle = new ImageHandle(imageInfo, FileInfo.get(fileJson));
         Future<Map<String, String>> result = threadPoolTaskExecutor.submit(new UploadImageTask(imageHandle, req.getInputStream(), UserUtil.getAuthentication()));
-        return ResponseEntity.ok(StdData.ofSuccess(result.get()));
+        return ResponseEntity.ok(result.get());
     }
 
     /**
@@ -140,7 +139,7 @@ public class FileImageController {
             map.remove("shareUrl");
             map.remove("shareDate");
         }
-        return ResponseEntity.ok(StdData.ofSuccess(map));
+        return ResponseEntity.ok(map);
     }
 
     /**
@@ -190,7 +189,7 @@ public class FileImageController {
                 result.add(temp);
             });
         }
-        return ResponseEntity.ok(StdData.ofSuccess(result));
+        return ResponseEntity.ok(result);
     }
 
     private class UploadImageTask implements Callable<Map<String, String>> {
@@ -263,7 +262,7 @@ public class FileImageController {
                 map.put("shrinkUrl", shrinkUrl);
                 return map;
             } catch (Exception e) {
-                throw new BusinessException("图片上传失败", e);
+                throw new BusinessException("图片上传失败");
             }
         }
     }
@@ -337,7 +336,7 @@ public class FileImageController {
                 }
                 return map;
             } catch (Exception e) {
-                throw new BusinessException("图片上传失败", e);
+                throw new BusinessException("图片上传失败");
             }
         }
     }

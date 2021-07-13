@@ -1,4 +1,4 @@
-package com.fobgochod.domain.v2;
+package com.fobgochod.domain;
 
 /**
  * Bucket初始化

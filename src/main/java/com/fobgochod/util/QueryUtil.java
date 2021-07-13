@@ -1,8 +1,9 @@
 package com.fobgochod.util;
 
 import com.fobgochod.constant.BaseField;
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.Page;
 import com.mongodb.client.model.Filters;
+import org.apache.logging.log4j.util.Strings;
 import org.bson.BsonDocument;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
@@ -18,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -84,8 +84,11 @@ public class QueryUtil {
 
     public static Bson filter(Map<String, Object> filter) {
         List<Bson> filters = new ArrayList<>();
+        Bson tenantFilter = getTenantIdFilter();
         if (CollectionUtils.isEmpty(filter)) {
-            return new BsonDocument();
+            return tenantFilter;
+        } else {
+            filters.add(tenantFilter);
         }
         for (Map.Entry<String, Object> entry : filter.entrySet()) {
             if (BaseField.PID.equals(entry.getKey())) {
@@ -212,11 +215,18 @@ public class QueryUtil {
      * eq("item", null)：value is null or that do not contain the item field
      * exists("item", false)：not contain the item field
      *
-     * @param ids 表ID集合
      * @return 满足当前租户的ID集合
      * @see：https://docs.mongodb.com/manual/tutorial/query-for-null-fields
      */
-    public static Bson getTenantIdFilter(List<UUID> ids) {
-        return Filters.in(BaseField.ID, ids);
+    public static Bson getTenantIdFilter() {
+        String tenantId = UserUtil.getTenantId();
+        if (!StringUtils.hasText(tenantId)) {
+            return new BsonDocument();
+        }
+        return Filters.or(
+                Filters.eq(BaseField.TENANT_ID, tenantId),
+                Filters.eq(BaseField.TENANT_ID, null),
+                Filters.eq(BaseField.TENANT_ID, Strings.EMPTY)
+        );
     }
 }

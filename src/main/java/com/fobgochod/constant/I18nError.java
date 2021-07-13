@@ -1,6 +1,6 @@
 package com.fobgochod.constant;
 
-import com.fobgochod.domain.ErrorHandler;
+import com.fobgochod.domain.base.ErrorHandler;
 
 /**
  * 订单中心code
@@ -10,15 +10,12 @@ import com.fobgochod.domain.ErrorHandler;
  */
 public enum I18nError implements ErrorHandler {
 
-    ERROR_10001("20000", "UploadController.E00001"),
-    ERROR_10002("20000", "UploadController.E00002"),
-    ERROR_10003("20000", "UploadController.E00003"),
-
-    ERROR_LOGIN("20000", "dmc.login.auth");
+    ERROR_10001("20000", "filename.notnull"),
+    ERROR_LOGIN("20000", "login.auth.fail");
 
 
-    private String errorCode;
-    private String code;
+    private final String errorCode;
+    private final String code;
 
     I18nError(String errorCode, String code) {
         this.errorCode = errorCode;

@@ -2,7 +2,6 @@ package com.fobgochod.util;
 
 import com.fobgochod.constant.BaseField;
 import org.bson.types.ObjectId;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +24,12 @@ public class IdUtil {
         return new ObjectId(objectId);
     }
 
-    public static String getObjectId(ObjectId objectId) {
-        return objectId.toString();
-    }
-
-    public static String getDirectoryId(String dirId) {
-        if (!StringUtils.hasText(dirId) || "0".equals(dirId)) {
+    public static String getDirId(String dirId) {
+        if (ROOT_DIR.contains(dirId)) {
             return BaseField.ROOT_DIR;
         }
         return dirId;
     }
-
 
     /**
      * 是否为根目录

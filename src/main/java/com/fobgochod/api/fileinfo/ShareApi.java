@@ -1,7 +1,7 @@
 package com.fobgochod.api.fileinfo;
 
-import com.fobgochod.domain.v2.BatchFid;
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.service.client.ShareCrudService;
 import org.springframework.beans.factory.annotation.Autowired;

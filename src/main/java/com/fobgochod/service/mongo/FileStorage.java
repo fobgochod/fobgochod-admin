@@ -13,7 +13,6 @@ import com.mongodb.client.model.Filters;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
@@ -34,8 +33,6 @@ public class FileStorage {
 
     @Autowired
     private GridFSBucket gridFSBucket;
-    @Autowired
-    private GridFsTemplate gridFsTemplate;
 
 
     /**
@@ -74,7 +71,7 @@ public class FileStorage {
             }
             return returnBts;
         } catch (Exception e) {
-            throw new BusinessException(e);
+            throw new BusinessException(e.getMessage());
         }
     }
 
@@ -105,7 +102,7 @@ public class FileStorage {
                 toLen += read;
             }
         } catch (IOException e) {
-            throw new BusinessException("读取文件到流失败", e);
+            throw new BusinessException("读取文件到流失败");
         }
     }
 

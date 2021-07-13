@@ -1,6 +1,6 @@
 package com.fobgochod.api.fileinfo;
 
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.exception.BusinessException;
 import com.fobgochod.service.client.DirectoryCrudService;

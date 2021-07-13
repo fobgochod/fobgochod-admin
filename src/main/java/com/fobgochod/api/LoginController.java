@@ -4,7 +4,6 @@ import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.constant.I18nError;
-import com.fobgochod.domain.StdData;
 import com.fobgochod.exception.UnauthorizedException;
 import com.fobgochod.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +54,8 @@ public class LoginController {
      * @return
      */
     @PostMapping(value = "/token/analyze")
-    public StdData analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
-        return StdData.ofSuccess(userInfo);
+    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+        return ResponseEntity.ok(userInfo);
     }
 
     /**

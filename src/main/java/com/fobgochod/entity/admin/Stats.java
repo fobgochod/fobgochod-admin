@@ -1,6 +1,6 @@
 package com.fobgochod.entity.admin;
 
-import com.fobgochod.domain.v2.BucketStats;
+import com.fobgochod.domain.BucketStats;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 

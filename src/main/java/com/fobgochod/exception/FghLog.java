@@ -10,7 +10,27 @@ public class FghLog {
     private String message;
     private String method;
     private String path;
-    private String userToken;
+    private String token;
+
+    public static String getLog(String message, String path) {
+        FghLog fghLog = new FghLog();
+        fghLog.setHandler(FghExceptionHandler.Handler.UNEXPECTED.getName());
+        fghLog.setMessage(message);
+        fghLog.setMethod(null);
+        fghLog.setPath(path);
+        fghLog.setToken(TokenUtils.getToken());
+        return fghLog.toString();
+    }
+
+    public static String getLog(String handler, String message, HttpServletRequest req) {
+        FghLog fghLog = new FghLog();
+        fghLog.setHandler(handler);
+        fghLog.setMessage(message);
+        fghLog.setMethod(req.getMethod());
+        fghLog.setPath(req.getRequestURI());
+        fghLog.setToken(TokenUtils.getToken());
+        return fghLog.toString();
+    }
 
     public String getHandler() {
         return handler;
@@ -44,32 +64,12 @@ public class FghLog {
         this.path = path;
     }
 
-    public String getUserToken() {
-        return userToken;
+    public String getToken() {
+        return token;
     }
 
-    public void setUserToken(String userToken) {
-        this.userToken = userToken;
-    }
-
-    public static String getLog(String message, String path) {
-        FghLog fghLog = new FghLog();
-        fghLog.setHandler(FghExceptionHandler.Handler.UNEXPECTED.getName());
-        fghLog.setMessage(message);
-        fghLog.setMethod(null);
-        fghLog.setPath(path);
-        fghLog.setUserToken(TokenUtils.getToken());
-        return fghLog.toString();
-    }
-
-    public static String getLog(String handler, String message, HttpServletRequest req) {
-        FghLog fghLog = new FghLog();
-        fghLog.setHandler(handler);
-        fghLog.setMessage(message);
-        fghLog.setMethod(req.getMethod());
-        fghLog.setPath(req.getRequestURI());
-        fghLog.setUserToken(TokenUtils.getToken());
-        return fghLog.toString();
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -83,8 +83,8 @@ public class FghLog {
                 + method + '\"'
                 + ",\"path\":\""
                 + path + '\"'
-                + ",\"userToken\":\""
-                + userToken + '\"'
+                + ",\"token\":\""
+                + token + '\"'
                 + "}";
     }
 }

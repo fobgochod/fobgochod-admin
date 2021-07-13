@@ -1,4 +1,4 @@
-package com.fobgochod.domain;
+package com.fobgochod.domain.base;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -10,7 +10,16 @@ import org.springframework.stereotype.Component;
  * @date 2021/6/29
  */
 @Component
-public class EnvProperties extends DapEnv {
+public class EnvProperties extends SystemEnv {
+
+    @Value("${app.version:}")
+    private String version;
+    @Value("${app.build-time}")
+    private String buildTime;
+    @Value("${spring.profiles.active:}")
+    private String active;
+    @Value("${server.port}")
+    private String port;
 
     @Value("${spring.data.mongodb.uri:}")
     private String mongodbUri;
@@ -21,6 +30,38 @@ public class EnvProperties extends DapEnv {
     private String baseUri;
     @Value("${server.servlet.context-path:}")
     private String contextPath;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    public String getBuildTime() {
+        return buildTime;
+    }
+
+    public void setBuildTime(String buildTime) {
+        this.buildTime = buildTime;
+    }
+
+    public String getActive() {
+        return active;
+    }
+
+    public void setActive(String active) {
+        this.active = active;
+    }
+
+    public String getPort() {
+        return port;
+    }
+
+    public void setPort(String port) {
+        this.port = port;
+    }
 
     public String getMongodbUri() {
         return mongodbUri;

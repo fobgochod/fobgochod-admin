@@ -16,30 +16,14 @@ import java.time.LocalDateTime;
  */
 public class UserUtil {
 
-    /**
-     * 获取线程变量验证信息
-     *
-     * @return
-     */
     public static Authentication getAuthentication() {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    /**
-     * 设置线程变量验证信息
-     *
-     * @param authentication
-     */
     public static void setAuthentication(Authentication authentication) {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    /**
-     * 获取当前线程用户信息
-     * 没有返回匿名用户anonymousUser
-     *
-     * @return JwtUser
-     */
     public static JwtUser getJwtUser() {
         Authentication authentication = getAuthentication();
         if (authentication != null) {
@@ -48,7 +32,6 @@ public class UserUtil {
                 return (JwtUser) principal;
             }
         }
-        // 匿名用户
         return new JwtUser(FghConstants.ANONYMOUS_USER, FghConstants.ANONYMOUS_USER);
     }
 
@@ -64,6 +47,9 @@ public class UserUtil {
         return getJwtUser().getUsername();
     }
 
+    public static String getTenantId() {
+        return getJwtUser().getTenantId();
+    }
 
     public static void setCreateFields(BaseEntity entity) {
         entity.setCreateBy(getUserSid());

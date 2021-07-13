@@ -1,4 +1,4 @@
-package com.fobgochod.domain;
+package com.fobgochod.domain.base;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;

@@ -5,14 +5,12 @@ import com.fobgochod.entity.admin.User;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 /**
- * JWT用户
+ * 用户
  *
  * @author zhouxiao
  * @date 2021/3/2
@@ -22,11 +20,9 @@ public class JwtUser implements UserDetails {
     private String id;
     private String username;
     private String password;
-    private List<String> buckets;
     private String tenantId;
 
     public JwtUser() {
-        this.buckets = new ArrayList<>();
     }
 
     public JwtUser(String id, String username) {
@@ -48,7 +44,6 @@ public class JwtUser implements UserDetails {
         return jwtUser;
     }
 
-
     public String getId() {
         return id;
     }
@@ -56,7 +51,6 @@ public class JwtUser implements UserDetails {
     public void setId(String id) {
         this.id = id;
     }
-
 
     @Override
     public String getUsername() {
@@ -74,19 +68,6 @@ public class JwtUser implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public List<String> getBuckets() {
-        return buckets;
-    }
-
-    public void setBuckets(List<String> buckets) {
-        this.buckets = buckets;
-    }
-
-    @Override
-    public Collection<SimpleGrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
     }
 
     public String getTenantId() {
@@ -116,6 +97,11 @@ public class JwtUser implements UserDetails {
 
     public String uniqueKey() {
         return String.format("%s::%s", username, tenantId == null ? FghConstants.DEFAULT_TENANT : tenantId);
+    }
+
+    @Override
+    public Collection<SimpleGrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
     }
 
     @Override

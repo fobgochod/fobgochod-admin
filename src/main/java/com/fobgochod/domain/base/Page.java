@@ -1,4 +1,4 @@
-package com.fobgochod.domain.v2;
+package com.fobgochod.domain.base;
 
 import com.fobgochod.constant.BaseField;
 import com.fobgochod.util.QueryUtil;
@@ -44,6 +44,7 @@ public class Page {
         this.pageSize = 10;
         this.orders = Collections.singletonMap(BaseField.CREATE_DATE, -1);
     }
+
     public Map<String, Object> getFilters() {
         return filters;
     }

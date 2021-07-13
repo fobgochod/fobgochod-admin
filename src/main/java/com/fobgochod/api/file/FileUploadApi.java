@@ -7,7 +7,6 @@ import com.fobgochod.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -56,14 +55,12 @@ public class FileUploadApi {
     /**
      * 上传文件-多个文件
      *
-     * @param bucket 存储区名称
-     * @param files  File []
-     * @param body   文件信息 []
+     * @param files File []
+     * @param body  文件信息 []
      * @return 文件信息 []
      */
     @PostMapping("/upload/multi")
-    public ResponseEntity<?> uploadMulti(@PathVariable(required = false) String bucket,
-                                         @RequestPart("files") MultipartFile[] files,
+    public ResponseEntity<?> uploadMulti(@RequestPart("files") MultipartFile[] files,
                                          @RequestPart(required = false, name = "fileInfos") Queue<FileInfo> body) {
         List<CompletableFuture<FileInfo>> futures = new ArrayList<>();
         Authentication authentication = UserUtil.getAuthentication();

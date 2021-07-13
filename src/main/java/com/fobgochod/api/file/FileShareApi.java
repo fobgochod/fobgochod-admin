@@ -1,10 +1,10 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.domain.StdData;
-import com.fobgochod.domain.v2.BatchFid;
+import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.service.client.ShareCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,9 +30,9 @@ public class FileShareApi {
      * @return 分享地址
      */
     @PostMapping
-    public StdData share(@RequestBody BatchFid body) {
+    public ResponseEntity<?> share(@RequestBody BatchFid body) {
         body.afterPropertiesSet();
         ShareRecord shareRecord = shareCrudService.shareFile(body);
-        return StdData.ofSuccess(shareRecord);
+        return ResponseEntity.ok(shareRecord);
     }
 }

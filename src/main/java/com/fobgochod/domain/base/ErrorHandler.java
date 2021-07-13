@@ -1,4 +1,4 @@
-package com.fobgochod.domain;
+package com.fobgochod.domain.base;
 
 import com.fobgochod.util.I18nUtils;
 
@@ -39,7 +39,7 @@ public interface ErrorHandler {
      * @param args
      * @return
      */
-    default String getErrorMessage(Object[] args) {
+    default String getErrorMessage(Object... args) {
         return I18nUtils.getMessage(this.getCode(), args);
     }
 }

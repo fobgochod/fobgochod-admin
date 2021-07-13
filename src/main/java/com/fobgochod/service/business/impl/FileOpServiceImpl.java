@@ -102,7 +102,7 @@ public class FileOpServiceImpl implements FileOpService {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new BusinessException(e);
+            throw new BusinessException(e.getMessage());
         } finally {
             try {
                 if (response != null && response.getOutputStream() != null) {
@@ -135,7 +135,7 @@ public class FileOpServiceImpl implements FileOpService {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new BusinessException(e);
+            throw new BusinessException(e.getMessage());
         } finally {
             try {
                 if (response != null && response.getOutputStream() != null) {
@@ -189,7 +189,7 @@ public class FileOpServiceImpl implements FileOpService {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new BusinessException(e);
+            throw new BusinessException(e.getMessage());
         } finally {
             try {
                 if (response != null && response.getOutputStream() != null) {

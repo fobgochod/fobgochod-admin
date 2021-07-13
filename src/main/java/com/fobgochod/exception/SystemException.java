@@ -1,7 +1,7 @@
 package com.fobgochod.exception;
 
-import com.fobgochod.domain.ErrorHandler;
-import com.fobgochod.domain.ErrorType;
+import com.fobgochod.domain.base.ErrorHandler;
+import com.fobgochod.domain.enumeration.ErrorType;
 
 /**
  * 系统异常
@@ -15,12 +15,12 @@ public class SystemException extends FghException {
         super();
     }
 
-    public SystemException(ErrorHandler errorHandler) {
-        super(errorHandler);
+    public SystemException(ErrorHandler handler) {
+        super(handler);
     }
 
-    public SystemException(ErrorHandler errorHandler, Object[] args) {
-        super(errorHandler, args);
+    public SystemException(ErrorHandler handler, Object... args) {
+        super(handler, args);
     }
 
     @Override

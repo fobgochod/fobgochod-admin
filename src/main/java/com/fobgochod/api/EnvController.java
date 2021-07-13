@@ -1,6 +1,6 @@
 package com.fobgochod.api;
 
-import com.fobgochod.domain.EnvProperties;
+import com.fobgochod.domain.base.EnvProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +18,7 @@ public class EnvController {
 
     @GetMapping(value = "/")
     public ResponseEntity<?> home() {
-        return ResponseEntity.ok(new LinkedHashMap<String, String>(3) {{
+        return ResponseEntity.ok(new LinkedHashMap<String, String>(4) {{
             put("version", envProperties.getVersion());
             put("build-time", envProperties.getBuildTime());
             put("server-time", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss").format(LocalDateTime.now()));

@@ -136,11 +136,11 @@ public class FileInfo extends BaseEntity {
             FileInfo fileInfo = JsonUtils.createObjectMapper()
                     .readValue(URLDecoder.decode(fileJson, StandardCharsets.UTF_8.name()), FileInfo.class);
             if (StringUtils.isEmpty(fileInfo.name)) {
-                throw new BusinessException(I18nError.ERROR_10003);
+                throw new BusinessException(I18nError.ERROR_10001);
             }
             return fileInfo;
         } catch (Exception e) {
-            throw new BusinessException(I18nError.ERROR_10003);
+            throw new BusinessException(I18nError.ERROR_10001);
         }
     }
 }

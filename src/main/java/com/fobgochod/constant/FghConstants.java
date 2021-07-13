@@ -1,77 +1,57 @@
 package com.fobgochod.constant;
 
 /**
- * @author chenxsa
- * @date: 2018-6-6 19:21
- * @Description:
+ * 系统常量
+ *
+ * @author zhouxiao
+ * @date 2021/7/13
  */
 public class FghConstants {
 
-    /**
-     * 在HttpHeader中传递的IAM Token信息
-     */
     public static final String HTTP_HEADER_ACCESS_TOKEN_KEY = "digi-middleware-auth-access";
-
-    /**
-     * 在HttpHeader中传递的User Token信息
-     */
-    public static final String HTTP_HEADER_USER_TOKEN_KEY = "digi-middleware-auth-user";
-
-    public static final String HTTP_HEADER_USER_INFO_KEY = "digi-middleware-auth-use-info";
-
-    /**
-     * 在HttpHeader中传递的租户信息
-     */
-    public static final String HTTP_HEADER_TENANT_KEY = "digi-middleware-auth-tenant";
-
-    /**
-     * 在HttpHeader中传递的Token信息
-     */
-    public static final String HTTP_HEADER_DRIVE_TOKEN_KEY = "digi-middleware-drive-access";
-
     public static final String HTTP_HEADER_DRIVE_INFO_KEY = "digi-middleware-drive-access-info";
 
-    /**
-     * 在HttpHeader中传递的请求参数
-     */
+    public static final String HTTP_HEADER_USER_TOKEN_KEY = "digi-middleware-auth-user";
+    public static final String HTTP_HEADER_USER_INFO_KEY = "digi-middleware-auth-user-info";
+
+    public static final String HTTP_HEADER_TENANT_KEY = "digi-middleware-auth-tenant";
+
     public static final String HTTP_HEADER_API_ARG_KEY = "digi-middleware-drive-arg";
 
-
-    /**
-     * 默认Bucket
-     */
-    public static final String DEFAULT_STORAGE = "mongoDefault";
-
-    /**
-     * 个人文档
-     */
-    public static final String PERSONAL_DOCUMENT_COLLECTION = "MyDocument";
-
-    /**
-     * FileInfo 相关常量
-     */
-    public static final String FILE_INFO_COLLECTION_NAME = "FileInfo";
-
-    /**
-     * 在Http请求参数中传递，租户ID
-     */
-    public static final String HTTP_HEADER_TENANTID_KEY = "tenantId";
-
-    /**
-     * 默认租户
-     */
     public static final String DEFAULT_TENANT = "default";
 
-    /**
-     * 匿名用户
-     */
     public static final String ANONYMOUS_USER = "anonymousUser";
 
-    /**
-     * DMC管理员
-     */
-    public static final String ADMIN = "admin";
+    public static final char AT = '@';
+    public static final char DOT = '.';
+    public static final char TAB = '\t';
+    public static final char DASH = '-';
+    public static final char COLON = ':';
+    public static final char COMMA = ',';
+    public static final char SLASH = '/';
+    public static final char DOLLAR = '$';
+    public static final char PERCENT = '%';
+    public static final char ESCAPE = '\\';
+    public static final char ASTERISK = '*';
+    public static final char SEMICOLON = ';';
+    public static final char CURLY_LEFT = '{';
+    public static final char UNDERSCORE = '_';
+    public static final char CURLY_RIGHT = '}';
+    public static final char DOUBLE_QUOTE = '"';
+    public static final char SINGLE_QUOTE = '\'';
+    public static final char LEFT_PARENTHESIS = '(';
+    public static final char RIGHT_PARENTHESIS = ')';
 
-    @Deprecated
-    public static final String CONTENT_LENGTH = "ContentLength";
+    public static final String EMPTY = "";
+    public static final String TRUE = "true";
+    public static final String FALSE = "false";
+    public static final String DEFAULT_VALUE_SEPARATOR = ":-";
+    public static final String DEFAULT_CONTEXT_NAME = "default";
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String ACCEPT_LANGUAGE = "Accept-Language";
+    public static final String LOCALE = "Locale";
+
+    public static final String ENV_DEV = "dev";
+    public static final String ENV_PROD = "prod";
+    public static final String ENV_TEST = "test";
 }

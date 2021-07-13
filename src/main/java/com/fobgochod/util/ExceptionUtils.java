@@ -1,12 +1,12 @@
 package com.fobgochod.util;
 
-import com.fobgochod.constant.GlobalConstants;
-import com.fobgochod.domain.ErrorHandler;
-import com.fobgochod.domain.ErrorType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fobgochod.constant.FghConstants;
+import com.fobgochod.domain.base.ErrorHandler;
+import com.fobgochod.domain.enumeration.ErrorType;
 import com.fobgochod.exception.FghException;
 import com.fobgochod.exception.FghLog;
 import com.fobgochod.exception.StdError;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -54,7 +54,7 @@ public class ExceptionUtils {
         StringBuilder builder = new StringBuilder(e.toString());
         StackTraceElement[] steArray = e.getStackTrace();
         for (StackTraceElement ste : steArray) {
-            builder.append(GlobalConstants.LINE_SEPARATOR);
+            builder.append(FghConstants.LINE_SEPARATOR);
             builder.append("at ").append(ste.toString());
         }
         return builder.toString();
@@ -91,10 +91,10 @@ public class ExceptionUtils {
         return error.toString();
     }
 
-    public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, String sourceId, ErrorHandler errorHandler) {
+    public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, ErrorHandler errorHandler) {
         logger.error(FghLog.getLog("Token验证异常", null, request));
 
-        StdError stdError = StdError.of(sourceId.toUpperCase());
+        StdError stdError = StdError.of();
         stdError.setErrorType(ErrorType.System.name());
         stdError.setErrorCode(errorHandler.getErrorCode());
         stdError.setErrorMessage(errorHandler.getErrorMessage());
@@ -103,23 +103,23 @@ public class ExceptionUtils {
         println(response, HttpServletResponse.SC_UNAUTHORIZED, stdError);
     }
 
-    public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, String sourceId, FghException e) {
+    public static void writeUnAuth(HttpServletRequest request, HttpServletResponse response, FghException e) {
         logger.error(FghLog.getLog("Token验证异常", e.getMessage(), request));
 
-        StdError stdError = StdError.of(sourceId.toUpperCase());
+        StdError stdError = StdError.of();
         stdError.setMessage(e.getMessage());
         stdError.setPath(request.getRequestURI());
         stdError.setErrorType(e.getErrorType().name());
-        stdError.setErrorCode(e.getErrorCode());
-        stdError.setErrorMessage(e.getErrorMessage());
+        stdError.setErrorCode(e.getCode());
+        stdError.setErrorMessage(e.getMessage());
         println(response, HttpServletResponse.SC_UNAUTHORIZED, stdError);
     }
 
     public static void println(HttpServletResponse response, String sourceId, FghException e) {
         StdError stdError = StdError.of(sourceId.toUpperCase());
         stdError.setErrorType(e.getErrorType().name());
-        stdError.setErrorCode(e.getErrorCode());
-        stdError.setErrorMessage(e.getErrorMessage());
+        stdError.setErrorCode(e.getCode());
+        stdError.setErrorMessage(e.getMessage());
         println(response, stdError);
     }
 

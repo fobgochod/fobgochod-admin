@@ -1,4 +1,4 @@
-package com.fobgochod.domain.v2;
+package com.fobgochod.domain;
 
 import org.springframework.core.NamedThreadLocal;
 import org.springframework.lang.Nullable;

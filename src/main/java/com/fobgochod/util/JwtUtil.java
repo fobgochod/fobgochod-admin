@@ -18,21 +18,10 @@ import java.util.Date;
  */
 public class JwtUtil {
 
-    // 过期时间24小时
     private static final long EXPIRE_TIME = 24 * 60 * 60 * 1000;
     private static final String KEY = "docSFCy76*h%(Hil";
-    private static final String SUB = "dmc";
-    private static final String ISSUER = "digiwin.dap.middleware.dmc.";
-
-    /**
-     * 校验token是否正确
-     *
-     * @param token 密钥
-     * @return 是否正确
-     */
-    public static boolean verify(String token) {
-        return verify(token, "");
-    }
+    private static final String SUB = "admin";
+    private static final String ISSUER = "issuer";
 
     /**
      * 校验token是否正确
@@ -48,8 +37,7 @@ public class JwtUtil {
                             .withIssuer(ISSUER + issuer)
                             .withSubject(SUB)
                             .build();
-            DecodedJWT jwt = verifier.verify(token);
-
+            verifier.verify(token);
             return true;
         } catch (UnsupportedEncodingException e) {
             return false;
@@ -100,16 +88,6 @@ public class JwtUtil {
     }
 
     /**
-     * 生成签名
-     *
-     * @param json json
-     * @return 加密的token
-     */
-    public static String sign(String json, String issuer, long expire) {
-        return sign(json, KEY, issuer, expire);
-    }
-
-    /**
      * 生成签名,30min后过期
      *
      * @param json json
@@ -117,15 +95,5 @@ public class JwtUtil {
      */
     public static String sign(String json, String issuer) {
         return sign(json, KEY, issuer, EXPIRE_TIME);
-    }
-
-    /**
-     * 生成签名,30min后过期
-     *
-     * @param json json
-     * @return 加密的token
-     */
-    public static String sign(String json) {
-        return sign(json, KEY, "", EXPIRE_TIME);
     }
 }

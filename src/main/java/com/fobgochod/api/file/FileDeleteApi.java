@@ -1,11 +1,10 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.domain.StdData;
-import com.fobgochod.domain.annotation.FidCheck;
-import com.fobgochod.domain.v2.BatchFid;
+import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.entity.file.RecycleBin;
 import com.fobgochod.service.business.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +35,9 @@ public class FileDeleteApi {
      * @return 空
      */
     @DeleteMapping("/delete/force/{fileId}")
-    public StdData deleteForce(@FidCheck @PathVariable String fileId) {
+    public ResponseEntity deleteForce(@PathVariable String fileId) {
         fileService.deleteFile(fileId, true);
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -48,7 +47,7 @@ public class FileDeleteApi {
      * @return 空
      */
     @PostMapping("/delete/force")
-    public StdData deleteForce(@RequestBody BatchFid body) {
+    public ResponseEntity deleteForce(@RequestBody BatchFid body) {
         body.afterPropertiesSet();
         for (String fileId : body.getFileIds()) {
             fileService.deleteFile(fileId, true);
@@ -56,7 +55,7 @@ public class FileDeleteApi {
         for (String dirId : body.getDirIds()) {
             fileService.deleteDir(dirId, true);
         }
-        return StdData.ok();
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -66,9 +65,9 @@ public class FileDeleteApi {
      * @return 回收站信息
      */
     @DeleteMapping("/delete/{fileId}")
-    public StdData delete(@PathVariable String fileId) {
+    public ResponseEntity delete(@PathVariable String fileId) {
         RecycleBin recyclebin = fileService.deleteFile(fileId);
-        return StdData.ofSuccess(recyclebin);
+        return ResponseEntity.ok(recyclebin);
     }
 
     /**
@@ -78,7 +77,7 @@ public class FileDeleteApi {
      * @return 回收站信息 []
      */
     @PostMapping("/delete")
-    public StdData delete(@RequestBody BatchFid body) {
+    public ResponseEntity delete(@RequestBody BatchFid body) {
         body.afterPropertiesSet();
         List<RecycleBin> recycleBins = new ArrayList<>();
         for (String fileId : body.getFileIds()) {
@@ -93,6 +92,6 @@ public class FileDeleteApi {
                 recycleBins.add(recycleBin);
             }
         }
-        return StdData.ofSuccess(recycleBins);
+        return ResponseEntity.ok(recycleBins);
     }
 }

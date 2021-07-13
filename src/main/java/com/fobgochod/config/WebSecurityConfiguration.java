@@ -1,8 +1,8 @@
 package com.fobgochod.config;
 
-import com.fobgochod.auth.FobAuthenticationFilter;
-import com.fobgochod.auth.handler.AuthService;
+import com.fobgochod.auth.FghAuthenticationFilter;
 import com.fobgochod.auth.handler.FghAuthenticationEntryPoint;
+import com.fobgochod.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -39,7 +39,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/user/password/**",
     };
     @Autowired
-    private AuthService authService;
+    private LoginService loginService;
     @Autowired
     private FghAuthenticationEntryPoint authenticationEntryPoint;
 
@@ -53,7 +53,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers(WHITE_LIST).permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new FobAuthenticationFilter(authService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new FghAuthenticationFilter(loginService), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
         http.headers().cacheControl();
     }

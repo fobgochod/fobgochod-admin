@@ -1,6 +1,6 @@
 package com.fobgochod.api.fileinfo;
 
-import com.fobgochod.domain.v2.Page;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.service.client.ShrinkCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

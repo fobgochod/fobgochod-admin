@@ -1,22 +1,15 @@
 package com.fobgochod.util;
 
 import com.fobgochod.constant.BaseField;
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.DirTree;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-/**
- * @author chenzwd
- * @date : 2018-07-11 15:02
- */
 public class FileUtil {
-
-    private static final String ONE_SPACE = " ";
 
     /**
      * 根据文件名获取文件后缀
@@ -42,7 +35,7 @@ public class FileUtil {
      */
     public static String getFileNameNoExt(String fileName) {
         if ((fileName != null) && (fileName.length() > 0)) {
-            int dot = fileName.lastIndexOf('.');
+            int dot = fileName.lastIndexOf(FghConstants.DOT);
             if ((dot > -1) && (dot < (fileName.length()))) {
                 return fileName.substring(0, dot);
             }
@@ -62,7 +55,7 @@ public class FileUtil {
         String dupFileName = String.format(BaseField.DUPLICATE_NAME, getFileNameNoExt(fileName));
         String extension = getFileExt(fileName);
         if (extension != null) {
-            return dupFileName + "." + extension;
+            return dupFileName + FghConstants.DOT + extension;
         }
         return dupFileName;
     }
@@ -71,7 +64,7 @@ public class FileUtil {
         String fileNameNoExt = getFileNameNoExt(fileName);
         String extension = getFileExt(fileName);
         if (extension != null) {
-            return getDupName(fileNameNoExt) + "." + extension;
+            return getDupName(fileNameNoExt) + FghConstants.DOT + extension;
         }
         return getDupName(fileNameNoExt);
     }
@@ -91,13 +84,6 @@ public class FileUtil {
         } else {
             return fileName + BaseField.DUPLICATE;
         }
-    }
-
-    public static void main(String[] args) {
-        String name = "新建文件夹 - 副本";
-        String name1 = "目录111 - 1 - 副本 (3)";
-
-        System.out.println("name = " + getDupName(name));
     }
 
     /**
@@ -134,28 +120,4 @@ public class FileUtil {
             }
         }
     }
-
-
-    public static String getChinese(String text) {
-        /*
-          1、至少匹配一个汉字的写法。
-          2、这两个unicode值正好是Unicode表中的汉字的头和尾。
-          3、"[]"代表里边的值出现一个就可以，后边的“+”代表至少出现1次，合起来即至少匹配一个汉字。
-        */
-        String reg = "([\u4e00-\u9fa5]+)";
-        String str = "";
-        Matcher matcher = Pattern.compile(reg).matcher(text);
-        while (matcher.find()) {
-            str += matcher.group(0);
-        }
-        int length = str.length();
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < length; ++i) {
-            stringBuilder.append(str.charAt(i));
-            ;
-            stringBuilder.append(ONE_SPACE);
-        }
-        return stringBuilder.toString();
-    }
-
 }
