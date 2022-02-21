@@ -5,7 +5,6 @@ import com.fobgochod.auth.handler.FghAuthenticationEntryPoint;
 import com.fobgochod.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,23 +20,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    public static final String[] WHITE_LIST = {
-            "/",
-            "/favicon.ico",
-            "/**/*.html",
-            "/**/*.css",
-            "/**/*.js",
-            "/actuator/**",
-            "/**/share/**",
-            "/**/preview/**",
-            "/**/download/**",
-            "/**/toAnyOne/**",
-            "/env/**",
-            "/auth/**",
-            "/buckets/task",
-            "/buckets/apply",
-            "/user/password/**",
-    };
     @Autowired
     private LoginService loginService;
     @Autowired
@@ -45,16 +27,14 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http.cors().and()
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers(WHITE_LIST).permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new FghAuthenticationFilter(loginService), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
-        http.headers().cacheControl();
     }
 }

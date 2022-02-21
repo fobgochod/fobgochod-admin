@@ -2,7 +2,7 @@
 <configuration>
     <!-- 参考：http://logback.qos.ch/manual/layouts.html  -->
     <!-- 级别依次为【从高到低】：FATAL > ERROR > WARN > INFO > DEBUG > TRACE  -->
-    <property name="LOG_PATH" value="logs"/>
+    <property name="LOG_PATH" value=".logs"/>
     <contextName>ADMIN</contextName>
 
     <!--@formatter:off-->
@@ -97,7 +97,7 @@
     </appender>
 
     <springProfile name="dev">
-        <logger name="org.springframework" level="INFO"/>
+        <logger name="org.springframework" level="WARN"/>
 
         <root level="DEBUG">
             <appender-ref ref="CONSOLE"/>

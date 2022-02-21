@@ -1,5 +1,6 @@
 package com.fobgochod.service.schedule;
 
+import com.fobgochod.service.schedule.impl.MedicineTask;
 import com.fobgochod.service.schedule.impl.StatsTask;
 import com.fobgochod.service.schedule.impl.TestTask;
 
@@ -22,5 +23,19 @@ public enum TaskIdEnum {
      *
      * @see StatsTask
      */
-    ST001;
+    TS002,
+    /**
+     * 过期文件移动到回收站
+     */
+    TS003,
+    /**
+     * 回收站文件删除
+     */
+    TS004,
+    /**
+     * 吃药提醒
+     *
+     * @see MedicineTask
+     */
+    TS005;
 }

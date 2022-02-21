@@ -5,8 +5,6 @@ server:
     accept-count: 100
     threads:
       max: 10
-  servlet:
-    context-path: /api/v1
 spring:
   application:
     name: admin
@@ -14,7 +12,7 @@ spring:
     active: @profileActive@
   data:
     mongodb:
-      uri: mongodb://root:root@47.100.125.75:27017/admin
+      uri: mongodb://root:root@172.16.1.172:27017/admin
       database: fobgochod
       authentication-database: admin
   mvc:
@@ -49,3 +47,7 @@ app:
   base-uri: http://localhost:8080
   version: @project.version@
   build-time: @timestamp@
+  weixin:
+    uri: https://api.weixin.qq.com
+    app-id: wxf85af403aa802514
+    app-secret: 1617f4bf0b3ed6e503b456fb05951c6c

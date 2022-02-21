@@ -26,12 +26,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Autowired
     private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
-    @Bean
-    @ConditionalOnMissingBean(ObjectMapper.class)
-    public ObjectMapper jacksonObjectMapper() {
-        return JsonUtils.createObjectMapper();
-    }
-
     /**
      * 配置线程池
      *

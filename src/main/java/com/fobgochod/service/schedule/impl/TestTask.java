@@ -28,7 +28,7 @@ public class TestTask extends TaskService {
     public void execute() {
         Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS001.name());
         if (task != null) {
-            logger.info("Thread id:{}, TestTask execute times:{}", Thread.currentThread().getId(), ++count);
+            logger.error("Thread id:{}, TestTask execute times:{}", Thread.currentThread().getId(), ++count);
         }
     }
 }

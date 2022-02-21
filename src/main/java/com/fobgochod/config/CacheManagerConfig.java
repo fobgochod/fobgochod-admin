@@ -42,7 +42,6 @@ public class CacheManagerConfig {
     }
 
     public interface JCacheNames {
-
         String LOGIN_TOKEN = "login.token";
     }
 }

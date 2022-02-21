@@ -6,7 +6,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 public class FghCommonMessageSource extends ResourceBundleMessageSource {
 
     public FghCommonMessageSource() {
-        setBasename("classpath:i18n/common");
+        setBasename("com.fobgochod.common");
         setDefaultEncoding("UTF-8");
     }
 

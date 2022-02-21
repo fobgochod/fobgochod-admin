@@ -1,4 +1,4 @@
-package com.fobgochod.api.admin;
+package com.fobgochod.api;
 
 import com.fobgochod.service.schedule.TaskManager;
 import org.springframework.beans.factory.annotation.Autowired;

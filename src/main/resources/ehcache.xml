@@ -3,14 +3,14 @@
     <service>
         <jsr107:defaults enable-management="true" enable-statistics="true"/>
     </service>
-    <cache-template name="commonTemplate">
+    <cache-template name="common">
         <resources>
             <heap unit="entries">10000</heap>
             <offheap unit="MB">100</offheap>
         </resources>
     </cache-template>
 
-    <cache alias="login.token" uses-template="commonTemplate">
+    <cache alias="login.token" uses-template="common">
         <expiry>
             <ttl unit="hours">2</ttl>
         </expiry>

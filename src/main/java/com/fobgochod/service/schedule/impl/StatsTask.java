@@ -42,7 +42,7 @@ public class StatsTask extends TaskService {
 
     @Override
     public void execute() {
-        Task task = taskRepository.findValidTaskByCode(TaskIdEnum.ST001.name());
+        Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS002.name());
         if (task != null) {
             statsRepository.deleteByYearMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
             long start = System.currentTimeMillis();
