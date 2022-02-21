@@ -8,14 +8,14 @@ package com.fobgochod.domain;
  */
 public class GroupBy {
 
-    private Group id;
+    private String id;
     private Integer count;
 
-    public Group getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Group id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -25,17 +25,5 @@ public class GroupBy {
 
     public void setCount(Integer count) {
         this.count = count;
-    }
-
-    public static class Group {
-        private String userId;
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
     }
 }

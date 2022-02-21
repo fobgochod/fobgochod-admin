@@ -10,9 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,9 +31,6 @@ public class MedicineRepositoryImpl extends BaseEntityRepository<Medicine> imple
         Aggregation aggregation = Aggregation.newAggregation(Aggregation.group("userId").count().as("count"))
                 .withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
         AggregationResults<GroupBy> results = mongoTemplate.aggregate(aggregation, "medicine", GroupBy.class);
-        Map<String, Integer> resMap = results.getMappedResults().stream()
-                .collect(Collectors.toMap(p -> p.getId().getUserId(), GroupBy::getCount, (a, b) -> b));
-        return new ArrayList<>(resMap.keySet());
-
+        return results.getMappedResults().stream().map(GroupBy::getId).collect(Collectors.toList());
     }
 }
