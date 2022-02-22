@@ -2,3 +2,4 @@
 .logs/
 fobgochod-admin.iml
 target/
+src/main/resources/META-INF/secret.properties

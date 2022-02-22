@@ -47,7 +47,4 @@ app:
   base-uri: http://localhost:8080
   version: @project.version@
   build-time: @timestamp@
-  weixin:
-    uri: https://api.weixin.qq.com
-    app-id: wxf85af403aa802514
-    app-secret: 1617f4bf0b3ed6e503b456fb05951c6c
+  wechat-uri: https://api.weixin.qq.com
