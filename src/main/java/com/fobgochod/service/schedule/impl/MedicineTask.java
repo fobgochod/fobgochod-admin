@@ -47,7 +47,7 @@ public class MedicineTask extends TaskService {
                     SendSmsRequest sendSmsRequest = new SendSmsRequest().setPhoneNumbers(user.getTelephone())
                             .setSignName("周萧")
                             .setTemplateCode("SMS_234155880")
-                            .setTemplateParam(String.format("{\"name\":\"%s\",\"time\":\"%s\"}", task.getName(), DateUtils.getType()));
+                            .setTemplateParam(String.format("{\"name\":\"%s\",\"time\":\"%s\"}", user.getName(), DateUtils.getType()));
                     smsClient.sendSms(sendSmsRequest);
                 }
             }

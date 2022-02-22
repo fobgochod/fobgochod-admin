@@ -1,6 +1,6 @@
-package com.actuate.log;
+package com.fobgochod.support.actuate.log;
 
-import com.actuate.util.LogUtils;
+import com.fobgochod.support.actuate.util.LogUtils;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
 import org.springframework.boot.actuate.endpoint.annotation.Selector;
 import org.springframework.boot.actuate.endpoint.web.annotation.WebEndpoint;

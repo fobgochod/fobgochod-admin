@@ -1,7 +1,7 @@
-package com.actuate.autoconfigure;
+package com.fobgochod.support.actuate.autoconfigure;
 
-import com.actuate.log.LogEndpoint;
-import com.actuate.logging.LogFileEndpoint;
+import com.fobgochod.support.actuate.log.LogEndpoint;
+import com.fobgochod.support.actuate.logging.LogFileEndpoint;
 import org.springframework.boot.actuate.logging.LogFileWebEndpoint;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

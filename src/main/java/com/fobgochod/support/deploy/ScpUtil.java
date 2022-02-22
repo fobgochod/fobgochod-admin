@@ -1,4 +1,4 @@
-package com.deploy;
+package com.fobgochod.support.deploy;
 
 import com.jcraft.jsch.ChannelExec;
 import com.jcraft.jsch.JSchException;

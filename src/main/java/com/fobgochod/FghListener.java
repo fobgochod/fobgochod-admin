@@ -15,6 +15,7 @@ import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskManager;
+import com.fobgochod.service.schedule.impl.BirthdayTask;
 import com.fobgochod.service.schedule.impl.MedicineTask;
 import com.fobgochod.service.schedule.impl.StatsTask;
 import com.fobgochod.service.schedule.impl.TestTask;
@@ -258,11 +259,24 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             Task task = new Task();
             task.setType("生活");
             task.setCode(TaskIdEnum.TS005.name());
-            task.setName("陈甜甜");
+            task.setName("吃药提醒");
             task.setCron("0 0 9,12,18 * * ?");
             task.setClassName(Introspector.decapitalize(MedicineTask.class.getSimpleName()));
             task.setDisable(false);
-            task.setRemark("18255396069");
+            task.setRemark("吃药提醒");
+            taskRepository.insert(task);
+        }
+
+        boolean ts006 = taskRepository.existsByCode(TaskIdEnum.TS006.name());
+        if (!ts006) {
+            Task task = new Task();
+            task.setType("生日");
+            task.setCode(TaskIdEnum.TS006.name());
+            task.setName("生日提醒");
+            task.setCron("0 0 9 1/1 * ?");
+            task.setClassName(Introspector.decapitalize(BirthdayTask.class.getSimpleName()));
+            task.setDisable(false);
+            task.setRemark("生日提醒");
             taskRepository.insert(task);
         }
         taskManager.refresh();

@@ -99,7 +99,7 @@
     <springProfile name="dev">
         <logger name="org.springframework" level="WARN"/>
 
-        <root level="DEBUG">
+        <root level="INFO">
             <appender-ref ref="CONSOLE"/>
             <appender-ref ref="DEBUG"/>
             <appender-ref ref="INFO"/>
@@ -109,18 +109,6 @@
     </springProfile>
 
     <springProfile name="prod">
-        <logger name="org.apache.coyote" level="INFO"/>
-        <logger name="com.digiwin.dap.middleware" level="INFO"/>
-
-        <root level="WARN">
-            <appender-ref ref="CONSOLE"/>
-            <appender-ref ref="INFO"/>
-            <appender-ref ref="WARN"/>
-            <appender-ref ref="ERROR"/>
-        </root>
-    </springProfile>
-
-    <springProfile name="test">
         <logger name="org.apache.coyote" level="INFO"/>
         <logger name="com.digiwin.dap.middleware" level="INFO"/>
 

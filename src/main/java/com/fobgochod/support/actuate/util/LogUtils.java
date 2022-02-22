@@ -1,4 +1,4 @@
-package com.actuate.util;
+package com.fobgochod.support.actuate.util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class LogUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(LogUtils.class);
     private static final Pattern PATTERN = Pattern.compile("[^0-9]");
-    private static final String LOG_PATH = "logs";
+    private static final String LOG_PATH = ".logs";
 
     public static Map<String, List<String>> getFileLists() {
         Map<String, List<String>> fileLists = new HashMap<>();
@@ -48,7 +48,7 @@ public class LogUtils {
     }
 
     /**
-     * logs<br/>
+     * .logs<br/>
      * ├── debug<br/>
      * ├── error<br/>
      * ├── info<br/>

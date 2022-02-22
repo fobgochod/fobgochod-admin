@@ -4,6 +4,8 @@ import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+
 /**
  * 用户
  *
@@ -15,6 +17,7 @@ public class User extends BaseEntity {
 
     private String code;
     private String name;
+    private LocalDate birth;
     private String telephone;
     private String wechat;
     private String qq;
@@ -36,6 +39,14 @@ public class User extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public LocalDate getBirth() {
+        return birth;
+    }
+
+    public void setBirth(LocalDate birth) {
+        this.birth = birth;
     }
 
     public String getTelephone() {

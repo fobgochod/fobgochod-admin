@@ -1,4 +1,4 @@
-package com.deploy;
+package com.fobgochod.support.deploy;
 
 /**
  * 服务器基本信息

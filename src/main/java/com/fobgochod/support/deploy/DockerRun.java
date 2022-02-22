@@ -1,4 +1,4 @@
-package com.deploy;
+package com.fobgochod.support.deploy;
 
 import com.jcraft.jsch.Session;
 import org.slf4j.Logger;

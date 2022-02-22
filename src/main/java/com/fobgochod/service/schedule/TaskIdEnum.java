@@ -37,5 +37,9 @@ public enum TaskIdEnum {
      *
      * @see MedicineTask
      */
-    TS005;
+    TS005,
+    /**
+     * 生日提醒
+     */
+    TS006;
 }

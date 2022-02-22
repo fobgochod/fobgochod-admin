@@ -183,7 +183,7 @@
                 <artifactId>exec-maven-plugin</artifactId>
                 <version>3.0.0</version>
                 <configuration>
-                    <mainClass>com.deploy.DockerRun</mainClass>
+                    <mainClass>com.fobgochod.support.deploy.DockerRun</mainClass>
                 </configuration>
             </plugin>
             <plugin>
@@ -255,13 +255,6 @@
             <id>prod</id>
             <properties>
                 <profileActive>prod</profileActive>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>test</id>
-            <properties>
-                <profileActive>test</profileActive>
             </properties>
         </profile>
     </profiles>
