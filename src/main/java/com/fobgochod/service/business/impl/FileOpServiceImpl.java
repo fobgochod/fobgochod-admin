@@ -3,7 +3,7 @@ package com.fobgochod.service.business.impl;
 import com.fobgochod.domain.enumeration.InlineAttachment;
 import com.fobgochod.domain.enumeration.MimeType;
 import com.fobgochod.entity.file.FileInfo;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.business.FileOpService;
 import com.fobgochod.service.business.FileService;
 import com.fobgochod.service.client.FileInfoCrudService;
@@ -41,7 +41,7 @@ public class FileOpServiceImpl implements FileOpService {
     @Override
     public void downloadToStream(FileInfo fileInfo, OutputStream out) {
         if (fileService.fileUnCompleted(fileInfo)) {
-            throw new BusinessException("文件不存在或者正在上传中，不能下载！");
+            throw new SystemException("文件不存在或者正在上传中，不能下载！");
         }
         fileStorage.downloadToStream(fileInfo.getFileId(), out);
     }
@@ -49,7 +49,7 @@ public class FileOpServiceImpl implements FileOpService {
     @Override
     public void downloadPartToStream(FileInfo fileInfo, OutputStream out, long start, long length) {
         if (fileService.fileUnCompleted(fileInfo)) {
-            throw new BusinessException("文件不存在或者正在上传中，不能下载！");
+            throw new SystemException("文件不存在或者正在上传中，不能下载！");
         }
         fileStorage.downloadPartToStream(fileInfo.getFileId(), out, start, length);
     }
@@ -58,7 +58,7 @@ public class FileOpServiceImpl implements FileOpService {
     public byte[] downloadToBytes(String fileInfoId) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileInfoId);
         if (fileService.fileUnCompleted(fileInfo)) {
-            throw new BusinessException("文件不存在或者正在上传中，不能下载！");
+            throw new SystemException("文件不存在或者正在上传中，不能下载！");
         }
         String fileId = fileInfo.getFileId().toString();
         return fileStorage.downloadToBytes(fileId);
@@ -68,7 +68,7 @@ public class FileOpServiceImpl implements FileOpService {
     public void downloadFile(String fileInfoId, InlineAttachment type, HttpServletRequest request, HttpServletResponse response) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileInfoId);
         if (fileInfo == null) {
-            throw new BusinessException("没有该文件：" + fileInfoId);
+            throw new SystemException("没有该文件：" + fileInfoId);
         } else {
             if (InlineAttachment.attachment.equals(type)) {
                 // 操作记录，预览没有Token，不用记录
@@ -86,7 +86,7 @@ public class FileOpServiceImpl implements FileOpService {
     public void downloadFile(String fileInfoId, InlineAttachment type, HttpServletResponse response) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileInfoId);
         if (fileInfo == null) {
-            throw new BusinessException("没有该文件");
+            throw new SystemException("没有该文件");
         }
         byte[] fileBytes = this.downloadToBytes(fileInfoId);
         try {
@@ -102,7 +102,7 @@ public class FileOpServiceImpl implements FileOpService {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } finally {
             try {
                 if (response != null && response.getOutputStream() != null) {
@@ -117,7 +117,7 @@ public class FileOpServiceImpl implements FileOpService {
     public void downloadFilePart(String fileInfoId, HttpServletResponse response, long start, long length) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileInfoId);
         if (fileInfo == null) {
-            throw new BusinessException("没有该文件");
+            throw new SystemException("没有该文件");
         } else {
             // 操作记录
             fileInfoCrudService.update(fileInfo);
@@ -135,7 +135,7 @@ public class FileOpServiceImpl implements FileOpService {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } finally {
             try {
                 if (response != null && response.getOutputStream() != null) {
@@ -189,7 +189,7 @@ public class FileOpServiceImpl implements FileOpService {
             response.getOutputStream().flush();
             response.getOutputStream().close();
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         } finally {
             try {
                 if (response != null && response.getOutputStream() != null) {

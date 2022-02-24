@@ -5,7 +5,7 @@ import com.fobgochod.domain.enumeration.ShareType;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShareRecord;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.serializer.Constants;
 import com.fobgochod.service.business.FileService;
 import com.fobgochod.service.client.FileInfoCrudService;
@@ -51,7 +51,7 @@ public class ShareCrudServiceImpl extends BaseEntityService<ShareRecord> impleme
             String fileInfoId = batchFid.getFileIds().get(0);
             FileInfo fileInfo = fileInfoCrudService.findById(fileInfoId);
             if (fileInfo == null) {
-                throw new BusinessException("文件不存在" + batchFid.getFileIds());
+                throw new SystemException("文件不存在" + batchFid.getFileIds());
             }
             shareRecord.setType(ShareType.One);
             shareRecord.setFileId(fileInfo.getId().toString());

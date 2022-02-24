@@ -60,14 +60,6 @@ public class FghAutoConfiguration {
 
     @Bean
     @Primary
-    public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
-        MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
-        mappingJackson2HttpMessageConverter.setObjectMapper(JsonUtils.createObjectMapper());
-        return mappingJackson2HttpMessageConverter;
-    }
-
-    @Bean
-    @Primary
     public ClientHttpRequestFactory clientHttpRequestFactory() {
         return new HttpComponentsClientHttpRequestFactory();
     }

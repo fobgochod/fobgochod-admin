@@ -3,7 +3,7 @@ package com.fobgochod.service.mongo;
 import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.FileReference;
 import com.fobgochod.entity.File;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.util.IdUtil;
 import com.mongodb.client.gridfs.GridFSBucket;
 import com.mongodb.client.gridfs.GridFSDownloadStream;
@@ -71,7 +71,7 @@ public class FileStorage {
             }
             return returnBts;
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
     }
 
@@ -102,7 +102,7 @@ public class FileStorage {
                 toLen += read;
             }
         } catch (IOException e) {
-            throw new BusinessException("读取文件到流失败");
+            throw new SystemException("读取文件到流失败");
         }
     }
 
@@ -231,7 +231,7 @@ public class FileStorage {
     private GridFSFile getGridFile(ObjectId fileId) {
         GridFSFile gridFile = getGridFile0(fileId);
         if (gridFile == null) {
-            throw new BusinessException("文件相关的信息已经被删除：" + fileId);
+            throw new SystemException("文件相关的信息已经被删除：" + fileId);
         }
         return gridFile;
     }

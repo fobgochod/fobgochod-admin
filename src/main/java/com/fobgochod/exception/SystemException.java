@@ -1,13 +1,14 @@
 package com.fobgochod.exception;
 
-import com.fobgochod.domain.base.ErrorHandler;
+import com.fobgochod.domain.base.I18nCode;
+import com.fobgochod.domain.base.I18nHandler;
 import com.fobgochod.domain.enumeration.ErrorType;
 
 /**
- * 系统异常
+ * 业务异常
  *
  * @author seven
- * @date 2020/5/17
+ * @date 2020/5/16
  */
 public class SystemException extends FghException {
 
@@ -15,11 +16,15 @@ public class SystemException extends FghException {
         super();
     }
 
-    public SystemException(ErrorHandler handler) {
+    public SystemException(String message) {
+        super(I18nCode.SYSTEM, message);
+    }
+
+    public SystemException(I18nHandler handler) {
         super(handler);
     }
 
-    public SystemException(ErrorHandler handler, Object... args) {
+    public SystemException(I18nHandler handler, Object... args) {
         super(handler, args);
     }
 

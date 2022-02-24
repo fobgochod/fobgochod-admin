@@ -1,10 +1,10 @@
 package com.fobgochod.util;
 
 import com.fobgochod.constant.FghConstants;
-import com.fobgochod.domain.base.CommonErrorCode;
+import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.exception.FghException;
-import com.fobgochod.support.FghCommonMessageSource;
-import com.fobgochod.support.FghMessageSource;
+import com.fobgochod.support.i18n.FghCommonMessageSource;
+import com.fobgochod.support.i18n.FghMessageSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -63,7 +63,7 @@ public class I18nUtils {
 
     public static String getMessage(String code, Object[] args, String defaultMessage, Locale locale) {
         try {
-            if (CommonErrorCode.containsCode(code)) {
+            if (I18nCode.contains(code)) {
                 return messages.getMessage(code, args, defaultMessage, locale);
             }
             return messageSource.getMessage(code, args, defaultMessage, locale);
@@ -74,9 +74,9 @@ public class I18nUtils {
     }
 
     public static String getMessage(FghException custom, Object[] args, String defaultMessage) {
-        String code = custom.getHandler().getCode();
+        String code = custom.getHandler().getPath();
         try {
-            if (CommonErrorCode.containsCode(code)) {
+            if (I18nCode.contains(code)) {
                 return messages.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
             }
             return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());

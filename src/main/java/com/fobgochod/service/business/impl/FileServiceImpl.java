@@ -10,7 +10,7 @@ import com.fobgochod.entity.File;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.RecycleBin;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.business.FileService;
 import com.fobgochod.service.client.DirectoryCrudService;
 import com.fobgochod.service.client.FileInfoCrudService;
@@ -76,7 +76,7 @@ public class FileServiceImpl implements FileService {
             return fileInfo;
         } catch (Exception e) {
             this.deleteFile(fileInfoId, true);
-            throw new BusinessException("File upload failed !");
+            throw new SystemException("File upload failed !");
         }
     }
 
@@ -103,7 +103,7 @@ public class FileServiceImpl implements FileService {
             return fileInfo;
         } catch (Exception e) {
             this.deleteFile(fileInfoId, true);
-            throw new BusinessException(String.format("上传失败 %s", e.getMessage()));
+            throw new SystemException(String.format("上传失败 %s", e.getMessage()));
         }
     }
 
@@ -343,7 +343,7 @@ public class FileServiceImpl implements FileService {
     private FileOpTree copyFile0(FileInfo fileInfo, String directoryId) {
         try {
             if (fileUnCompleted(fileInfo)) {
-                throw new BusinessException("文件正在上传中，不能复制！");
+                throw new SystemException("文件正在上传中，不能复制！");
             }
             //判断文件夹名称是否已存在
             FileInfo newFileInfo = fileInfo.clone();
@@ -416,7 +416,7 @@ public class FileServiceImpl implements FileService {
     public DirInfo dirOpCheck(String dirId) {
         DirInfo dirInfo = directoryCrudService.findById(dirId);
         if (dirInfo == null) {
-            throw new BusinessException(String.format("目录已经不存在，请刷新重试！[%s]", dirId));
+            throw new SystemException(String.format("目录已经不存在，请刷新重试！[%s]", dirId));
         } else {
             // 操作记录
             directoryCrudService.update(dirInfo);
@@ -426,13 +426,13 @@ public class FileServiceImpl implements FileService {
 
     private DirInfo dirOpCheck(String dirId, String targetDirId) {
         if (IdUtil.isRootDir(dirId)) {
-            throw new BusinessException("根目录不允许操作");
+            throw new SystemException("根目录不允许操作");
         }
         if (dirId.equals(targetDirId)) {
-            throw new BusinessException("被操作的目录和目标目录不能相同");
+            throw new SystemException("被操作的目录和目标目录不能相同");
         }
         if (!directoryCrudService.exists(targetDirId)) {
-            throw new BusinessException("目标目录已经不存在，请刷新重试");
+            throw new SystemException("目标目录已经不存在，请刷新重试");
         }
         return dirOpCheck(dirId);
     }
@@ -465,10 +465,10 @@ public class FileServiceImpl implements FileService {
     public FileInfo fileOpCheck(String fileInfoId) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileInfoId);
         if (fileInfo == null) {
-            throw new BusinessException(String.format("文件不存在，请刷新重试！[%s]", fileInfoId));
+            throw new SystemException(String.format("文件不存在，请刷新重试！[%s]", fileInfoId));
         }
         if (fileUnCompleted(fileInfo)) {
-            throw new BusinessException(String.format("文件正在上传中，不能操作！[%s]", fileInfoId));
+            throw new SystemException(String.format("文件正在上传中，不能操作！[%s]", fileInfoId));
         }
         // 操作记录
         fileInfoCrudService.update(fileInfo);
@@ -477,7 +477,7 @@ public class FileServiceImpl implements FileService {
 
     private FileInfo fileOpCheck(String fileInfoId, String targetDirId) {
         if (!directoryCrudService.exists(targetDirId)) {
-            throw new BusinessException("目标目录不存在，复制失败！");
+            throw new SystemException("目标目录不存在，复制失败！");
         }
         return fileOpCheck(fileInfoId);
     }

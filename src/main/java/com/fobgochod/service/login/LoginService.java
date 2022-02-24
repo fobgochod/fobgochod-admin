@@ -1,6 +1,5 @@
 package com.fobgochod.service.login;
 
-import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.auth.domain.LoginUser;
 
 /**
@@ -50,5 +49,5 @@ public interface LoginService {
      * @param token
      * @return
      */
-    JwtUser analysis(String token);
+    LoginUser analysis(String token);
 }

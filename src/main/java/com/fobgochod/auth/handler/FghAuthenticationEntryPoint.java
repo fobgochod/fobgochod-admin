@@ -1,6 +1,6 @@
 package com.fobgochod.auth.handler;
 
-import com.fobgochod.domain.base.CommonErrorCode;
+import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.util.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -20,6 +20,6 @@ public class FghAuthenticationEntryPoint implements AuthenticationEntryPoint, Se
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException e) {
-        ExceptionUtils.writeUnAuth(request, response, CommonErrorCode.USER_TOKEN_INVALID);
+        ExceptionUtils.writeUnAuth(request, response, I18nCode.USER_TOKEN_INVALID);
     }
 }

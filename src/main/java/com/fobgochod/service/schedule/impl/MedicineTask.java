@@ -1,6 +1,7 @@
 package com.fobgochod.service.schedule.impl;
 
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
+import com.fobgochod.entity.admin.Medicine;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.MedicineRepository;
@@ -14,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -44,11 +46,19 @@ public class MedicineTask extends TaskService {
             for (String userId : userIds) {
                 User user = userRepository.findByCode(userId);
                 if (user != null && user.getTelephone() != null) {
+                    // 吃药提醒
                     SendSmsRequest sendSmsRequest = new SendSmsRequest().setPhoneNumbers(user.getTelephone())
                             .setSignName("周萧")
                             .setTemplateCode("SMS_234155880")
                             .setTemplateParam(String.format("{\"name\":\"%s\",\"time\":\"%s\"}", user.getName(), DateUtils.getType()));
                     smsClient.sendSms(sendSmsRequest);
+                }
+
+                // 挂号提醒
+                List<Medicine> medicines = medicineRepository.findByUserId(userId);
+                int remain = medicines.stream().map(Medicine::getRemain).min(Comparator.naturalOrder()).orElse(-1);
+                if (remain < 12 && remain > 9){
+
                 }
             }
         }

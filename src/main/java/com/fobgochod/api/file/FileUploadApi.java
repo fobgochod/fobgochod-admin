@@ -1,7 +1,7 @@
 package com.fobgochod.api.file;
 
 import com.fobgochod.entity.file.FileInfo;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.business.FileService;
 import com.fobgochod.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +48,7 @@ public class FileUploadApi {
         try {
             return ResponseEntity.ok(future.get());
         } catch (Exception e) {
-            throw new BusinessException("上传失败" + e.getMessage());
+            throw new SystemException("上传失败" + e.getMessage());
         }
     }
 
@@ -74,7 +74,7 @@ public class FileUploadApi {
             try {
                 return fileInfo.get();
             } catch (Exception e) {
-                throw new BusinessException(String.format("获取上传文件ID失败 %s", e.getMessage()));
+                throw new SystemException(String.format("获取上传文件ID失败 %s", e.getMessage()));
             }
         }).collect(Collectors.toList()));
     }

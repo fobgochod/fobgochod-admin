@@ -1,6 +1,6 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.auth.domain.JwtUser;
+import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
@@ -95,10 +95,10 @@ public class TenantApi {
     }
 
     @GetMapping("/option/group")
-    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
+    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
 
         List<Options> optionGroup = new ArrayList<>();
-        List<Tenant> myBuckets = tenantRepository.findByOwner(userInfo.getUsername());
+        List<Tenant> myBuckets = tenantRepository.findByOwner(loginUser.getUsername());
 
         Options myOptions = new Options();
         for (Tenant bucket : myBuckets) {
@@ -108,7 +108,7 @@ public class TenantApi {
         myOptions.setLabel("我的租户");
         optionGroup.add(myOptions);
 
-        User user = userRepository.findByCode(userInfo.getUsername());
+        User user = userRepository.findByCode(loginUser.getUsername());
         if (RoleEnum.Admin.equals(user.getRole())) {
             List<Tenant> buckets = tenantRepository.findAll();
             Options options = new Options();
@@ -119,6 +119,8 @@ public class TenantApi {
             options.setLabel("租户");
             optionGroup.add(options);
         }
-        return ResponseEntity.ok(optionGroup.stream().sorted(Comparator.comparing(Options::getKey).reversed()).collect(Collectors.toList()));
+        return ResponseEntity.ok(optionGroup.stream()
+                .sorted(Comparator.comparing(Options::getKey).reversed())
+                .collect(Collectors.toList()));
     }
 }

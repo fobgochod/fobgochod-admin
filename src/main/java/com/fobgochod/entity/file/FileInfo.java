@@ -1,8 +1,8 @@
 package com.fobgochod.entity.file;
 
-import com.fobgochod.constant.I18nError;
+import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.entity.BaseEntity;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.util.JsonUtils;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -32,6 +32,19 @@ public class FileInfo extends BaseEntity {
     private Document metadata = new Document();
     private String directoryId;
     private ObjectId fileId;
+
+    public static FileInfo get(String fileJson) {
+        try {
+            FileInfo fileInfo = JsonUtils.createObjectMapper()
+                    .readValue(URLDecoder.decode(fileJson, StandardCharsets.UTF_8.name()), FileInfo.class);
+            if (StringUtils.isEmpty(fileInfo.name)) {
+                throw new SystemException(I18nCode.ERROR_10001);
+            }
+            return fileInfo;
+        } catch (Exception e) {
+            throw new SystemException(I18nCode.ERROR_10001);
+        }
+    }
 
     public String getName() {
         return name;
@@ -129,18 +142,5 @@ public class FileInfo extends BaseEntity {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public static FileInfo get(String fileJson) {
-        try {
-            FileInfo fileInfo = JsonUtils.createObjectMapper()
-                    .readValue(URLDecoder.decode(fileJson, StandardCharsets.UTF_8.name()), FileInfo.class);
-            if (StringUtils.isEmpty(fileInfo.name)) {
-                throw new BusinessException(I18nError.ERROR_10001);
-            }
-            return fileInfo;
-        } catch (Exception e) {
-            throw new BusinessException(I18nError.ERROR_10001);
-        }
     }
 }

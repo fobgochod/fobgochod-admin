@@ -8,29 +8,29 @@ import com.fobgochod.util.I18nUtils;
  * @author seven
  * @date 2020/6/7
  */
-public interface ErrorHandler {
+public interface I18nHandler {
 
     /**
-     * the custom error code, such as '200001'
+     * the custom error code, such as 20000
      *
      * @return error code
      */
-    String getErrorCode();
+    Integer getCode();
 
     /**
      * the code to lookup up, such as 'dap.middleware.error.system'
      *
      * @return i18n path
      */
-    String getCode();
+    String getPath();
 
     /**
      * code对应的多语言信息
      *
      * @return
      */
-    default String getErrorMessage() {
-        return I18nUtils.getMessage(this.getCode());
+    default String getMessage() {
+        return I18nUtils.getMessage(this.getPath());
     }
 
     /**
@@ -39,7 +39,7 @@ public interface ErrorHandler {
      * @param args
      * @return
      */
-    default String getErrorMessage(Object... args) {
-        return I18nUtils.getMessage(this.getCode(), args);
+    default String getMessage(Object... args) {
+        return I18nUtils.getMessage(this.getPath(), args);
     }
 }

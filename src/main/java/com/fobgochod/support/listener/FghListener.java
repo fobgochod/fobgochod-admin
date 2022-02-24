@@ -1,4 +1,4 @@
-package com.fobgochod;
+package com.fobgochod.support.listener;
 
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.entity.admin.Bucket;
@@ -270,7 +270,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
         boolean ts006 = taskRepository.existsByCode(TaskIdEnum.TS006.name());
         if (!ts006) {
             Task task = new Task();
-            task.setType("生日");
+            task.setType("生活");
             task.setCode(TaskIdEnum.TS006.name());
             task.setName("生日提醒");
             task.setCron("0 0 9 1/1 * ?");

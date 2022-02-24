@@ -6,7 +6,7 @@ import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.FileTree;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShareRecord;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.business.FileHandlerService;
 import com.fobgochod.service.business.FileOpService;
 import com.fobgochod.service.client.FileInfoCrudService;
@@ -56,7 +56,7 @@ public class FileOpenApi {
                                    HttpServletResponse response) {
         ShareRecord shareRecord = shareCrudService.findById(shareId);
         if (shareCrudService.isShareExpired(shareRecord)) {
-            throw new BusinessException("分享链接已失效或者过期");
+            throw new SystemException("分享链接已失效或者过期");
         }
         if (shareRecord.getType() == ShareType.One) {
             fileOpService.downloadFile(shareRecord.getFileId(), InlineAttachment.inline, request, response);

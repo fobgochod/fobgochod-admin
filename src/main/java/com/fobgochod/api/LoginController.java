@@ -1,9 +1,8 @@
 package com.fobgochod.api;
 
-import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.constant.FghConstants;
-import com.fobgochod.constant.I18nError;
+import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.exception.UnauthorizedException;
 import com.fobgochod.service.login.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class LoginController {
     public ResponseEntity<?> login(@Valid @RequestBody LoginUser body) {
         String userToken = loginService.login(body);
         if (!StringUtils.hasText(userToken)) {
-            throw new UnauthorizedException(I18nError.ERROR_LOGIN);
+            throw new UnauthorizedException(I18nCode.ERROR_LOGIN);
         }
         return ResponseEntity.ok(Collections.singletonMap("userToken", userToken));
     }
@@ -48,12 +47,12 @@ public class LoginController {
     /**
      * 解析userToken
      *
-     * @param userInfo
+     * @param loginUser
      * @return
      */
     @PostMapping(value = "/token/analyze")
-    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
-        return ResponseEntity.ok(userInfo);
+    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
+        return ResponseEntity.ok(loginUser);
     }
 
     /**
@@ -64,7 +63,7 @@ public class LoginController {
      * @return
      */
     @PostMapping(value = "/token/refresh")
-    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN_KEY) String userToken,
+    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN) String userToken,
                                      @RequestBody LoginUser body) {
         String refresh = loginService.refresh(userToken, body.getTenantId());
         return ResponseEntity.ok(Collections.singletonMap("userToken", refresh));

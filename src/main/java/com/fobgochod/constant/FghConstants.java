@@ -8,10 +8,8 @@ package com.fobgochod.constant;
  */
 public class FghConstants {
 
-    public static final String HTTP_HEADER_USER_TOKEN_KEY = "digi-middleware-auth-user";
-    public static final String HTTP_HEADER_USER_INFO_KEY = "digi-middleware-auth-user-info";
-
-    public static final String HTTP_HEADER_TENANT_KEY = "digi-middleware-auth-tenant";
+    public static final String HTTP_HEADER_USER_TOKEN = "digi-middleware-auth-user";
+    public static final String HTTP_HEADER_USER_INFO = "digi-middleware-auth-user-info";
 
     public static final String HTTP_HEADER_API_ARG_KEY = "digi-middleware-drive-arg";
 

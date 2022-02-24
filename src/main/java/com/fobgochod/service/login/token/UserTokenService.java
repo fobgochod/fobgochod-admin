@@ -2,9 +2,9 @@ package com.fobgochod.service.login.token;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fobgochod.auth.domain.JwtUser;
+import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.config.CacheManagerConfig;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.util.JsonUtils;
 import com.fobgochod.util.JwtUtil;
 import org.springframework.cache.annotation.CacheConfig;
@@ -25,13 +25,13 @@ public class UserTokenService {
 
     private final static ObjectMapper objectMapper = JsonUtils.createObjectMapper();
 
-    @Cacheable(key = "#jwtUser.uniqueKey()")
-    public String getToken(JwtUser jwtUser) {
+    @Cacheable(key = "#loginUser.uniqueKey()")
+    public String getToken(LoginUser loginUser) {
         String json;
         try {
-            json = objectMapper.writeValueAsString(jwtUser);
+            json = objectMapper.writeValueAsString(loginUser);
         } catch (JsonProcessingException e) {
-            throw new BusinessException("Json序列化异常：" + jwtUser);
+            throw new SystemException("Json序列化异常：" + loginUser);
         }
         return JwtUtil.sign(json, getIssuer());
     }
@@ -50,14 +50,14 @@ public class UserTokenService {
      * @param token
      * @return
      */
-    public JwtUser getData(String token) {
+    public LoginUser getData(String token) {
         if (!validate(token)) {
-            throw new BusinessException("不是有效的Token：" + token);
+            throw new SystemException("不是有效的Token：" + token);
         }
         try {
-            return objectMapper.readValue(JwtUtil.getData(token), JwtUser.class);
+            return objectMapper.readValue(JwtUtil.getData(token), LoginUser.class);
         } catch (IOException e) {
-            throw new BusinessException("Token解析异常：" + e.getMessage());
+            throw new SystemException("Token解析异常：" + e.getMessage());
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.fobgochod.support;
+package com.fobgochod.support.i18n;
 
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;

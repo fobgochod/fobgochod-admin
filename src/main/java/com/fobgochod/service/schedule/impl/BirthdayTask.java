@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 生日提醒
@@ -39,7 +40,10 @@ public class BirthdayTask extends TaskService {
     public void execute() throws Exception {
         Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS006.name());
         if (task != null) {
-            List<User> users = userRepository.findAll();
+            List<User> users = userRepository.findAll()
+                    .stream()
+                    .filter(user -> user.getBirth() != null)
+                    .collect(Collectors.toList());
             for (User user : users) {
                 int before = Period.between(user.getBirth(), LocalDate.now()).getDays();
                 switch (before) {

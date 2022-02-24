@@ -1,6 +1,6 @@
 package com.fobgochod.util;
 
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import org.apache.tomcat.util.codec.binary.Base64;
 
 import java.nio.charset.StandardCharsets;
@@ -18,7 +18,7 @@ public final class AESCipher {
             messageDigest.update(bytes);
             encodeStr = Base64.encodeBase64String(messageDigest.digest());
         } catch (Exception e) {
-            throw new BusinessException(e.getMessage());
+            throw new SystemException(e.getMessage());
         }
         return encodeStr;
     }

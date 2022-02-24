@@ -1,6 +1,6 @@
 package com.fobgochod.config;
 
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -41,7 +41,7 @@ public class ExecutorConfiguration {
 
     private RejectedExecutionHandler getRejectedExecutionHandler() {
         return (r, executor) -> {
-            throw new BusinessException("当前处理任务过多，请稍后再试");
+            throw new SystemException("当前处理任务过多，请稍后再试");
         };
     }
 }

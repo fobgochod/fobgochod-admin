@@ -1,6 +1,5 @@
 package com.fobgochod.service.login.impl;
 
-import com.fobgochod.auth.domain.JwtUser;
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.entity.admin.User;
@@ -38,23 +37,22 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public String login(LoginUser loginUser) {
-        User user = userRepository.findByCodeAndPassword(loginUser.getUsername(), loginUser.getPwdhash());
+        User user = userRepository.findByCodeAndPassword(loginUser.getUsername(), loginUser.getPassword());
         if (user == null) {
             return null;
         }
-        JwtUser jwtUser = JwtUser.initUser(user, loginUser.getTenantId());
-        return userTokenService.getToken(jwtUser);
+        return userTokenService.getToken(loginUser);
     }
 
     @Override
     public String refresh(String token, String tenantId) {
-        JwtUser jwtUser = userTokenService.getData(token);
+        LoginUser jwtUser = userTokenService.getData(token);
         jwtUser.setTenantId(tenantId);
         return userTokenService.getToken(jwtUser);
     }
 
     @Override
-    public JwtUser analysis(String token) {
+    public LoginUser analysis(String token) {
         return userTokenService.getData(token);
     }
 }

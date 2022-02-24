@@ -1,6 +1,6 @@
 package com.fobgochod.exception;
 
-import com.fobgochod.domain.base.ErrorHandler;
+import com.fobgochod.domain.base.I18nHandler;
 import com.fobgochod.domain.enumeration.ErrorType;
 
 /**
@@ -15,11 +15,11 @@ public class UnauthorizedException extends FghException {
         super();
     }
 
-    public UnauthorizedException(ErrorHandler handler) {
+    public UnauthorizedException(I18nHandler handler) {
         super(handler);
     }
 
-    public UnauthorizedException(ErrorHandler handler, Object... args) {
+    public UnauthorizedException(I18nHandler handler, Object... args) {
         super(handler, args);
     }
 

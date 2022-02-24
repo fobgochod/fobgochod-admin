@@ -1,6 +1,6 @@
-package com.fobgochod.api.admin;
+package com.fobgochod.api.medicine;
 
-import com.fobgochod.auth.domain.JwtUser;
+import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
@@ -79,8 +79,8 @@ public class MedicineRecordApi {
     }
 
     @PostMapping("/eat")
-    public ResponseEntity<?> eat(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO_KEY) JwtUser userInfo) {
-        List<Medicine> medicines = medicineRepository.findByUserId(userInfo.getUsername());
+    public ResponseEntity<?> eat(@RequestBody Medicine body) {
+        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId());
         medicines.forEach(medicine -> {
             String type = DateUtils.getType();
             MedicineRecord medicineRecord = medicineRecordRepository.findByMedicineIdAndType(medicine.getId(), type);

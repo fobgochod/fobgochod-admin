@@ -1,16 +1,16 @@
 package com.fobgochod.service.client.impl;
 
 import com.fobgochod.constant.BaseField;
-import com.fobgochod.constant.I18nError;
 import com.fobgochod.domain.FileTree;
 import com.fobgochod.domain.base.EnvProperties;
+import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.domain.base.Page;
 import com.fobgochod.domain.base.PageData;
 import com.fobgochod.domain.enumeration.MimeType;
 import com.fobgochod.domain.select.ImageOption;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.client.DirectoryCrudService;
 import com.fobgochod.service.client.FileInfoCrudService;
 import com.fobgochod.service.client.base.BaseEntityService;
@@ -64,11 +64,11 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
     @Override
     public FileInfo getFileInfo(FileInfo fileInfo) {
         if (fileInfo == null || StringUtils.isEmpty(fileInfo.getName())) {
-            throw new BusinessException(I18nError.ERROR_10001);
+            throw new SystemException(I18nCode.ERROR_10001);
         }
         String dirId = IdUtil.getDirId(fileInfo.getDirectoryId());
         if (!directoryCrudService.exists(dirId)) {
-            throw new BusinessException("上传目录不存在，请重新选择");
+            throw new SystemException("上传目录不存在，请重新选择");
         }
         fileInfo.setDirectoryId(dirId);
 

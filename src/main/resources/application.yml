@@ -5,6 +5,11 @@ server:
     accept-count: 100
     threads:
       max: 10
+  servlet:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
 spring:
   application:
     name: admin

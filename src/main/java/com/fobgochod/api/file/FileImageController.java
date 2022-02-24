@@ -6,7 +6,7 @@ import com.fobgochod.domain.ImageInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.entity.file.ShrinkImage;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.business.FileService;
 import com.fobgochod.service.business.ShareService;
 import com.fobgochod.service.client.FileInfoCrudService;
@@ -107,7 +107,7 @@ public class FileImageController {
                                       @RequestParam(defaultValue = "0") Integer height) throws Exception {
         FileInfo fileInfo = fileInfoCrudService.findById(fileId);
         if (fileInfo == null) {
-            throw new BusinessException(String.format("图片[%s]不存在", fileId));
+            throw new SystemException(String.format("图片[%s]不存在", fileId));
         }
         ImageInfo imageInfo = new ImageInfo();
         imageInfo.setWidth(width);
@@ -153,7 +153,7 @@ public class FileImageController {
                                       @PathVariable Boolean shrink) {
         FileInfo fileInfo = fileInfoCrudService.findById(fileId);
         if (fileInfo == null) {
-            throw new BusinessException(String.format("图片[%s]不存在", fileId));
+            throw new SystemException(String.format("图片[%s]不存在", fileId));
         }
         List<Map<String, Object>> result = new ArrayList<>();
         if (shrink) {
@@ -262,7 +262,7 @@ public class FileImageController {
                 map.put("shrinkUrl", shrinkUrl);
                 return map;
             } catch (Exception e) {
-                throw new BusinessException("图片上传失败");
+                throw new SystemException("图片上传失败");
             }
         }
     }
@@ -336,7 +336,7 @@ public class FileImageController {
                 }
                 return map;
             } catch (Exception e) {
-                throw new BusinessException("图片上传失败");
+                throw new SystemException("图片上传失败");
             }
         }
     }

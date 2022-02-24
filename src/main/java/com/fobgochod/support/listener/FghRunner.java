@@ -1,4 +1,4 @@
-package com.fobgochod;
+package com.fobgochod.support.listener;
 
 import com.fobgochod.service.schedule.TaskManager;
 import org.slf4j.Logger;

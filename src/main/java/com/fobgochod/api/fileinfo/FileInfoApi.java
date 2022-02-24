@@ -2,7 +2,7 @@ package com.fobgochod.api.fileinfo;
 
 import com.fobgochod.domain.base.Page;
 import com.fobgochod.entity.file.FileInfo;
-import com.fobgochod.exception.BusinessException;
+import com.fobgochod.exception.SystemException;
 import com.fobgochod.service.client.DirectoryCrudService;
 import com.fobgochod.service.client.FileInfoCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +35,10 @@ public class FileInfoApi {
     public ResponseEntity<?> modify(@RequestBody FileInfo body) {
         FileInfo fileInfo = fileInfoCrudService.findById(body.getId());
         if (fileInfo == null) {
-            throw new BusinessException("文件不存在" + body.getId());
+            throw new SystemException("文件不存在" + body.getId());
         }
         if (!directoryCrudService.exists(body.getDirectoryId())) {
-            throw new BusinessException("目录不存在" + body.getDirectoryId());
+            throw new SystemException("目录不存在" + body.getDirectoryId());
         }
         if (body.getName() != null) {
             fileInfo.setName(body.getName());

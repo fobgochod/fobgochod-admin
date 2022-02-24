@@ -1,6 +1,6 @@
 package com.fobgochod.exception;
 
-import com.fobgochod.domain.base.ErrorHandler;
+import com.fobgochod.domain.base.I18nHandler;
 import com.fobgochod.domain.enumeration.ErrorType;
 
 /**
@@ -11,50 +11,32 @@ import com.fobgochod.domain.enumeration.ErrorType;
  */
 public abstract class FghException extends RuntimeException {
 
-    protected String code;
-    protected String message;
-    protected ErrorHandler handler;
+    protected I18nHandler handler;
 
     public FghException() {
         super();
     }
 
-    public FghException(ErrorHandler handler) {
-        super(handler.getErrorMessage());
-        this.setHandler(handler);
+    public FghException(I18nHandler handler) {
+        super(handler.getMessage());
+        this.handler = handler;
     }
 
-    public FghException(ErrorHandler handler, Object... args) {
-        super(handler.getErrorMessage(args));
-        this.setErrorHandler(handler, args);
+    public FghException(I18nHandler handler, String message) {
+        super(message);
+        this.handler = handler;
+    }
+
+    public FghException(I18nHandler handler, Object... args) {
+        super(handler.getMessage(args));
+        this.handler = handler;
     }
 
     public ErrorType getErrorType() {
         return ErrorType.Unexpected;
     }
 
-    public String getCode() {
-        return code;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    public ErrorHandler getHandler() {
+    public I18nHandler getHandler() {
         return handler;
-    }
-
-    private void setHandler(ErrorHandler handler) {
-        this.code = handler.getErrorCode();
-        this.message = handler.getErrorMessage();
-        this.handler = handler;
-    }
-
-    private void setErrorHandler(ErrorHandler errorHandler, Object... args) {
-        this.code = errorHandler.getErrorCode();
-        this.message = errorHandler.getErrorMessage(args);
-        this.handler = errorHandler;
     }
 }
