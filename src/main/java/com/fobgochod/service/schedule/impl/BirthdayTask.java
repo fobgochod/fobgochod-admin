@@ -6,6 +6,7 @@ import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.TaskRepository;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.serializer.Constants;
+import com.fobgochod.service.message.sms.AliyunSms;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskService;
 import org.slf4j.Logger;
@@ -51,8 +52,8 @@ public class BirthdayTask extends TaskService {
                     case 1:
                     case 3:
                         SendSmsRequest sendSmsRequest = new SendSmsRequest().setPhoneNumbers(user.getTelephone())
-                                .setSignName("周萧")
-                                .setTemplateCode("SMS_234408395")
+                                .setSignName(AliyunSms.SIGN_NAME)
+                                .setTemplateCode(AliyunSms.TC_BIRTHDAY)
                                 .setTemplateParam(String.format("{\"name\":\"%s\",\"birth\":\"%s\"}", user.getName(), user.getBirth()
                                         .format(Constants.DATE_FORMATTER)));
                         smsClient.sendSms(sendSmsRequest);
@@ -60,5 +61,10 @@ public class BirthdayTask extends TaskService {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) {
+        int days = Period.between(LocalDate.of(2022, 2, 28), LocalDate.now()).getDays();
+        System.out.println("days = " + days);
     }
 }

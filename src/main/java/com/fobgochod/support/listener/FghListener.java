@@ -164,16 +164,16 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             medicine.setUserId("chentt");
             medicine.setCode("C001");
             medicine.setName("水飞蓟宾葡甲胺片");
-            medicine.setTotal(140);
-            medicine.setMorning(0);
-            medicine.setNoon(2);
-            medicine.setNight(2);
+            medicine.setTotal(140f);
+            medicine.setMorning(0f);
+            medicine.setNoon(2f);
+            medicine.setNight(2f);
             medicineRepository.insert(medicine);
 
             MedicineRecord record = new MedicineRecord();
             record.setMedicineId(medicine.getId());
             record.setType("入");
-            record.setSlice(140);
+            record.setSlice(140f);
             record.setTime(LocalDateTime.now());
             medicineRecordRepository.insert(record);
         }
@@ -182,10 +182,10 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             medicine.setUserId("chentt");
             medicine.setCode("C002");
             medicine.setName("碳酸锂缓释片");
-            medicine.setTotal(100);
-            medicine.setMorning(0);
-            medicine.setNoon(1);
-            medicine.setNight(1);
+            medicine.setTotal(100f);
+            medicine.setMorning(0f);
+            medicine.setNoon(1f);
+            medicine.setNight(1f);
             medicineRepository.insert(medicine);
         }
         if (!medicineRepository.existsByCode("C003")) {
@@ -193,10 +193,10 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             medicine.setUserId("chentt");
             medicine.setCode("C003");
             medicine.setName("富马酸喹硫平缓释片");
-            medicine.setTotal(120);
-            medicine.setMorning(0);
-            medicine.setNoon(1);
-            medicine.setNight(2);
+            medicine.setTotal(120f);
+            medicine.setMorning(0f);
+            medicine.setNoon(1f);
+            medicine.setNight(2f);
             medicineRepository.insert(medicine);
         }
     }
@@ -260,7 +260,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             task.setType("生活");
             task.setCode(TaskIdEnum.TS005.name());
             task.setName("吃药提醒");
-            task.setCron("0 0 9,12,18 * * ?");
+            task.setCron("0 0 0/1 * * ?");
             task.setClassName(Introspector.decapitalize(MedicineTask.class.getSimpleName()));
             task.setDisable(false);
             task.setRemark("吃药提醒");

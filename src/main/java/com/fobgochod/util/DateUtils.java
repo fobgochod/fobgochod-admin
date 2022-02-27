@@ -1,5 +1,7 @@
 package com.fobgochod.util;
 
+import com.fobgochod.domain.medicine.MedicType;
+
 import java.time.LocalTime;
 
 /**
@@ -10,10 +12,6 @@ import java.time.LocalTime;
  */
 public class DateUtils {
 
-    public static final String MORNING = "早晨";
-    public static final String NOON = "中午";
-    public static final String NIGHT = "晚上";
-
     /**
      * 早晨：0-10
      * 中午：11-16
@@ -21,16 +19,15 @@ public class DateUtils {
      *
      * @return 吃药时间
      */
-    public static String getType() {
-        String time;
+    public static MedicType getType() {
         int hour = LocalTime.now().getHour();
-        if (hour <= 10) {
-            time = MORNING;
-        } else if (hour <= 16) {
-            time = NOON;
-        } else {
-            time = NIGHT;
+        if (hour >= MedicType.MORNING.getStart() && hour <= MedicType.MORNING.getEnd()) {
+            return MedicType.MORNING;
+        } else if (hour >= MedicType.NOON.getStart() && hour <= MedicType.NOON.getEnd()) {
+            return MedicType.NOON;
+        } else if (hour >= MedicType.NIGHT.getStart() && hour <= MedicType.NIGHT.getEnd()) {
+            return MedicType.NIGHT;
         }
-        return time;
+        return MedicType.TODAY;
     }
 }

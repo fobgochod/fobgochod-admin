@@ -5,6 +5,7 @@ import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 用户
@@ -23,6 +24,7 @@ public class User extends BaseEntity {
     private String qq;
     private String email;
     private String password;
+    private List<String> contacts;
     private RoleEnum role = RoleEnum.None;
 
     public String getCode() {
@@ -87,6 +89,14 @@ public class User extends BaseEntity {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<String> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<String> contacts) {
+        this.contacts = contacts;
     }
 
     public RoleEnum getRole() {

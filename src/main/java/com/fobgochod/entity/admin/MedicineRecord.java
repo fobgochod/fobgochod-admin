@@ -16,7 +16,7 @@ public class MedicineRecord extends BaseEntity {
 
     private String medicineId;
     private String type;
-    private Integer slice;
+    private Float slice;
     private LocalDateTime time;
 
     public String getMedicineId() {
@@ -35,11 +35,11 @@ public class MedicineRecord extends BaseEntity {
         this.type = type;
     }
 
-    public Integer getSlice() {
+    public Float getSlice() {
         return slice;
     }
 
-    public void setSlice(Integer slice) {
+    public void setSlice(Float slice) {
         this.slice = slice;
     }
 

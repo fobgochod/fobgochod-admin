@@ -18,10 +18,10 @@ public class Medicine extends BaseEntity {
     private String userId;
     private String code;
     private String name;
-    private Integer total;
-    private Integer morning;
-    private Integer noon;
-    private Integer night;
+    private Float total;
+    private Float morning;
+    private Float noon;
+    private Float night;
     private Integer remain;
     private String remark;
     @Transient
@@ -51,35 +51,35 @@ public class Medicine extends BaseEntity {
         this.name = name;
     }
 
-    public Integer getTotal() {
+    public Float getTotal() {
         return total;
     }
 
-    public void setTotal(Integer total) {
+    public void setTotal(Float total) {
         this.total = total;
     }
 
-    public Integer getMorning() {
+    public Float getMorning() {
         return morning;
     }
 
-    public void setMorning(Integer morning) {
+    public void setMorning(Float morning) {
         this.morning = morning;
     }
 
-    public Integer getNoon() {
+    public Float getNoon() {
         return noon;
     }
 
-    public void setNoon(Integer noon) {
+    public void setNoon(Float noon) {
         this.noon = noon;
     }
 
-    public Integer getNight() {
+    public Float getNight() {
         return night;
     }
 
-    public void setNight(Integer night) {
+    public void setNight(Float night) {
         this.night = night;
     }
 

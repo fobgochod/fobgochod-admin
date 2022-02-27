@@ -1,21 +1,12 @@
 package com.fobgochod.api.medicine;
 
-import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
-import com.fobgochod.domain.medicine.MedicineVO;
-import com.fobgochod.domain.medicine.MyMedicine;
 import com.fobgochod.entity.admin.Medicine;
-import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.MedicineRepository;
-import com.fobgochod.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Bucket 存储区
@@ -27,8 +18,6 @@ import java.util.List;
 @RequestMapping("/medicines")
 public class MedicineApi {
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private MedicineRepository medicineRepository;
 
@@ -57,7 +46,6 @@ public class MedicineApi {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
-        medicineRepository.findUserIds();
         return ResponseEntity.ok(medicineRepository.findByPage(body));
     }
 
@@ -70,24 +58,5 @@ public class MedicineApi {
     public ResponseEntity<?> dropCollection() {
         medicineRepository.dropCollection();
         return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/me")
-    public ResponseEntity<?> medicines(@RequestBody Medicine body) {
-        User user = userRepository.findByCode(body.getUserId());
-        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId());
-
-        List<MedicineVO> medicineVOS = new ArrayList<>();
-        medicines.forEach(m -> {
-            MedicineVO vo = new MedicineVO();
-            vo.doBackward(m);
-            medicineVOS.add(vo);
-        });
-
-        MyMedicine myMedicine = new MyMedicine();
-        myMedicine.setUserId(user.getCode());
-        myMedicine.setUserName(user.getName());
-        myMedicine.setMedicines(medicineVOS);
-        return ResponseEntity.ok(myMedicine);
     }
 }
