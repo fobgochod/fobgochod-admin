@@ -14,6 +14,8 @@ public interface UserRepository extends EntityRepository<User> {
 
     User findByCode(@Param("code") String code);
 
+    User findByTelephone(@Param("telephone") String telephone);
+
     boolean existsByCode(@Param("code") String code);
 
     User findByCodeAndPassword(@Param("code") String code, @Param("password") String password);

@@ -12,7 +12,10 @@ public enum LoginType {
      * 账号登录
      */
     token,
-
+    /**
+     * 验证码
+     */
+    captcha,
     /**
      * 其它登录
      */

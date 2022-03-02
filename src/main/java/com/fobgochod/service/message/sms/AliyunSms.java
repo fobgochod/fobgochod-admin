@@ -9,6 +9,11 @@ package com.fobgochod.service.message.sms;
 public class AliyunSms {
 
     public static final String SIGN_NAME = "周萧";
+    public static final String SIGN_NAME_ROBO = "萝卜是猫";
+    /**
+     * 测试
+     */
+    public static final String TC_TEST = "SMS_82100080";
     /**
      * 吃药提醒
      */
@@ -21,4 +26,8 @@ public class AliyunSms {
      * 挂号提醒
      */
     public static final String TC_REGISTRATION = "SMS_235480466";
+    /**
+     * 登陆验证码
+     */
+    public static final String TC_CAPTCHA = "SMS_235491151";
 }

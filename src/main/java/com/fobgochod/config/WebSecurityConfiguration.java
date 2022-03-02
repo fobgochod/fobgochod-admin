@@ -3,6 +3,7 @@ package com.fobgochod.config;
 import com.fobgochod.auth.FghAuthenticationFilter;
 import com.fobgochod.auth.handler.FghAuthenticationEntryPoint;
 import com.fobgochod.service.login.LoginService;
+import com.fobgochod.service.login.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,7 +23,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private LoginService loginService;
+    private UserTokenService userTokenService;
     @Autowired
     private FghAuthenticationEntryPoint authenticationEntryPoint;
 
@@ -35,7 +36,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-                .addFilterBefore(new FghAuthenticationFilter(loginService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new FghAuthenticationFilter(userTokenService), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint);
     }
 }

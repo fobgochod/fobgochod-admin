@@ -35,6 +35,7 @@ import org.springframework.stereotype.Component;
 
 import java.beans.Introspector;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Component
 class FghListener implements ApplicationListener<ContextRefreshedEvent>, ApplicationContextAware {
@@ -174,7 +175,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             record.setMedicineId(medicine.getId());
             record.setType("入");
             record.setSlice(140f);
-            record.setTime(LocalDateTime.now());
+            record.setTime(LocalTime.now());
             medicineRecordRepository.insert(record);
         }
         if (!medicineRepository.existsByCode("C002")) {

@@ -22,6 +22,11 @@ public class UserRepositoryImpl extends BaseEntityRepository<User> implements Us
     }
 
     @Override
+    public User findByTelephone(String telephone) {
+        return mongoTemplate.findOne(Query.query(Criteria.where("telephone").is(telephone)), getEntityClass());
+    }
+
+    @Override
     public boolean existsByCode(String code) {
         return mongoTemplate.exists(Query.query(Criteria.where("code").is(code)), getEntityClass());
     }

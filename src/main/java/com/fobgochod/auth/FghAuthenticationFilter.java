@@ -5,6 +5,7 @@ import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.FileOpTreeContextHolder;
 import com.fobgochod.exception.FghException;
 import com.fobgochod.service.login.LoginService;
+import com.fobgochod.service.login.token.UserTokenService;
 import com.fobgochod.util.ExceptionUtils;
 import com.fobgochod.util.I18nUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -29,10 +30,10 @@ import java.util.Collections;
  */
 public class FghAuthenticationFilter extends OncePerRequestFilter {
 
-    private final LoginService loginService;
+    private final UserTokenService userTokenService;
 
-    public FghAuthenticationFilter(LoginService loginService) {
-        this.loginService = loginService;
+    public FghAuthenticationFilter(UserTokenService userTokenService) {
+        this.userTokenService = userTokenService;
     }
 
     @Override
@@ -41,7 +42,7 @@ public class FghAuthenticationFilter extends OncePerRequestFilter {
             LocaleContextHolder.setLocale(I18nUtils.getLocale(request));
             String userToken = request.getHeader(FghConstants.HTTP_HEADER_USER_TOKEN);
             if (userToken != null) {
-                LoginUser loginUser = loginService.analysis(userToken);
+                LoginUser loginUser = userTokenService.getData(userToken);
                 request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO, loginUser);
                 AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(loginUser, null, Collections.emptyList());
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

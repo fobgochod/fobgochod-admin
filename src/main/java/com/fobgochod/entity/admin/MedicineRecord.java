@@ -3,7 +3,8 @@ package com.fobgochod.entity.admin;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 /**
  * 药物使用记录
@@ -17,7 +18,8 @@ public class MedicineRecord extends BaseEntity {
     private String medicineId;
     private String type;
     private Float slice;
-    private LocalDateTime time;
+    private LocalDate date;
+    private LocalTime time;
 
     public String getMedicineId() {
         return medicineId;
@@ -43,11 +45,19 @@ public class MedicineRecord extends BaseEntity {
         this.slice = slice;
     }
 
-    public LocalDateTime getTime() {
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(LocalDateTime time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 }

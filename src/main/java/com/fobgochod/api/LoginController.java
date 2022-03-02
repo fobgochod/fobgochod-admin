@@ -5,17 +5,18 @@ import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.exception.UnauthorizedException;
 import com.fobgochod.service.login.LoginService;
+import com.fobgochod.service.message.sms.AliyunSmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * 登录
@@ -27,7 +28,9 @@ import java.util.Collections;
 public class LoginController {
 
     @Autowired
-    private LoginService loginService;
+    private List<LoginService> loginServices;
+    @Autowired
+    private AliyunSmsService aliyunSmsService;
 
     /**
      * 登陆
@@ -37,11 +40,22 @@ public class LoginController {
      */
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUser body) {
-        String userToken = loginService.login(body);
-        if (!StringUtils.hasText(userToken)) {
+        for (LoginService loginService : loginServices) {
+            if (loginService.support(body)) {
+                loginService.login(body);
+                break;
+            }
+        }
+        if (!StringUtils.hasText(body.getToken())) {
             throw new UnauthorizedException(I18nCode.ERROR_LOGIN);
         }
-        return ResponseEntity.ok(Collections.singletonMap("userToken", userToken));
+        return ResponseEntity.ok(body);
+    }
+
+    @PostMapping(value = "/login/captcha")
+    public ResponseEntity<?> captcha(@RequestBody LoginUser body) {
+        aliyunSmsService.captcha(body.getTelephone());
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -53,19 +67,5 @@ public class LoginController {
     @PostMapping(value = "/token/analyze")
     public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
         return ResponseEntity.ok(loginUser);
-    }
-
-    /**
-     * 租户刷新token
-     *
-     * @param userToken
-     * @param body
-     * @return
-     */
-    @PostMapping(value = "/token/refresh")
-    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN) String userToken,
-                                     @RequestBody LoginUser body) {
-        String refresh = loginService.refresh(userToken, body.getTenantId());
-        return ResponseEntity.ok(Collections.singletonMap("userToken", refresh));
     }
 }

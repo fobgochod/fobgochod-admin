@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class MyMedicineApi {
         List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId());
         medicines.forEach(medicine -> {
             MedicType type = MedicType.type();
-            MedicineRecord medicineRecord = medicineRecordRepository.findByMedicineIdAndType(medicine.getId(), type.getName());
+            MedicineRecord medicineRecord = medicineRecordRepository.findRecord(medicine.getId(), type.getName());
             if (medicineRecord != null) {
                 return;
             }
@@ -85,7 +86,8 @@ public class MyMedicineApi {
             record.setMedicineId(medicine.getId());
             record.setType(type.getName());
             record.setSlice(-slice);
-            record.setTime(LocalDateTime.now());
+            record.setDate(LocalDate.now());
+            record.setTime(LocalTime.now());
             medicineRecordRepository.insert(record);
         });
 

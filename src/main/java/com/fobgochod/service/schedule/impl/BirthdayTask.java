@@ -1,12 +1,10 @@
 package com.fobgochod.service.schedule.impl;
 
-import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.TaskRepository;
 import com.fobgochod.repository.UserRepository;
-import com.fobgochod.serializer.Constants;
-import com.fobgochod.service.message.sms.AliyunSms;
+import com.fobgochod.service.message.sms.AliyunSmsService;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskService;
 import org.slf4j.Logger;
@@ -35,7 +33,12 @@ public class BirthdayTask extends TaskService {
     @Autowired
     private TaskRepository taskRepository;
     @Autowired
-    private com.aliyun.dysmsapi20170525.Client smsClient;
+    private AliyunSmsService aliyunSmsService;
+
+    public static void main(String[] args) {
+        int days = Period.between(LocalDate.of(2022, 2, 28), LocalDate.now()).getDays();
+        System.out.println("days = " + days);
+    }
 
     @Override
     public void execute() throws Exception {
@@ -51,20 +54,10 @@ public class BirthdayTask extends TaskService {
                     case 0:
                     case 1:
                     case 3:
-                        SendSmsRequest sendSmsRequest = new SendSmsRequest().setPhoneNumbers(user.getTelephone())
-                                .setSignName(AliyunSms.SIGN_NAME)
-                                .setTemplateCode(AliyunSms.TC_BIRTHDAY)
-                                .setTemplateParam(String.format("{\"name\":\"%s\",\"birth\":\"%s\"}", user.getName(), user.getBirth()
-                                        .format(Constants.DATE_FORMATTER)));
-                        smsClient.sendSms(sendSmsRequest);
+                        aliyunSmsService.birthday(user.getTelephone(), user.getName(), user.getBirth());
                         break;
                 }
             }
         }
-    }
-
-    public static void main(String[] args) {
-        int days = Period.between(LocalDate.of(2022, 2, 28), LocalDate.now()).getDays();
-        System.out.println("days = " + days);
     }
 }

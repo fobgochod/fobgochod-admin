@@ -1,10 +1,8 @@
 package com.fobgochod.auth.domain;
 
-import com.fobgochod.constant.FghConstants;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
@@ -17,26 +15,20 @@ import java.util.Objects;
  */
 public class LoginUser implements UserDetails {
 
-    private String tenantId;
-    @NotNull
     private String username;
-    @NotNull
     private String password;
+
+    private String telephone;
+    private String captcha;
+
     private LoginType loginType = LoginType.token;
+    private String token;
 
     public LoginUser() {
     }
 
     public LoginUser(String username) {
         this.username = username;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
     }
 
     @Override
@@ -57,6 +49,22 @@ public class LoginUser implements UserDetails {
         this.password = password;
     }
 
+    public String getTelephone() {
+        return telephone;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public String getCaptcha() {
+        return captcha;
+    }
+
+    public void setCaptcha(String captcha) {
+        this.captcha = captcha;
+    }
+
     public LoginType getLoginType() {
         return loginType;
     }
@@ -65,21 +73,29 @@ public class LoginUser implements UserDetails {
         this.loginType = loginType;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LoginUser loginUser = (LoginUser) o;
-        return username.equals(loginUser.username) && Objects.equals(tenantId, loginUser.tenantId);
+        return Objects.equals(username, loginUser.username) && Objects.equals(telephone, loginUser.telephone);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, tenantId);
+        return Objects.hash(username, telephone);
     }
 
     public String uniqueKey() {
-        return String.format("%s::%s", username, tenantId == null ? FghConstants.DEFAULT_TENANT : tenantId);
+        return username == null ? telephone : username;
     }
 
     @Override

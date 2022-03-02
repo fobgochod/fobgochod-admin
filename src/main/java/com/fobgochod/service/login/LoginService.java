@@ -30,9 +30,8 @@ public interface LoginService {
      * 登陆验证
      *
      * @param loginUser
-     * @return 通过授权的token
      */
-    String login(LoginUser loginUser);
+    void login(LoginUser loginUser);
 
     /**
      * 刷新token

@@ -82,7 +82,7 @@ public abstract class BaseEntityRepository<T extends BaseEntity> implements Enti
         if (page == null) {
             page = new Page();
         }
-        long total = mongoTemplate.count(page.query(), getEntityClass());
+        long total = mongoTemplate.count(page.queryFilter(), getEntityClass());
         if (total <= 0) {
             return PageData.zero();
         }

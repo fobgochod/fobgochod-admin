@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -18,11 +19,9 @@ import java.util.List;
 public class MedicineRecordRepositoryImpl extends BaseEntityRepository<MedicineRecord> implements MedicineRecordRepository {
 
     @Override
-    public MedicineRecord findByMedicineIdAndType(String medicineId, String type) {
-        return mongoTemplate.findOne(Query.query(Criteria.where("medicineId")
-                .is(medicineId)
-                .and("type")
-                .is(type)), getEntityClass());
+    public MedicineRecord findRecord(String medicineId, String type) {
+        return mongoTemplate.findOne(Query.query(Criteria.where("medicineId").is(medicineId)
+                .and("type").is(type).and("date").is(LocalDate.now())), getEntityClass());
     }
 
     @Override

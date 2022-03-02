@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface MedicineRecordRepository extends EntityRepository<MedicineRecord> {
 
-    MedicineRecord findByMedicineIdAndType(String medicineId, String type);
+    MedicineRecord findRecord(String medicineId, String type);
 
     List<MedicineRecord> findByMedicineIdIn(Collection<String> ids);
 

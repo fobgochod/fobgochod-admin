@@ -84,12 +84,6 @@ public class QueryUtil {
 
     public static Bson filter(Map<String, Object> filter) {
         List<Bson> filters = new ArrayList<>();
-        Bson tenantFilter = getTenantIdFilter();
-        if (CollectionUtils.isEmpty(filter)) {
-            return tenantFilter;
-        } else {
-            filters.add(tenantFilter);
-        }
         for (Map.Entry<String, Object> entry : filter.entrySet()) {
             if (BaseField.PID.equals(entry.getKey())) {
                 filters.add(Filters.eq(BaseField.ID, entry.getValue().toString()));
@@ -208,25 +202,5 @@ public class QueryUtil {
             logger.error("获取对象字段值错误：{}", e.getMessage());
         }
         return null;
-    }
-
-    /**
-     * （tenantId = loginTenantId or tenantId is null or tenantId = "" or not contain tenantId field）
-     * eq("item", null)：value is null or that do not contain the item field
-     * exists("item", false)：not contain the item field
-     *
-     * @return 满足当前租户的ID集合
-     * @see：https://docs.mongodb.com/manual/tutorial/query-for-null-fields
-     */
-    public static Bson getTenantIdFilter() {
-        String tenantId = UserUtil.getTenantId();
-        if (!StringUtils.hasText(tenantId)) {
-            return new BsonDocument();
-        }
-        return Filters.or(
-                Filters.eq(BaseField.TENANT_ID, tenantId),
-                Filters.eq(BaseField.TENANT_ID, null),
-                Filters.eq(BaseField.TENANT_ID, Strings.EMPTY)
-        );
     }
 }
