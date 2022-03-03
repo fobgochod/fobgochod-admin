@@ -3,7 +3,6 @@ package com.fobgochod.util;
 import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.base.Page;
 import com.mongodb.client.model.Filters;
-import org.apache.logging.log4j.util.Strings;
 import org.bson.BsonDocument;
 import org.bson.conversions.Bson;
 import org.slf4j.Logger;
@@ -95,7 +94,7 @@ public class QueryUtil {
                 filters.add(Filters.eq(entry.getKey(), entry.getValue()));
             }
         }
-        return Filters.and(filters);
+        return filters.isEmpty() ? new BsonDocument() : Filters.and(filters);
     }
 
     public static Query query(Page page) {

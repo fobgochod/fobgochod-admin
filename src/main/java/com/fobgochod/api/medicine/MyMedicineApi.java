@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -45,11 +46,19 @@ public class MyMedicineApi {
     public ResponseEntity<?> medicines(@RequestBody Medicine body) {
         User user = userRepository.findByCode(body.getUserId());
         List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId());
+        List<MedicineRecord> medicineRecords = medicineRecordRepository.findByMedicineIdIn(medicines.stream().map(Medicine::getId).collect(Collectors.toList()));
+        Map<String, List<MedicineRecord>> recordMap = medicineRecords.stream().collect(Collectors.groupingBy(MedicineRecord::getMedicineId));
+
 
         List<MedicineVO> medicineVOS = new ArrayList<>();
         medicines.forEach(m -> {
             MedicineVO vo = new MedicineVO();
             vo.doBackward(m);
+            List<String> recordTypes = recordMap.getOrDefault(m.getId(), Collections.emptyList())
+                    .stream().map(MedicineRecord::getType).collect(Collectors.toList());
+            vo.setMorningB(recordTypes.contains(MedicType.MORNING.getName()));
+            vo.setNoonB(recordTypes.contains(MedicType.NOON.getName()));
+            vo.setNightB(recordTypes.contains(MedicType.NIGHT.getName()));
             medicineVOS.add(vo);
         });
 

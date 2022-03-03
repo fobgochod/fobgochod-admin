@@ -26,7 +26,8 @@ public class MedicineRecordRepositoryImpl extends BaseEntityRepository<MedicineR
 
     @Override
     public List<MedicineRecord> findByMedicineIdIn(Collection<String> medicineIds) {
-        return mongoTemplate.find(Query.query(Criteria.where(BaseField.ID).in(medicineIds)), getEntityClass());
+        return mongoTemplate.find(Query.query(Criteria.where("medicineId").in(medicineIds)
+                .and("date").is(LocalDate.now())), getEntityClass());
     }
 
     @Override

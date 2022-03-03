@@ -9,8 +9,11 @@ public class MedicineVO extends AbstractConverter<Medicine> {
     private String name;
     private Float total;
     private Float morning;
+    private Boolean morningB;
     private Float noon;
+    private Boolean noonB;
     private Float night;
+    private Boolean nightB;
     private Integer remain;
 
     public String getCode() {
@@ -45,6 +48,14 @@ public class MedicineVO extends AbstractConverter<Medicine> {
         this.morning = morning;
     }
 
+    public Boolean getMorningB() {
+        return morningB;
+    }
+
+    public void setMorningB(Boolean morningB) {
+        this.morningB = morningB;
+    }
+
     public Float getNoon() {
         return noon;
     }
@@ -53,12 +64,28 @@ public class MedicineVO extends AbstractConverter<Medicine> {
         this.noon = noon;
     }
 
+    public Boolean getNoonB() {
+        return noonB;
+    }
+
+    public void setNoonB(Boolean noonB) {
+        this.noonB = noonB;
+    }
+
     public Float getNight() {
         return night;
     }
 
     public void setNight(Float night) {
         this.night = night;
+    }
+
+    public Boolean getNightB() {
+        return nightB;
+    }
+
+    public void setNightB(Boolean nightB) {
+        this.nightB = nightB;
     }
 
     public Integer getRemain() {
