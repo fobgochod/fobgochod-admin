@@ -1,10 +1,7 @@
 package com.fobgochod.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fobgochod.util.JsonUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
@@ -19,8 +16,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * @author chenxsa
- * @Description 全局支持跨域访问api
+ *  WebMvcConfiguration.java
+ *
+ * @author Xiao
+ * @date 2022/3/20 3:48
  */
 @Configuration
 public class WebMvcConfiguration extends WebMvcConfigurationSupport {
@@ -30,8 +29,6 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
 
     /**
      * 配置线程池
-     *
-     * @param configurer
      */
     @Override
     public void configureAsyncSupport(final AsyncSupportConfigurer configurer) {
@@ -40,14 +37,8 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
         super.configureAsyncSupport(configurer);
     }
 
-
     /**
      * 功能描述:添加跨域访问
-     *
-     * @param registry
-     * @return void
-     * @author chenxsa
-     * @date 2018-5-12 11:06
      */
     @Override
     public void addCorsMappings(CorsRegistry registry) {

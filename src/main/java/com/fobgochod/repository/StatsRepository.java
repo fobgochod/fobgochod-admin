@@ -16,19 +16,9 @@ import java.util.List;
  */
 public interface StatsRepository extends EntityRepository<Stats> {
 
-    boolean existsByYearMonth(int year, int month);
-
     void deleteByYearMonth(int year, int month);
 
-    Stats findByYearMonth(int year, int month);
-
     Stats findNewest();
-
-    List<BucketInc> getBucketInc(String prev, String next);
-
-    List<BucketInc> getBucketInc(LocalDate prev, LocalDate next);
-
-    List<BucketStats> getBucketStats();
 
     BucketStats getBucketStats(String bucket);
 }

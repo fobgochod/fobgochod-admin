@@ -37,7 +37,7 @@ public class FileInfo extends BaseEntity {
         try {
             FileInfo fileInfo = JsonUtils.createObjectMapper()
                     .readValue(URLDecoder.decode(fileJson, StandardCharsets.UTF_8.name()), FileInfo.class);
-            if (StringUtils.isEmpty(fileInfo.name)) {
+            if (StringUtils.hasText(fileInfo.name)) {
                 throw new SystemException(I18nCode.ERROR_10001);
             }
             return fileInfo;

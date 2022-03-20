@@ -18,18 +18,8 @@ public interface BaseField {
     String FILE_NAME = "fileName";
     String DIRECTORY_ID = "directoryId";
     String FILE_ID = "fileId";
-    String COMPLETED = "completed";
     String CONTENT_TYPE = "contentType";
 
-    String METADATA = "metadata";
-    String REFERENCE = "reference";
-    String COUNT = "count";
-    String METADATA_REFERENCE_COUNT = "metadata.reference.count";
-    String METADATA_COMPLETED = "metadata.completed";
-    String METADATA_FILE_INFO_ID = "metadata.fileInfoId";
-    String METADATA_LOCATION = "metadata.location";
-
-    String TENANT_ID = "tenantId";
     /**
      * 父目录的字段名称
      */

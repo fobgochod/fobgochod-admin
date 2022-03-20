@@ -16,10 +16,13 @@ public class ImageInfo {
     private boolean isRound;
     private String format = "png";
 
-    /**
-     * 是否缩放
-     */
-    private boolean shrink;
+    public ImageInfo() {
+    }
+
+    public ImageInfo(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
     public int getScale() {
         return scale;
@@ -69,11 +72,7 @@ public class ImageInfo {
         isRound = round;
     }
 
-    public boolean isShrink() {
-        return shrink;
-    }
-
-    public void setShrink(boolean shrink) {
-        this.shrink = shrink;
+    public boolean shrink() {
+        return this.width > 0 || this.height > 0;
     }
 }

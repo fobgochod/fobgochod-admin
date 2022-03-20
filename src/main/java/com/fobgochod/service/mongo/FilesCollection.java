@@ -43,12 +43,6 @@ public class FilesCollection {
         return filesCollection.find(Filters.eq(BaseField.ID, fileId)).first();
     }
 
-    public void referenceCount(ObjectId fileId, long delta) {
-        Bson filter = Filters.eq(BaseField.ID, fileId);
-        Bson update = Updates.inc(BaseField.METADATA_REFERENCE_COUNT, delta);
-        filesCollection.updateOne(filter, update);
-    }
-
     public long getFilesSize() {
         List<File> files = this.find();
         return files.stream().map(File::getLength).reduce(Long::sum).orElse(0L);

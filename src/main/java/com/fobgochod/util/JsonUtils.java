@@ -1,20 +1,11 @@
 package com.fobgochod.util;
 
-import com.fobgochod.serializer.LocalDateDeserializer;
-import com.fobgochod.serializer.LocalDateSerializer;
-import com.fobgochod.serializer.LocalDateTimeDeserializer;
-import com.fobgochod.serializer.LocalDateTimeSerializer;
-import com.fobgochod.serializer.LocalTimeDeserializer;
-import com.fobgochod.serializer.LocalTimeSerializer;
-import com.fobgochod.serializer.ObjectIdDeserializer;
-import com.fobgochod.serializer.ObjectIdSerializer;
-import com.fobgochod.serializer.TimestampDeserializer;
-import com.fobgochod.serializer.TimestampSerializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fobgochod.serializer.*;
 import org.bson.types.ObjectId;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -30,16 +21,10 @@ import java.time.LocalTime;
  * @date 2020/5/17
  */
 public final class JsonUtils {
-    static ObjectMapper objectMapper = null;
 
-    /**
-     * 返回全局唯一的ObjectMapper
-     *
-     * @param
-     * @return
-     * @author chenxsa
-     * @date 2018-5-16 15:38
-     */
+    static volatile ObjectMapper objectMapper = null;
+
+
     public static ObjectMapper createObjectMapper() {
         if (objectMapper == null) {
             synchronized (JsonUtils.class) {

@@ -1,18 +1,8 @@
 package com.fobgochod.support.listener;
 
 import com.fobgochod.domain.enumeration.RoleEnum;
-import com.fobgochod.entity.admin.Bucket;
-import com.fobgochod.entity.admin.Medicine;
-import com.fobgochod.entity.admin.MedicineRecord;
-import com.fobgochod.entity.admin.Task;
-import com.fobgochod.entity.admin.Tenant;
-import com.fobgochod.entity.admin.User;
-import com.fobgochod.repository.BucketRepository;
-import com.fobgochod.repository.MedicineRecordRepository;
-import com.fobgochod.repository.MedicineRepository;
-import com.fobgochod.repository.TaskRepository;
-import com.fobgochod.repository.TenantRepository;
-import com.fobgochod.repository.UserRepository;
+import com.fobgochod.entity.admin.*;
+import com.fobgochod.repository.*;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskManager;
 import com.fobgochod.service.schedule.impl.BirthdayTask;
@@ -34,7 +24,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.beans.Introspector;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Component
@@ -48,8 +37,6 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
     private TaskRepository taskRepository;
     @Autowired
     private UserRepository userRepository;
-    @Autowired
-    private BucketRepository bucketRepository;
     @Autowired
     private TenantRepository tenantRepository;
     @Autowired
@@ -66,9 +53,11 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
         String app = this.applicationContext.getEnvironment().getProperty("spring.application.name");
         Integer port = this.applicationContext.getBean(ServerProperties.class).getPort();
         String url = "http://127.0.0.1:" + port;
+        String actuatorUrl = url + "/actuator";
         String envUrl = url + "/env";
         logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " started at            ", url));
-        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " environment at        ", envUrl));
+        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " actuator at        ", actuatorUrl));
+        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " environment at            ", envUrl));
         logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_YELLOW, app, " has started successfully!"));
     }
 
@@ -76,7 +65,6 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
     public void onApplicationEvent(ContextRefreshedEvent arg0) {
         this.initUser();
         this.initTenant();
-        this.initBucket();
         this.initMedicine();
         this.initScheduled();
         this.printStartInfo();
@@ -145,17 +133,6 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             tenant.setTelephone("16800000002");
             tenant.setOwner("zhouxiao");
             tenantRepository.insert(tenant);
-        }
-    }
-
-    private void initBucket() {
-        if (!bucketRepository.existsByCode("ddd")) {
-            Bucket bucket = new Bucket();
-            bucket.setCode("ddd");
-            bucket.setName("领域驱动设计");
-            bucket.setOwner("zhouxiao");
-            bucket.setTask(TaskIdEnum.TS001.name());
-            bucketRepository.insert(bucket);
         }
     }
 

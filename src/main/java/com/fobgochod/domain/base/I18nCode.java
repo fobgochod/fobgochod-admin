@@ -43,7 +43,12 @@ public enum I18nCode implements I18nHandler {
 
 
     ERROR_10001(20000, "filename.notnull"),
-    ERROR_LOGIN(20000, "login.auth.fail");
+    ERROR_LOGIN(20000, "login.auth.fail"),
+    FILE_INFO_NONE(20000, "file.info.none"),
+    FILE_DIR_NONE(20000, "file.dir.none"),
+    FILE_UNCOMPLETED(20000, "file.uncompleted"),
+    FILE_SHARED_NONE(20000, "file.shared.none"),
+    FILE_SHARED_EXPIRE(20000, "file.shared.expire");
 
     private final Integer code;
     private final String path;

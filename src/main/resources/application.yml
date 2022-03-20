@@ -1,10 +1,13 @@
 server:
-  port: 8080
+  port: 7070
   tomcat:
     max-connections: 1000
     accept-count: 100
     threads:
       max: 10
+    accesslog:
+      enabled: true
+    basedir: .logs/tomcat
   servlet:
     encoding:
       force: true
@@ -49,7 +52,7 @@ management:
       enabled: true
       external-file: logs/error
 app:
-  base-uri: http://localhost:8080
+  base-uri: http://localhost:7070
   version: @project.version@
   build-time: @timestamp@
   wechat-uri: https://api.weixin.qq.com

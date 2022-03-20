@@ -3,7 +3,7 @@ package com.fobgochod.domain.medicine;
 import java.time.LocalTime;
 
 /**
- * MedcType.java
+ * MedicType.java
  *
  * @author Xiao
  * @date 2022/2/27 19:39

@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -32,12 +31,6 @@ public class LoginController {
     @Autowired
     private AliyunSmsService aliyunSmsService;
 
-    /**
-     * 登陆
-     *
-     * @param body
-     * @return
-     */
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUser body) {
         for (LoginService loginService : loginServices) {
@@ -58,12 +51,6 @@ public class LoginController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * 解析userToken
-     *
-     * @param loginUser
-     * @return
-     */
     @PostMapping(value = "/token/analyze")
     public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
         return ResponseEntity.ok(loginUser);

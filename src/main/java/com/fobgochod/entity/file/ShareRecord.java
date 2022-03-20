@@ -4,6 +4,7 @@ import com.fobgochod.domain.enumeration.ShareType;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,15 +36,9 @@ public class ShareRecord extends BaseEntity {
      */
     private String url;
     /**
-     * 分享是否有时限
-     * false 永不过期
-     * true 设置过期实际 expireDate
-     */
-    private boolean expired;
-    /**
      * 过期时间
      */
-    private String expireDate;
+    private LocalDateTime expireDate;
     /**
      * 分享的文件、目录
      */
@@ -103,19 +98,11 @@ public class ShareRecord extends BaseEntity {
         this.url = url;
     }
 
-    public boolean isExpired() {
-        return expired;
-    }
-
-    public void setExpired(boolean expired) {
-        this.expired = expired;
-    }
-
-    public String getExpireDate() {
+    public LocalDateTime getExpireDate() {
         return expireDate;
     }
 
-    public void setExpireDate(String expireDate) {
+    public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
     }
 
