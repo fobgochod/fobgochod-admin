@@ -99,7 +99,7 @@ public class UserController {
 
     @PostMapping("/password/check")
     public ResponseEntity<?> checkPassword(@RequestBody PasswordVO body) {
-        User user = userRepository.findByCode(body.getName());
+        User user = userRepository.findByCode(body.getCode());
         if (user.getPassword().equals(body.getPwdHash())) {
             return ResponseEntity.ok(true);
         }
@@ -108,7 +108,7 @@ public class UserController {
 
     @PostMapping("/password/change")
     public ResponseEntity<?> changePassword(@RequestBody PasswordVO body) {
-        User user = userRepository.findByCode(body.getName());
+        User user = userRepository.findByCode(body.getCode());
         if (user.getPassword().equals(body.getOldPwdHash())) {
             user.setPassword(body.getPwdHash());
             userRepository.update(user);
@@ -118,7 +118,7 @@ public class UserController {
 
     @PostMapping("/password/reset")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordVO body) {
-        User user = userRepository.findByCode(body.getName());
+        User user = userRepository.findByCode(body.getCode());
         user.setPassword(body.getPwdHash());
         userRepository.update(user);
         return ResponseEntity.ok().build();

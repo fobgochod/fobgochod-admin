@@ -113,6 +113,11 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     }
 
     @Override
+    public PageData<T> findCondByPage(Page<T> page) {
+        return PageData.zero();
+    }
+
+    @Override
     public void dropCollection() {
         MongoCollection<T> mongoCollection = this.getCollection();
         mongoCollection.drop();

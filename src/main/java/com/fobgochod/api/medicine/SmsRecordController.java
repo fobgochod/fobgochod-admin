@@ -54,8 +54,8 @@ public class SmsRecordController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
-        return ResponseEntity.ok(smsRecordRepository.findByPage(body));
+    public ResponseEntity<?> search(@RequestBody(required = false) Page<SmsRecord> body) {
+        return ResponseEntity.ok(smsRecordRepository.findCondByPage(body));
     }
 
     @PostMapping("/delete")

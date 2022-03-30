@@ -6,6 +6,7 @@ import com.fobgochod.domain.base.PageData;
 import com.fobgochod.entity.BaseEntity;
 import com.fobgochod.util.QueryUtil;
 import com.fobgochod.util.SnowFlake;
+import com.fobgochod.util.SqlUtil;
 import com.fobgochod.util.UserUtil;
 import com.mongodb.client.result.DeleteResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -87,6 +88,16 @@ public abstract class BaseEntityRepository<T extends BaseEntity> implements Enti
             return PageData.zero();
         }
         List<T> list = mongoTemplate.find(page.query(), getEntityClass());
+        return PageData.data(total, list);
+    }
+
+    @Override
+    public PageData<T> findCondByPage(Page<T> page) {
+        long total = mongoTemplate.count(SqlUtil.cond(page.getCond()), getEntityClass());
+        if (total <= 0) {
+            return PageData.zero();
+        }
+        List<T> list = mongoTemplate.find(SqlUtil.cond(page), getEntityClass());
         return PageData.data(total, list);
     }
 

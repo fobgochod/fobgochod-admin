@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class SmsRecord extends BaseEntity {
 
     private String telephone;
-    private boolean status;
+    private Boolean status;
     private LocalDateTime sendDate;
     private String signName;
     private String templateCode;
@@ -34,11 +34,11 @@ public class SmsRecord extends BaseEntity {
         this.telephone = telephone;
     }
 
-    public boolean isStatus() {
+    public Boolean getStatus() {
         return status;
     }
 
-    public void setStatus(boolean status) {
+    public void setStatus(Boolean status) {
         this.status = status;
     }
 

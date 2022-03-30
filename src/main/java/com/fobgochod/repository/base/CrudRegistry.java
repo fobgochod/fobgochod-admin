@@ -84,6 +84,14 @@ public interface CrudRegistry<T extends BaseEntity> {
     PageData<T> findByPage(Page page);
 
     /**
+     * 按条件分页查询
+     *
+     * @param page 查询条件
+     * @return Entities
+     */
+    PageData<T> findCondByPage(Page<T> page);
+
+    /**
      * 删除集合
      */
     void dropCollection();

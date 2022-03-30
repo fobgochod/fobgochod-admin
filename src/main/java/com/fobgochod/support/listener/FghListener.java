@@ -56,8 +56,8 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
         String actuatorUrl = url + "/actuator";
         String envUrl = url + "/env";
         logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " started at            ", url));
-        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " actuator at        ", actuatorUrl));
-        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " environment at            ", envUrl));
+        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " actuator at           ", actuatorUrl));
+        logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_BLUE, app, " environment at        ", envUrl));
         logger.info(AnsiOutput.toString(AnsiColor.BRIGHT_YELLOW, app, " has started successfully!"));
     }
 

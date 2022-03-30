@@ -15,8 +15,14 @@ import java.util.Map;
  * @author zhouxiao
  * @date 2021/1/20
  */
-public class Page {
+public class Page<T> {
 
+    public static final Page<?> OK = new Page<>();
+
+    /**
+     * 查询条件
+     */
+    private T cond;
     /**
      * 查询条件
      */
@@ -43,6 +49,18 @@ public class Page {
         this.pageNum = 1;
         this.pageSize = 10;
         this.orders = Collections.singletonMap(BaseField.CREATE_DATE, -1);
+    }
+
+    public static Page<?> ok() {
+        return OK;
+    }
+
+    public T getCond() {
+        return cond;
+    }
+
+    public void setCond(T cond) {
+        this.cond = cond;
     }
 
     public Map<String, Object> getFilters() {

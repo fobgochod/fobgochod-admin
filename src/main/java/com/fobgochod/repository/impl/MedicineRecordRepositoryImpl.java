@@ -1,6 +1,5 @@
 package com.fobgochod.repository.impl;
 
-import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.GroupBy;
 import com.fobgochod.entity.admin.MedicineRecord;
 import com.fobgochod.repository.MedicineRecordRepository;
@@ -31,9 +30,9 @@ public class MedicineRecordRepositoryImpl extends BaseEntityRepository<MedicineR
     }
 
     @Override
-    public List<GroupBy> findMedicineCounts() {
-        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group("medicineId").sum("slice").as("sum")
-                        .count().as("count"))
+    public List<GroupBy> findMedicineCounts(List<String> medicineIds) {
+        Aggregation aggregation = Aggregation.newAggregation(Aggregation.match(Criteria.where("medicineId").in(medicineIds)),
+                        Aggregation.group("medicineId").sum("slice").as("sum").count().as("count"))
                 .withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
         AggregationResults<GroupBy> results = mongoTemplate.aggregate(aggregation, "medicine_record", GroupBy.class);
         return results.getMappedResults();

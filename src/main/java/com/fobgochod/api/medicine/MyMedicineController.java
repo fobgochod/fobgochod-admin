@@ -54,8 +54,7 @@ public class MyMedicineController {
         medicines.forEach(m -> {
             MedicineVO vo = new MedicineVO();
             vo.doBackward(m);
-            List<String> recordTypes = recordMap.getOrDefault(m.getId(), Collections.emptyList())
-                    .stream().map(MedicineRecord::getType).collect(Collectors.toList());
+            List<String> recordTypes = recordMap.getOrDefault(m.getId(), Collections.emptyList()).stream().map(MedicineRecord::getType).collect(Collectors.toList());
             vo.setMorningB(recordTypes.contains(MedicType.MORNING.getName()));
             vo.setNoonB(recordTypes.contains(MedicType.NOON.getName()));
             vo.setNightB(recordTypes.contains(MedicType.NIGHT.getName()));
@@ -100,11 +99,10 @@ public class MyMedicineController {
             medicineRecordRepository.insert(record);
         });
 
-
-        List<GroupBy> medicineCounts = medicineRecordRepository.findMedicineCounts();
+        List<GroupBy> medicineCounts = medicineRecordRepository.findMedicineCounts(medicines.stream().map(Medicine::getId).collect(Collectors.toList()));
         Map<String, Float> medicineCountMap = medicineCounts.stream().collect(Collectors.toMap(GroupBy::getId, GroupBy::getSum));
         medicines.forEach(medicine -> {
-            medicine.setTotal(medicineCountMap.get(medicine.getId()));
+            medicine.setTotal(medicineCountMap.getOrDefault(medicine.getId(), 0f));
             Float day = medicine.getMorning() + medicine.getNoon() + medicine.getNight();
             medicine.setRemain((int) (medicine.getTotal() / day));
             medicineRepository.update(medicine);

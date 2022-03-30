@@ -19,5 +19,5 @@ public interface MedicineRecordRepository extends EntityRepository<MedicineRecor
 
     List<MedicineRecord> findByMedicineIdIn(Collection<String> ids);
 
-    List<GroupBy> findMedicineCounts();
+    List<GroupBy> findMedicineCounts(List<String> medicineIds);
 }
