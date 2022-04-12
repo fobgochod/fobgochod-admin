@@ -12,6 +12,8 @@ import org.springframework.data.repository.query.Param;
  */
 public interface UserRepository extends EntityRepository<User> {
 
+    User findAny(@Param("user") String user);
+
     User findByCode(@Param("code") String code);
 
     User findByTelephone(@Param("telephone") String telephone);

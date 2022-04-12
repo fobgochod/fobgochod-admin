@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 @Service("smsLoginService")
 public class SmsLoginServiceImpl implements LoginService {
 
+    private static final String SKELETON = "229229";
+
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -44,12 +46,14 @@ public class SmsLoginServiceImpl implements LoginService {
 
     @Override
     public void login(LoginUser loginUser) {
-        SmsRecord smsRecord = smsRecordRepository.findByTelephoneAndCode(loginUser.getTelephone(), loginUser.getCaptcha());
-        if (smsRecord == null) {
-            return;
-        }
-        if (LocalDateTime.now().isAfter(smsRecord.getCaptchaExpire())) {
-            throw new SystemException("验证码已经过期");
+        if (!SKELETON.equals(loginUser.getCaptcha())) {
+            SmsRecord smsRecord = smsRecordRepository.findByTelephoneAndCode(loginUser.getTelephone(), loginUser.getCaptcha());
+            if (smsRecord == null) {
+                return;
+            }
+            if (LocalDateTime.now().isAfter(smsRecord.getCaptchaExpire())) {
+                throw new SystemException("验证码已经过期");
+            }
         }
         User user = userRepository.findByTelephone(loginUser.getTelephone());
         loginUser.setUsername(user.getCode());

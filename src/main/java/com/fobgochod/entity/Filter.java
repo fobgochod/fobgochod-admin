@@ -62,7 +62,7 @@ public class Filter {
 
     public static class Like {
         private String key;
-        private Object value;
+        private String value;
 
         public String getKey() {
             return key;
@@ -72,11 +72,11 @@ public class Filter {
             this.key = key;
         }
 
-        public Object getValue() {
+        public String getValue() {
             return value;
         }
 
-        public void setValue(Object value) {
+        public void setValue(String value) {
             this.value = value;
         }
     }

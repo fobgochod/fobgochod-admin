@@ -18,7 +18,7 @@ public class User extends BaseEntity {
 
     private String code;
     private String name;
-    private boolean lunar;
+    private Boolean lunar;
     private LocalDate birth;
     private String telephone;
     private String wechat;
@@ -26,7 +26,7 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private List<String> contacts;
-    private RoleEnum role = RoleEnum.None;
+    private RoleEnum role;
 
     public String getCode() {
         return code;
@@ -44,11 +44,11 @@ public class User extends BaseEntity {
         this.name = name;
     }
 
-    public boolean isLunar() {
+    public Boolean getLunar() {
         return lunar;
     }
 
-    public void setLunar(boolean lunar) {
+    public void setLunar(Boolean lunar) {
         this.lunar = lunar;
     }
 

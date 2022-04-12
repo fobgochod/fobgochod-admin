@@ -3,6 +3,7 @@ package com.fobgochod.api.admin;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.BucketStats;
 import com.fobgochod.domain.base.Page;
+import com.fobgochod.entity.admin.Stats;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.repository.StatsRepository;
 import com.fobgochod.service.crud.FileInfoCrudService;
@@ -10,20 +11,9 @@ import com.fobgochod.util.DataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +38,7 @@ public class StatsController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+    public ResponseEntity<?> search(@RequestBody(required = false) Page<Stats> body) {
         return ResponseEntity.ok(statsRepository.findByPage(body));
     }
 

@@ -46,7 +46,7 @@ public class MedicineController {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<Medicine> body) {
-        return ResponseEntity.ok(medicineRepository.findCondByPage(body));
+        return ResponseEntity.ok(medicineRepository.findByPage(body));
     }
 
     @PostMapping("/delete")

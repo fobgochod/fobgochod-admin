@@ -121,15 +121,14 @@ public class TaskManagerImpl implements TaskManager, ApplicationContextAware {
             Task task = taskRepository.findById(taskCode);
             applicationContext.getBean(task.getClassName(), TaskService.class).execute();
         } catch (Exception e) {
-            logger.error("手动执行任务{}失败：{}", taskCode, e.getMessage());
+            logger.error(String.format("手动执行任务[%s]失败", taskCode), e);
         }
     }
 
     private void doStartTask(Task task) {
         //获取需要定时调度的接口
         TaskService taskService = scheduledTaskMap.get(task.getCode());
-        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(taskService,
-                triggerContext -> new CronTrigger(task.getCron()).nextExecutionTime(triggerContext));
+        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(taskService, triggerContext -> new CronTrigger(task.getCron()).nextExecutionTime(triggerContext));
         //将启动的任务放入map
         scheduledFutureMap.put(task.getCode(), scheduledFuture);
     }

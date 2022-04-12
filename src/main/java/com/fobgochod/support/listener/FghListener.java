@@ -76,19 +76,9 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             user.setCode("admin");
             user.setName("管理员");
             user.setTelephone("16800000001");
-            user.setEmail("admin@noneboy.com");
-            user.setPassword(AESCipher.getSHA256("test"));
+            user.setEmail("admin@nobody.com");
+            user.setPassword(AESCipher.getSHA256("vivi229229"));
             user.setRole(RoleEnum.Admin);
-            userRepository.insert(user);
-        }
-        if (!userRepository.existsByCode("test")) {
-            User user = new User();
-            user.setCode("test");
-            user.setName("测试员");
-            user.setTelephone("16800000002");
-            user.setEmail("test@noneboy.com");
-            user.setPassword(AESCipher.getSHA256("test"));
-            user.setRole(RoleEnum.None);
             userRepository.insert(user);
         }
         if (!userRepository.existsByCode("zhouxiao")) {
@@ -97,9 +87,9 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             user.setName("周萧");
             user.setTelephone("18255396069");
             user.setWechat("fobgochod");
-            user.setEmail("zhouxiao@noneboy.com");
+            user.setEmail("zhouxiao@nobody.com");
             user.setPassword(AESCipher.getSHA256("test"));
-            user.setRole(RoleEnum.Owner);
+            user.setRole(RoleEnum.User);
             userRepository.insert(user);
         }
         if (!userRepository.existsByCode("chentt")) {
@@ -108,9 +98,9 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             user.setName("陈甜甜");
             user.setTelephone("15371028040");
             user.setWechat("cherry_sweet0127");
-            user.setEmail("chentt@noneboy.com");
+            user.setEmail("chentt@nobody.com");
             user.setPassword(AESCipher.getSHA256("test"));
-            user.setRole(RoleEnum.Owner);
+            user.setRole(RoleEnum.User);
             userRepository.insert(user);
         }
     }
@@ -120,7 +110,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             Tenant tenant = new Tenant();
             tenant.setCode("fobgochod");
             tenant.setName("山有扶苏");
-            tenant.setEmail("fobgochod@noneboy.com");
+            tenant.setEmail("fobgochod@nobody.com");
             tenant.setTelephone("16800000001");
             tenant.setOwner("admin");
             tenantRepository.insert(tenant);
@@ -129,7 +119,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             Tenant tenant = new Tenant();
             tenant.setCode("seven");
             tenant.setName("隰有荷华");
-            tenant.setEmail("seven@noneboy.com");
+            tenant.setEmail("seven@nobody.com");
             tenant.setTelephone("16800000002");
             tenant.setOwner("zhouxiao");
             tenantRepository.insert(tenant);
@@ -238,7 +228,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             task.setType("生活");
             task.setCode(TaskIdEnum.TS005.name());
             task.setName("吃药提醒");
-            task.setCron("0 0 0/1 * * ?");
+            task.setCron("0 0 8-22/1 * * ?");
             task.setClassName(Introspector.decapitalize(MedicineTask.class.getSimpleName()));
             task.setDisable(false);
             task.setRemark("吃药提醒");

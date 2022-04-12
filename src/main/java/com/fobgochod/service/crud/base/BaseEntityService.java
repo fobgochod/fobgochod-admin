@@ -94,9 +94,9 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     }
 
     @Override
-    public PageData<T> findByPage(Page page) {
+    public PageData<T> findByPage(Page<T> page) {
         if (page == null) {
-            page = new Page();
+            page = new Page<>();
         }
         MongoCollection<T> mongoCollection = this.getCollection();
         long total = mongoCollection.countDocuments(page.filter());
@@ -110,11 +110,6 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
             lists.add(iterator.next());
         }
         return PageData.data(total, lists);
-    }
-
-    @Override
-    public PageData<T> findCondByPage(Page<T> page) {
-        return PageData.zero();
     }
 
     @Override

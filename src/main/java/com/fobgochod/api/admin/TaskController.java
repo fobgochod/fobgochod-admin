@@ -6,14 +6,7 @@ import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +48,7 @@ public class TaskController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+    public ResponseEntity<?> search(@RequestBody(required = false) Page<Task> body) {
         return ResponseEntity.ok(taskRepository.findByPage(body));
     }
 

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -45,11 +46,13 @@ public class SqlUtil {
                 Filter filter = (Filter) cond;
                 // 处理like
                 Filter.Like like = filter.getLike();
-                if (like != null) {
+                if (like != null && StringUtils.hasLength(like.getValue())) {
                     query.addCriteria(Criteria.where(like.getKey()).regex(String.format(LIKE, like.getValue())));
                 }
                 for (Filter.Like item : filter.getLikes()) {
-                    query.addCriteria(Criteria.where(item.getKey()).regex(String.format(LIKE, item.getValue())));
+                    if (StringUtils.hasLength(item.getValue())) {
+                        query.addCriteria(Criteria.where(item.getKey()).regex(String.format(LIKE, item.getValue())));
+                    }
                 }
 
                 // 处理Between

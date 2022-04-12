@@ -17,6 +17,15 @@ import org.springframework.stereotype.Repository;
 public class UserRepositoryImpl extends BaseEntityRepository<User> implements UserRepository {
 
     @Override
+    public User findAny(String user) {
+        return mongoTemplate.findOne(Query.query(new Criteria().orOperator(
+                Criteria.where("code").is(user),
+                Criteria.where("telephone").is(user),
+                Criteria.where("email").is(user))
+        ), getEntityClass());
+    }
+
+    @Override
     public User findByCode(String code) {
         return mongoTemplate.findOne(Query.query(Criteria.where("code").is(code)), getEntityClass());
     }

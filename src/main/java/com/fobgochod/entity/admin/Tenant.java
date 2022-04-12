@@ -14,8 +14,8 @@ public class Tenant extends BaseEntity {
 
     private String code;
     private String name;
-    private String email;
     private String telephone;
+    private String email;
     private String owner;
 
     public String getCode() {
@@ -34,20 +34,20 @@ public class Tenant extends BaseEntity {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getTelephone() {
         return telephone;
     }
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getOwner() {

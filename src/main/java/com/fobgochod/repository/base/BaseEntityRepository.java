@@ -79,20 +79,7 @@ public abstract class BaseEntityRepository<T extends BaseEntity> implements Enti
     }
 
     @Override
-    public PageData<T> findByPage(Page page) {
-        if (page == null) {
-            page = new Page();
-        }
-        long total = mongoTemplate.count(page.queryFilter(), getEntityClass());
-        if (total <= 0) {
-            return PageData.zero();
-        }
-        List<T> list = mongoTemplate.find(page.query(), getEntityClass());
-        return PageData.data(total, list);
-    }
-
-    @Override
-    public PageData<T> findCondByPage(Page<T> page) {
+    public PageData<T> findByPage(Page<T> page) {
         long total = mongoTemplate.count(SqlUtil.cond(page.getCond()), getEntityClass());
         if (total <= 0) {
             return PageData.zero();

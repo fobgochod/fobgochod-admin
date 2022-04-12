@@ -18,5 +18,5 @@ tar -czvf fobgochod.tar.gz fobgochod
 cd /opt/database/mongo
 tar -zxvf fobgochod.tar.gz
 # 导入
-mongorestore -d fobgochod /opt/database/fobgochod/
+mongorestore -d fobgochod /opt/database/mongo/fobgochod/
 ```

@@ -1,23 +1,16 @@
 package com.fobgochod.api.admin;
 
+import com.fobgochod.domain.PasswordVO;
+import com.fobgochod.domain.base.BatchFid;
+import com.fobgochod.domain.base.Page;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
-import com.fobgochod.domain.base.BatchFid;
-import com.fobgochod.domain.base.Page;
-import com.fobgochod.domain.PasswordVO;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -72,7 +65,7 @@ public class UserController {
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+    public ResponseEntity<?> search(@RequestBody(required = false) Page<User> body) {
         return ResponseEntity.ok(userRepository.findByPage(body));
     }
 
@@ -126,7 +119,7 @@ public class UserController {
 
     @GetMapping("/name/{name}")
     public ResponseEntity<?> findByName(@PathVariable String name) {
-        User user = userRepository.findByCode(name);
+        User user = userRepository.findAny(name);
         return ResponseEntity.ok(user);
     }
 
