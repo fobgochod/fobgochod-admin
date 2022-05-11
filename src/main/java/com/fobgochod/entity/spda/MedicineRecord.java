@@ -1,4 +1,4 @@
-package com.fobgochod.entity.admin;
+package com.fobgochod.entity.spda;
 
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;

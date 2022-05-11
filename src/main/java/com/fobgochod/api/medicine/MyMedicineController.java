@@ -1,12 +1,15 @@
 package com.fobgochod.api.medicine;
 
 import com.fobgochod.domain.GroupBy;
-import com.fobgochod.domain.medicine.MedicType;
+import com.fobgochod.domain.medicine.EatMedicine;
+import com.fobgochod.domain.medicine.MedicineItemVO;
 import com.fobgochod.domain.medicine.MedicineVO;
 import com.fobgochod.domain.medicine.MyMedicine;
-import com.fobgochod.entity.admin.Medicine;
-import com.fobgochod.entity.admin.MedicineRecord;
 import com.fobgochod.entity.admin.User;
+import com.fobgochod.entity.spda.Medicine;
+import com.fobgochod.entity.spda.MedicineItem;
+import com.fobgochod.entity.spda.MedicineRecord;
+import com.fobgochod.repository.MedicineItemRepository;
 import com.fobgochod.repository.MedicineRecordRepository;
 import com.fobgochod.repository.MedicineRepository;
 import com.fobgochod.repository.UserRepository;
@@ -40,24 +43,36 @@ public class MyMedicineController {
     @Autowired
     private MedicineRepository medicineRepository;
     @Autowired
+    private MedicineItemRepository medicineItemRepository;
+    @Autowired
     private MedicineRecordRepository medicineRecordRepository;
 
     @PostMapping("/me")
     public ResponseEntity<?> medicines(@RequestBody Medicine body) {
         User user = userRepository.findByCode(body.getUserId());
-        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId());
-        List<MedicineRecord> medicineRecords = medicineRecordRepository.findByMedicineIdIn(medicines.stream().map(Medicine::getId).collect(Collectors.toList()));
+        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
+        List<String> medicineIds = medicines.stream().map(Medicine::getId).collect(Collectors.toList());
+        List<MedicineRecord> medicineRecords = medicineRecordRepository.findByMedicineIdIn(medicineIds);
         Map<String, List<MedicineRecord>> recordMap = medicineRecords.stream().collect(Collectors.groupingBy(MedicineRecord::getMedicineId));
 
+        List<MedicineItem> medicineItems = medicineItemRepository.findByMedicineIdIn(medicineIds);
+        Map<String, List<MedicineItem>> itemMap = medicineItems.stream().collect(Collectors.groupingBy(MedicineItem::getMedicineId));
 
         List<MedicineVO> medicineVOS = new ArrayList<>();
         medicines.forEach(m -> {
+            List<String> recordTypes = recordMap.getOrDefault(m.getId(), Collections.emptyList()).stream().map(MedicineRecord::getType).collect(Collectors.toList());
+
+            List<MedicineItemVO> itemVOS = new ArrayList<>();
+            itemMap.getOrDefault(m.getId(), Collections.emptyList()).forEach(item -> {
+                MedicineItemVO itemVO = new MedicineItemVO();
+                itemVO.doBackward(item);
+                itemVO.setState(recordTypes.contains(item.getType()));
+                itemVOS.add(itemVO);
+            });
+
             MedicineVO vo = new MedicineVO();
             vo.doBackward(m);
-            List<String> recordTypes = recordMap.getOrDefault(m.getId(), Collections.emptyList()).stream().map(MedicineRecord::getType).collect(Collectors.toList());
-            vo.setMorningB(recordTypes.contains(MedicType.MORNING.getName()));
-            vo.setNoonB(recordTypes.contains(MedicType.NOON.getName()));
-            vo.setNightB(recordTypes.contains(MedicType.NIGHT.getName()));
+            vo.setItems(itemVOS);
             medicineVOS.add(vo);
         });
 
@@ -70,35 +85,50 @@ public class MyMedicineController {
 
     @PostMapping("/eat")
     public ResponseEntity<?> eat(@RequestBody Medicine body) {
-        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId());
+        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
         medicines.forEach(medicine -> {
-            MedicType type = MedicType.type();
-            MedicineRecord medicineRecord = medicineRecordRepository.findRecord(medicine.getId(), type.getName());
-            if (medicineRecord != null) {
+            MedicineItem item = medicineItemRepository.findItem(medicine.getId());
+            if (item == null || item.getSlice() <= 0) {
                 return;
             }
-            float slice;
-            if (type == MedicType.MORNING) {
-                slice = medicine.getMorning();
-            } else if (type == MedicType.NOON) {
-                slice = medicine.getNoon();
-            } else if (type == MedicType.NIGHT) {
-                slice = medicine.getNight();
-            } else {
-                slice = 0;
-            }
-            if (slice == 0) {
-                return;
-            }
-            MedicineRecord record = new MedicineRecord();
-            record.setMedicineId(medicine.getId());
-            record.setType(type.getName());
-            record.setSlice(-slice);
-            record.setDate(LocalDate.now());
-            record.setTime(LocalTime.now());
-            medicineRecordRepository.insert(record);
+            eatMedicine(medicine.getId(), item, LocalDate.now(), LocalTime.now());
         });
 
+        calcTotalMedicine(medicines);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/eat/day")
+    public ResponseEntity<?> eat(@RequestBody EatMedicine body) {
+        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
+        medicines.forEach(medicine -> {
+            List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
+            items.forEach(item -> {
+                if (item.getSlice() <= 0) {
+                    return;
+                }
+                eatMedicine(medicine.getId(), item, body.getDate(), item.getStart());
+            });
+        });
+        calcTotalMedicine(medicines);
+        return ResponseEntity.ok().build();
+    }
+
+    private void eatMedicine(String medicineId, MedicineItem item, LocalDate date, LocalTime time) {
+        MedicineRecord record = medicineRecordRepository.findRecord(medicineId, item.getType(), date);
+        if (record != null) {
+            return;
+        }
+        MedicineRecord medicineRecord = new MedicineRecord();
+        medicineRecord.setMedicineId(medicineId);
+        medicineRecord.setType(item.getType());
+        medicineRecord.setSlice(-item.getSlice());
+        medicineRecord.setDate(date);
+        medicineRecord.setTime(time);
+        medicineRecordRepository.insert(medicineRecord);
+    }
+
+    private void calcTotalMedicine(List<Medicine> medicines) {
         List<GroupBy> medicineCounts = medicineRecordRepository.findMedicineCounts(medicines.stream().map(Medicine::getId).collect(Collectors.toList()));
         Map<String, Float> medicineCountMap = medicineCounts.stream().collect(Collectors.toMap(GroupBy::getId, GroupBy::getSum));
         medicines.forEach(medicine -> {
@@ -107,6 +137,5 @@ public class MyMedicineController {
             medicine.setRemain((int) (medicine.getTotal() / day));
             medicineRepository.update(medicine);
         });
-        return ResponseEntity.ok().build();
     }
 }

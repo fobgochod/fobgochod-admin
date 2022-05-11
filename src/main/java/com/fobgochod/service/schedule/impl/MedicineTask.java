@@ -1,19 +1,15 @@
 package com.fobgochod.service.schedule.impl;
 
 import com.fobgochod.domain.medicine.MedicType;
-import com.fobgochod.entity.admin.Medicine;
-import com.fobgochod.entity.admin.MedicineRecord;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.entity.admin.User;
-import com.fobgochod.repository.MedicineRecordRepository;
-import com.fobgochod.repository.MedicineRepository;
-import com.fobgochod.repository.TaskRepository;
-import com.fobgochod.repository.UserRepository;
+import com.fobgochod.entity.spda.Medicine;
+import com.fobgochod.entity.spda.MedicineItem;
+import com.fobgochod.entity.spda.MedicineRecord;
+import com.fobgochod.repository.*;
 import com.fobgochod.service.message.sms.AliyunSmsService;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,8 +27,6 @@ import java.util.List;
 @Component
 public class MedicineTask extends TaskService {
 
-    private static final Logger logger = LoggerFactory.getLogger(MedicineTask.class);
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -42,46 +36,39 @@ public class MedicineTask extends TaskService {
     @Autowired
     private MedicineRepository medicineRepository;
     @Autowired
+    private MedicineItemRepository medicineItemRepository;
+    @Autowired
     private MedicineRecordRepository medicineRecordRepository;
 
     @Override
     public void execute() throws Exception {
         LocalDateTime now = LocalDateTime.now();
         Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS005.name());
-        if (task != null) {
-            List<String> userIds = medicineRepository.findUserIds();
-            for (String userId : userIds) {
-                List<Medicine> medicines = medicineRepository.findByUserId(userId);
-                User user = userRepository.findByCode(userId);
-                if (user != null && user.getTelephone() != null) {
-                    // 1、吃药提醒
-                    MedicType type = MedicType.type();
-                    boolean match = medicines.stream().anyMatch(medicine -> {
-                        boolean need = (type == MedicType.MORNING && medicine.getMorning() > 0)
-                                || (type == MedicType.NOON && medicine.getNoon() > 0)
-                                || (type == MedicType.NIGHT && medicine.getNight() > 0);
-                        if (need) {
-                            MedicineRecord record = medicineRecordRepository.findRecord(medicine.getId(), type.getName());
-                            return record == null;
-                        }
+        if (task == null) {
+            return;
+        }
+        List<String> userIds = medicineRepository.findUserIds();
+        for (String userId : userIds) {
+            List<Medicine> medicines = medicineRepository.findByUserId(userId, false);
+            User user = userRepository.findByCode(userId);
+            if (user != null && user.getTelephone() != null) {
+                // 1、吃药提醒
+                boolean match = medicines.stream().anyMatch(medicine -> {
+                    MedicineItem item = medicineItemRepository.findItem(medicine.getId());
+                    if (item == null || item.getSlice() <= 0) {
                         return false;
-                    });
-                    if (match) {
-                        aliyunSmsService.medicine(user.getTelephone(), user.getName(), MedicType.type());
-
-                        boolean forget = type == MedicType.MORNING && now.getHour() == MedicType.MORNING.getEnd()
-                                || type == MedicType.NOON && now.getHour() == MedicType.NOON.getEnd()
-                                || type == MedicType.NIGHT && now.getHour() == MedicType.NIGHT.getEnd();
-                        if (forget) {
-                            aliyunSmsService.medicine(user.getContacts().get(0), user.getName(), MedicType.type());
-                        }
                     }
-                    // 2、挂号提醒
-                    int remain = medicines.stream().map(Medicine::getRemain).min(Comparator.naturalOrder()).orElse(-1);
-                    if (now.getDayOfWeek() == DayOfWeek.SUNDAY || now.getDayOfWeek() == DayOfWeek.TUESDAY) {
-                        if (now.getHour() == 10 || now.getHour() == 22) {
-                            aliyunSmsService.registration(user.getTelephone(), user.getName(), remain);
-                        }
+                    MedicineRecord record = medicineRecordRepository.findRecord(medicine.getId(), item.getType());
+                    return record == null;
+                });
+                if (match) {
+                    aliyunSmsService.medicine(user.getTelephone(), user.getName(), MedicType.current());
+                }
+                // 2、挂号提醒
+                int remain = medicines.stream().map(Medicine::getRemain).min(Comparator.naturalOrder()).orElse(-1);
+                if (now.getDayOfWeek() == DayOfWeek.TUESDAY) {
+                    if (now.getHour() == 9 || now.getHour() == 12 || now.getHour() == 18 || now.getHour() == 22) {
+                        aliyunSmsService.registration(user.getTelephone(), user.getName(), remain);
                     }
                 }
             }

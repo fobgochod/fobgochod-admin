@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -45,15 +46,12 @@ public class BirthdayTask extends TaskService {
     public void execute() throws Exception {
         Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS006.name());
         if (task != null) {
-            List<User> users = userRepository.findAll()
-                    .stream()
-                    .filter(user -> user.getBirth() != null)
-                    .collect(Collectors.toList());
+            List<User> users = userRepository.findAll().stream().filter(user -> user.getBirth() != null).collect(Collectors.toList());
             for (User user : users) {
                 int before;
                 LocalDate now = LocalDate.now();
                 LocalDate birth = user.getBirth();
-                if (user.getLunar()) {
+                if (user.getLunar() != null && user.getLunar()) {
                     ChineseDate lunarDate = new ChineseDate(now.getYear(), birth.getMonthValue(), birth.getDayOfMonth());
                     LocalDate solarDate = LocalDate.of(lunarDate.getGregorianYear(), lunarDate.getGregorianMonthBase1(), lunarDate.getGregorianDay());
                     before = Period.between(now, solarDate).getDays();
@@ -67,7 +65,10 @@ public class BirthdayTask extends TaskService {
                     case 1:
                     case 5:
                     case 7:
-                        aliyunSmsService.birthday(user.getTelephone(), user.getName(), user.getBirth());
+                        String telephones = String.join(",", user.getContacts());
+                        if (StringUtils.hasLength(telephones)) {
+                            aliyunSmsService.birthday(telephones, user.getName(), user.getBirth());
+                        }
                         break;
                 }
             }

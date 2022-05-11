@@ -2,7 +2,7 @@ package com.fobgochod.service.login.impl;
 
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.entity.admin.SmsRecord;
+import com.fobgochod.entity.spda.SmsRecord;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.exception.SystemException;
 import com.fobgochod.repository.SmsRecordRepository;

@@ -1,7 +1,7 @@
 package com.fobgochod.repository.impl;
 
 import com.fobgochod.domain.GroupBy;
-import com.fobgochod.entity.admin.Medicine;
+import com.fobgochod.entity.spda.Medicine;
 import com.fobgochod.repository.MedicineRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -24,6 +24,11 @@ public class MedicineRepositoryImpl extends BaseEntityRepository<Medicine> imple
     @Override
     public List<Medicine> findByUserId(String userId) {
         return mongoTemplate.find(Query.query(Criteria.where("userId").is(userId)), getEntityClass());
+    }
+
+    @Override
+    public List<Medicine> findByUserId(String userId, boolean status) {
+        return mongoTemplate.find(Query.query(Criteria.where("userId").is(userId).and("status").is(status)), getEntityClass());
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.fobgochod.repository;
 
-import com.fobgochod.entity.admin.Bucket;
-import com.fobgochod.entity.admin.Medicine;
+import com.fobgochod.entity.spda.Medicine;
 import com.fobgochod.repository.base.EntityRepository;
 import org.springframework.data.repository.query.Param;
 
@@ -18,6 +17,8 @@ public interface MedicineRepository extends EntityRepository<Medicine> {
     boolean existsByCode(@Param("code") String code);
 
     List<Medicine> findByUserId(@Param("userId") String userId);
+
+    List<Medicine> findByUserId(@Param("userId") String userId, @Param("status") boolean status);
 
     List<String> findUserIds();
 }

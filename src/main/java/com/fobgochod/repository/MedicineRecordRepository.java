@@ -1,9 +1,10 @@
 package com.fobgochod.repository;
 
 import com.fobgochod.domain.GroupBy;
-import com.fobgochod.entity.admin.MedicineRecord;
+import com.fobgochod.entity.spda.MedicineRecord;
 import com.fobgochod.repository.base.EntityRepository;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,6 +17,8 @@ import java.util.List;
 public interface MedicineRecordRepository extends EntityRepository<MedicineRecord> {
 
     MedicineRecord findRecord(String medicineId, String type);
+
+    MedicineRecord findRecord(String medicineId, String type, LocalDate date);
 
     List<MedicineRecord> findByMedicineIdIn(Collection<String> ids);
 

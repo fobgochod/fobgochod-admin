@@ -1,6 +1,6 @@
 package com.fobgochod.repository.impl;
 
-import com.fobgochod.entity.admin.SmsRecord;
+import com.fobgochod.entity.spda.SmsRecord;
 import com.fobgochod.repository.SmsRecordRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.query.Criteria;

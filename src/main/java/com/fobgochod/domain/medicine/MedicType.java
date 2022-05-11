@@ -54,7 +54,7 @@ public enum MedicType {
         return name;
     }
 
-    public static MedicType type() {
+    public static MedicType current() {
         int hour = LocalTime.now().getHour();
         if (hour >= MORNING.getStart() && hour <= MORNING.getEnd()) {
             return MORNING;

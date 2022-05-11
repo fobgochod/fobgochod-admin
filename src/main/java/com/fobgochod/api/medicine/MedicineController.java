@@ -2,7 +2,7 @@ package com.fobgochod.api.medicine;
 
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
-import com.fobgochod.entity.admin.Medicine;
+import com.fobgochod.entity.spda.Medicine;
 import com.fobgochod.repository.MedicineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

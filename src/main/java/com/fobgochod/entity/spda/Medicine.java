@@ -1,4 +1,4 @@
-package com.fobgochod.entity.admin;
+package com.fobgochod.entity.spda;
 
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.annotation.Transient;
@@ -23,6 +23,7 @@ public class Medicine extends BaseEntity {
     private Float noon;
     private Float night;
     private Integer remain;
+    private Boolean status;
     private String remark;
     @Transient
     private List<MedicineRecord> records;
@@ -89,6 +90,14 @@ public class Medicine extends BaseEntity {
 
     public void setRemain(Integer remain) {
         this.remain = remain;
+    }
+
+    public Boolean getStatus() {
+        return status;
+    }
+
+    public void setStatus(Boolean status) {
+        this.status = status;
     }
 
     public String getRemark() {

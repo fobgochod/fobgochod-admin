@@ -1,7 +1,7 @@
 package com.fobgochod.service.message.sms;
 
 import com.fobgochod.domain.medicine.MedicType;
-import com.fobgochod.entity.admin.SmsRecord;
+import com.fobgochod.entity.spda.SmsRecord;
 
 import java.time.LocalDate;
 
