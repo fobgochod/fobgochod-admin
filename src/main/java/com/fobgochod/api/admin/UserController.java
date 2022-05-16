@@ -8,6 +8,7 @@ import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.UserRepository;
+import com.fobgochod.support.security.Encrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,6 +32,7 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @Encrypt
     @PostMapping
     public ResponseEntity<?> create(@RequestBody User body) {
         String id = userRepository.insert(body);
@@ -43,6 +45,7 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @Encrypt
     @PutMapping
     public ResponseEntity<?> modify(@RequestBody User body) {
         User user = userRepository.findById(body.getId());
@@ -64,6 +67,7 @@ public class UserController {
         return ResponseEntity.ok(userRepository.findAll(body));
     }
 
+    @Encrypt
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<User> body) {
         return ResponseEntity.ok(userRepository.findByPage(body));

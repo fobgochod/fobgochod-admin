@@ -16,9 +16,10 @@ public class MedicineItemRepositoryImpl extends BaseEntityRepository<MedicineIte
 
     @Override
     public MedicineItem findItem(String medicineId) {
+        List<MedicineItem> items = this.findItems(medicineId);
         LocalTime now = LocalTime.now();
-        return mongoTemplate.findOne(Query.query(Criteria.where("medicineId").is(medicineId)
-                .and("start").lte(now).and("end").gt(now)), getEntityClass());
+        return items.stream().filter(o -> now.isAfter(o.getStart()) && now.isBefore(o.getEnd()))
+                .findFirst().orElse(null);
     }
 
     @Override

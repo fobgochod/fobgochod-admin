@@ -54,10 +54,10 @@ public class BirthdayTask extends TaskService {
                 if (user.getLunar() != null && user.getLunar()) {
                     ChineseDate lunarDate = new ChineseDate(now.getYear(), birth.getMonthValue(), birth.getDayOfMonth());
                     LocalDate solarDate = LocalDate.of(lunarDate.getGregorianYear(), lunarDate.getGregorianMonthBase1(), lunarDate.getGregorianDay());
-                    before = Period.between(now, solarDate).getDays();
+                    before = (int) (solarDate.toEpochDay() - now.toEpochDay());
                 } else {
                     LocalDate solarDate = LocalDate.of(now.getYear(), birth.getMonth(), birth.getDayOfMonth());
-                    before = Period.between(now, solarDate).getDays();
+                    before = (int) (solarDate.toEpochDay() - now.toEpochDay());
                 }
 
                 switch (before) {
