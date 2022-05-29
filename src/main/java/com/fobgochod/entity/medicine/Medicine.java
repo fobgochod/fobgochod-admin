@@ -1,4 +1,4 @@
-package com.fobgochod.entity.spda;
+package com.fobgochod.entity.medicine;
 
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.annotation.Transient;
@@ -19,9 +19,6 @@ public class Medicine extends BaseEntity {
     private String code;
     private String name;
     private Float total;
-    private Float morning;
-    private Float noon;
-    private Float night;
     private Integer remain;
     private Boolean status;
     private String remark;
@@ -58,30 +55,6 @@ public class Medicine extends BaseEntity {
 
     public void setTotal(Float total) {
         this.total = total;
-    }
-
-    public Float getMorning() {
-        return morning;
-    }
-
-    public void setMorning(Float morning) {
-        this.morning = morning;
-    }
-
-    public Float getNoon() {
-        return noon;
-    }
-
-    public void setNoon(Float noon) {
-        this.noon = noon;
-    }
-
-    public Float getNight() {
-        return night;
-    }
-
-    public void setNight(Float night) {
-        this.night = night;
     }
 
     public Integer getRemain() {

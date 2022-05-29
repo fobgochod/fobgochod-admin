@@ -47,6 +47,15 @@ public class FghExceptionHandler {
         return stdError;
     }
 
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public StdError unauthorized(HttpServletRequest req, UnauthorizedException e) {
+        StdError stdError = StdError.of(e, req.getRequestURI());
+        stdError.setMessage(e.getHandler().getMessage());
+        logger.error(stdError.toString(), e);
+        return stdError;
+    }
+
     @ExceptionHandler(Exception.class)
     public StdError unexpected(HttpServletRequest req, Exception e) {
         return printError(req, e, I18nCode.UNEXPECTED);
@@ -56,11 +65,6 @@ public class FghExceptionHandler {
     @ExceptionHandler({NoHandlerFoundException.class, HttpRequestMethodNotSupportedException.class})
     public StdError notFound(HttpServletRequest req, ServletException e) {
         return printError(req, e, I18nCode.NOT_FOUND);
-    }
-
-    @ExceptionHandler(DataAccessException.class)
-    public StdError dataAccess(HttpServletRequest req, DataAccessException e) {
-        return printError(req, e, I18nCode.DATA_ACCESS);
     }
 
     @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class})

@@ -1,14 +1,13 @@
 package com.fobgochod.api.file;
 
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.service.file.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -26,6 +25,12 @@ public class FileUploadController {
 
     @Autowired
     private UploadService uploadService;
+
+    @PostMapping("/upload/stream")
+    public Callable<?> uploadStream(@RequestHeader(value = FghConstants.HTTP_HEADER_API_ARG_KEY) FileInfo body,
+                                    HttpServletRequest request) {
+        return () -> uploadService.uploadFile(body, request.getInputStream());
+    }
 
     /**
      * 上传文件-单个文件

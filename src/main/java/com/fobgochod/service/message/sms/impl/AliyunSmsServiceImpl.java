@@ -3,7 +3,7 @@ package com.fobgochod.service.message.sms.impl;
 import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
 import com.aliyun.dysmsapi20170525.models.SendSmsResponseBody;
 import com.fobgochod.domain.medicine.MedicType;
-import com.fobgochod.entity.spda.SmsRecord;
+import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.exception.SystemException;
 import com.fobgochod.repository.SmsRecordRepository;
 import com.fobgochod.serializer.Constants;
@@ -32,7 +32,7 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
 
         SmsRecord smsRecord = new SmsRecord();
         smsRecord.setTelephone(telephone);
-        smsRecord.setSignName(AliyunSms.SIGN_NAME_ROBO);
+        smsRecord.setSignName(AliyunSms.SIGN_NAME);
         smsRecord.setTemplateCode(AliyunSms.TC_TEST);
         smsRecord.setTemplateParam(templateParam);
         smsRecord.setSendDate(LocalDateTime.now());
@@ -63,7 +63,7 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
 
         SmsRecord smsRecord = new SmsRecord();
         smsRecord.setTelephone(telephone);
-        smsRecord.setSignName(AliyunSms.SIGN_NAME);
+        smsRecord.setSignName(AliyunSms.SIGN_NAME_ROBO);
         smsRecord.setTemplateCode(AliyunSms.TC_MEDICINE);
         smsRecord.setTemplateParam(templateParam);
         smsRecord.setSendDate(LocalDateTime.now());

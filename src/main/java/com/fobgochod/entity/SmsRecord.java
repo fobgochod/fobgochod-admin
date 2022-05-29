@@ -1,6 +1,5 @@
-package com.fobgochod.entity.spda;
+package com.fobgochod.entity;
 
-import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;

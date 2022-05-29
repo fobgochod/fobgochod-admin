@@ -1,5 +1,6 @@
 package com.fobgochod.auth.domain;
 
+import com.fobgochod.constant.FghConstants;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -15,6 +16,7 @@ import java.util.Objects;
  */
 public class LoginUser implements UserDetails {
 
+    private String tenantId;
     private String username;
     private String password;
 
@@ -29,6 +31,14 @@ public class LoginUser implements UserDetails {
 
     public LoginUser(String username) {
         this.username = username;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
     }
 
     @Override
@@ -86,16 +96,16 @@ public class LoginUser implements UserDetails {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LoginUser loginUser = (LoginUser) o;
-        return Objects.equals(username, loginUser.username) && Objects.equals(telephone, loginUser.telephone);
+        return Objects.equals(tenantId, loginUser.tenantId) && username.equals(loginUser.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, telephone);
+        return Objects.hash(tenantId, username);
     }
 
     public String uniqueKey() {
-        return username == null ? telephone : username;
+        return String.format("%s:%s", this.tenantId == null ? FghConstants.DEFAULT_TENANT : this.tenantId, this.username).toLowerCase();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.fobgochod.repository.impl;
 
-import com.fobgochod.entity.spda.MedicineItem;
+import com.fobgochod.entity.medicine.MedicineItem;
 import com.fobgochod.repository.MedicineItemRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.query.Criteria;

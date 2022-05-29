@@ -8,14 +8,11 @@ import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.message.sms.AliyunSmsService;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,8 +25,6 @@ import java.util.stream.Collectors;
 @Component
 public class BirthdayTask extends TaskService {
 
-    private static final Logger logger = LoggerFactory.getLogger(BirthdayTask.class);
-
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -37,14 +32,9 @@ public class BirthdayTask extends TaskService {
     @Autowired
     private AliyunSmsService aliyunSmsService;
 
-    public static void main(String[] args) {
-        int days = Period.between(LocalDate.of(2022, 2, 28), LocalDate.now()).getDays();
-        System.out.println("days = " + days);
-    }
-
     @Override
     public void execute() throws Exception {
-        Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS006.name());
+        Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS005.name());
         if (task != null) {
             List<User> users = userRepository.findAll().stream().filter(user -> user.getBirth() != null).collect(Collectors.toList());
             for (User user : users) {

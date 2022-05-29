@@ -1,6 +1,6 @@
 package com.fobgochod.repository;
 
-import com.fobgochod.entity.spda.MedicineItem;
+import com.fobgochod.entity.medicine.MedicineItem;
 import com.fobgochod.repository.base.EntityRepository;
 
 import java.util.Collection;

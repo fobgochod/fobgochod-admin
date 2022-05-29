@@ -4,18 +4,16 @@ import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
- * 功能描述
+ * 角色
  *
- * @author seven
- * @date 2021/6/28
+ * @author Xiao
+ * @date 2022/5/23 21:31
  */
-@Document("bucket")
-public class Bucket extends BaseEntity {
+@Document("role")
+public class Role extends BaseEntity {
 
     private String code;
     private String name;
-    private String owner;
-    private String task;
 
     public String getCode() {
         return code;
@@ -33,19 +31,4 @@ public class Bucket extends BaseEntity {
         this.name = name;
     }
 
-    public String getOwner() {
-        return owner;
-    }
-
-    public void setOwner(String owner) {
-        this.owner = owner;
-    }
-
-    public String getTask() {
-        return task;
-    }
-
-    public void setTask(String task) {
-        this.task = task;
-    }
 }

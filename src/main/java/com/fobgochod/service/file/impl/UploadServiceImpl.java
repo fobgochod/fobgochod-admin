@@ -1,8 +1,8 @@
 package com.fobgochod.service.file.impl;
 
-import com.fobgochod.service.crud.FileInfoCrudService;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.exception.SystemException;
+import com.fobgochod.service.crud.FileInfoCrudService;
 import com.fobgochod.service.file.UploadService;
 import com.fobgochod.service.mongo.FileStorage;
 import org.bson.types.ObjectId;
@@ -19,11 +19,6 @@ public class UploadServiceImpl implements UploadService {
     private FileStorage fileStorage;
     @Autowired
     private FileInfoCrudService fileInfoCrudService;
-
-    @Override
-    public String uploadFileToId(FileInfo fileInfo, InputStream source) {
-        return uploadFile(fileInfo, source).getId();
-    }
 
     @Override
     public FileInfo uploadFile(FileInfo fileInfo, InputStream source) {

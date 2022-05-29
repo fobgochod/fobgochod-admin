@@ -1,6 +1,6 @@
 package com.fobgochod.entity.admin;
 
-import com.fobgochod.domain.BucketStats;
+import com.fobgochod.domain.StatsResult;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -15,28 +15,27 @@ import java.util.List;
 @Document("stats")
 public class Stats extends BaseEntity {
 
-    private Integer year;
-    private Integer month;
+    private String year;
+    private String month;
     private Integer userCount;
     private Integer tenantCount;
     private Long fileCount;
     private Long totalSize;
-    private String totalSizeReadable;
-    private List<BucketStats> buckets;
+    private List<StatsResult> tenants;
 
-    public Integer getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Integer year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
-    public Integer getMonth() {
+    public String getMonth() {
         return month;
     }
 
-    public void setMonth(Integer month) {
+    public void setMonth(String month) {
         this.month = month;
     }
 
@@ -72,19 +71,11 @@ public class Stats extends BaseEntity {
         this.totalSize = totalSize;
     }
 
-    public String getTotalSizeReadable() {
-        return totalSizeReadable;
+    public List<StatsResult> getTenants() {
+        return tenants;
     }
 
-    public void setTotalSizeReadable(String totalSizeReadable) {
-        this.totalSizeReadable = totalSizeReadable;
-    }
-
-    public List<BucketStats> getBuckets() {
-        return buckets;
-    }
-
-    public void setBuckets(List<BucketStats> buckets) {
-        this.buckets = buckets;
+    public void setTenants(List<StatsResult> tenants) {
+        this.tenants = tenants;
     }
 }

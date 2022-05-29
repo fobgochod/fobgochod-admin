@@ -40,7 +40,7 @@ public interface LoginService {
      * @param tenantId
      * @return
      */
-    String refresh(String token, String tenantId);
+    LoginUser refresh(String token, String tenantId);
 
     /**
      * 解析token

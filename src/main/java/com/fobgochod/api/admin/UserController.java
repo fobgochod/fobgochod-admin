@@ -1,14 +1,16 @@
 package com.fobgochod.api.admin;
 
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.PasswordVO;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
-import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.select.Option;
 import com.fobgochod.domain.select.Options;
+import com.fobgochod.entity.BaseEntity;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.support.security.Encrypt;
+import com.fobgochod.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -70,6 +72,10 @@ public class UserController {
     @Encrypt
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<User> body) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
+            BaseEntity baseEntity = body.getCond();
+            baseEntity.setTenantId(UserUtil.getTenantId());
+        }
         return ResponseEntity.ok(userRepository.findByPage(body));
     }
 
@@ -130,14 +136,14 @@ public class UserController {
     @GetMapping("/option/group")
     public ResponseEntity<?> optionGroup(@RequestBody(required = false) User body) {
         List<User> users = userRepository.findAll(body);
-        Map<RoleEnum, List<User>> userMap = users.stream().collect(Collectors.groupingBy(User::getRole));
+        Map<String, List<User>> userMap = users.stream().collect(Collectors.groupingBy(User::getRole));
         List<Options> optionGroup = new ArrayList<>();
-        for (Map.Entry<RoleEnum, List<User>> entry : userMap.entrySet()) {
+        for (Map.Entry<String, List<User>> entry : userMap.entrySet()) {
             Options options = new Options();
-            options.setKey(entry.getKey().ordinal());
-            options.setLabel(entry.getKey().name());
+            options.setKey(entry.getKey());
+            options.setLabel(entry.getKey());
             for (User user : entry.getValue()) {
-                options.getOptions().add(new Option(user.getCode(), user.getName(), user.getEmail()));
+                options.getOptions().add(new Option(user.getId(), user.getCode(), user.getName(), user.getEmail()));
             }
             optionGroup.add(options);
         }

@@ -24,8 +24,8 @@ import java.util.Locale;
 public class I18nUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(I18nUtils.class);
-    private static final MessageSourceAccessor messageSource = FghMessageSource.getAccessor();
-    private static final MessageSourceAccessor messages = FghCommonMessageSource.getAccessor();
+    private static final MessageSourceAccessor messages = FghMessageSource.getAccessor();
+    private static final MessageSourceAccessor messageSource = FghCommonMessageSource.getAccessor();
     private static String language;
     private static String country;
 

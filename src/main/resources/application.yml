@@ -41,8 +41,10 @@ management:
     web:
       base-path: /actuator
       exposure:
-        include: "*"
-        exclude: metrics
+        include:
+          - health
+          - log
+          - logfile
   endpoint:
     shutdown:
       enabled: false

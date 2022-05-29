@@ -7,6 +7,15 @@ import org.bson.conversions.Bson;
 public interface EntityService<T extends BaseEntity> extends CrudRegistry<T> {
 
     /**
+     * 虚拟删除
+     *
+     * @param id 文件ID
+     */
+    void removeById(String id);
+
+    void restoreById(String id);
+
+    /**
      * 保存实体，不添加基础字段数据
      *
      * @param data 实体

@@ -1,4 +1,4 @@
-package com.fobgochod.entity.spda;
+package com.fobgochod.entity.medicine;
 
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -15,11 +15,20 @@ import java.time.LocalTime;
 @Document("medicine_record")
 public class MedicineRecord extends BaseEntity {
 
+    private String userId;
     private String medicineId;
     private String type;
     private Float slice;
     private LocalDate date;
     private LocalTime time;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     public String getMedicineId() {
         return medicineId;

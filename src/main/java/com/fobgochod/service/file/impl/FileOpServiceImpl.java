@@ -11,7 +11,10 @@ import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.RecycleBin;
 import com.fobgochod.exception.SystemException;
-import com.fobgochod.service.crud.*;
+import com.fobgochod.service.crud.DirectoryCrudService;
+import com.fobgochod.service.crud.FileInfoCrudService;
+import com.fobgochod.service.crud.RecycleCrudService;
+import com.fobgochod.service.crud.ShrinkCrudService;
 import com.fobgochod.service.file.FileOpService;
 import com.fobgochod.service.file.UploadService;
 import com.fobgochod.util.FileUtil;
@@ -33,8 +36,6 @@ public class FileOpServiceImpl implements FileOpService {
     @Autowired
     private UploadService uploadService;
     @Autowired
-    private ShareCrudService shareCrudService;
-    @Autowired
     private ShrinkCrudService shrinkCrudService;
     @Autowired
     private RecycleCrudService recycleCrudService;
@@ -51,15 +52,14 @@ public class FileOpServiceImpl implements FileOpService {
         }
         deleteFile0(fileInfo, false);
         RecycleBin recycleBin = new RecycleBin();
-        recycleBin.setName(fileInfo.getName());
+        recycleBin.setFileId(fileInfo.getId());
+        recycleBin.setFileName(fileInfo.getName());
         recycleBin.setDeleteDate(LocalDateTime.now());
         recycleBin.setSize(fileInfo.getSize());
-        recycleBin.setContentType(FileTypeEnum.File.toString());
+        recycleBin.setType(FileTypeEnum.File);
         UserUtil.copyCreate(recycleBin, fileInfo);
 
         List<DirInfo> dirInfos = directoryCrudService.getDirInfos(fileInfo.getDirectoryId());
-        recycleBin.setFileInfo(fileInfo);
-        recycleBin.setDirInfos(dirInfos);
         recycleBin.setPaths(FileUtil.getPaths(fileInfo.getDirectoryId(), dirInfos));
         recycleCrudService.save(recycleBin);
         return recycleBin;
@@ -79,16 +79,15 @@ public class FileOpServiceImpl implements FileOpService {
         }
         DirTree dirTree = this.deleteDir0(dirInfo, false);
         RecycleBin recycleBin = new RecycleBin();
-        recycleBin.setName(dirInfo.getName());
+        recycleBin.setFileId(dirInfo.getId());
+        recycleBin.setFileName(dirInfo.getName());
         recycleBin.setDeleteDate(LocalDateTime.now());
-        recycleBin.setContentType(FileTypeEnum.Directory.toString());
+        recycleBin.setType(FileTypeEnum.Directory);
         UserUtil.copyCreate(recycleBin, dirInfo);
 
         List<DirInfo> dirInfos = directoryCrudService.getDirInfos(dirInfo.getParentId());
-        recycleBin.setDirInfos(dirInfos);
         recycleBin.setPaths(FileUtil.getPaths(dirInfo.getParentId(), dirInfos));
         recycleBin.setSize(FileUtil.getDirSize(dirTree));
-        recycleBin.setDirInfo(dirTree);
         recycleCrudService.save(recycleBin);
         return recycleBin;
     }
@@ -117,7 +116,11 @@ public class FileOpServiceImpl implements FileOpService {
             dirs.add(deleteDir0(childDirInfo, force));
         }
         dirTree.setDirs(dirs);
-        directoryCrudService.deleteById(dirInfo.getId());
+        if (force) {
+            directoryCrudService.deleteById(dirInfo.getId());
+        } else {
+            directoryCrudService.removeById(dirInfo.getId());
+        }
         return dirTree;
     }
 
@@ -131,10 +134,11 @@ public class FileOpServiceImpl implements FileOpService {
     }
 
     private void deleteFileInfo(String fileInfoId, boolean force) {
-        fileInfoCrudService.deleteById(fileInfoId);
         if (force) {
-            shareCrudService.deleteByFileId(fileInfoId);
+            fileInfoCrudService.deleteById(fileInfoId);
             shrinkCrudService.deleteByTargetId(fileInfoId);
+        } else {
+            fileInfoCrudService.removeById(fileInfoId);
         }
     }
 
@@ -142,24 +146,15 @@ public class FileOpServiceImpl implements FileOpService {
     public void deleteRecycleBin(String recycleBinId) {
         RecycleBin recycleBin = recycleCrudService.findById(recycleBinId);
         if (recycleBin != null) {
-            if (FileTypeEnum.File.toString().equals(recycleBin.getContentType())) {
-                FileInfo fileInfo = recycleBin.getFileInfo();
-                uploadService.deleteFile(fileInfo);
+            if (FileTypeEnum.File.equals(recycleBin.getType())) {
+                fileInfoCrudService.deleteById(recycleBin.getFileId());
+                this.deleteFileForce(recycleBin.getFileId());
             }
-            if (FileTypeEnum.Directory.toString().equals(recycleBin.getContentType())) {
-                DirTree dirTree = recycleBin.getDirInfo();
-                this.deleteDirectory(dirTree);
+            if (FileTypeEnum.Directory.equals(recycleBin.getType())) {
+                directoryCrudService.deleteById(recycleBin.getFileId());
+                this.deleteDirForce(recycleBin.getFileId());
             }
             recycleCrudService.deleteById(recycleBinId);
-        }
-    }
-
-    private void deleteDirectory(DirTree dirTree) {
-        for (FileInfo fileInfo : dirTree.getFiles()) {
-            uploadService.deleteFile(fileInfo);
-        }
-        for (DirTree dir : dirTree.getDirs()) {
-            deleteDirectory(dir);
         }
     }
 
@@ -167,20 +162,27 @@ public class FileOpServiceImpl implements FileOpService {
     public void restoreFile(String recycleBinId) {
         RecycleBin recycleBin = recycleCrudService.findById(recycleBinId);
         if (recycleBin != null) {
-            if (FileTypeEnum.File.toString().equals(recycleBin.getContentType())) {
-                FileInfo fileInfo = recycleBin.getFileInfo();
-                this.recoverDirectory(fileInfo.getDirectoryId(), recycleBin.getDirInfos());
-                fileInfoCrudService.insert(fileInfo);
+            if (FileTypeEnum.File.equals(recycleBin.getType())) {
+                fileInfoCrudService.restoreById(recycleBin.getFileId());
             }
-            if (FileTypeEnum.Directory.toString().equals(recycleBin.getContentType())) {
-                DirTree dirTree = recycleBin.getDirInfo();
-                this.recoverDirectory(dirTree.getParentId(), recycleBin.getDirInfos());
-                //还原最外层目录
-                DirInfo dirInfo = directoryCrudService.findById(dirTree.getId());
-                this.createDirectory(dirInfo, dirTree);
-                this.recoverRecycleBin(dirTree);
+            if (FileTypeEnum.Directory.equals(recycleBin.getType())) {
+                this.restoreDirInfo(recycleBin.getFileId());
             }
             recycleCrudService.deleteById(recycleBinId);
+        }
+    }
+
+    private void restoreDirInfo(String dirId) {
+        DirInfo dirInfo = directoryCrudService.findById(dirId);
+        if (dirInfo != null) {
+            if (dirInfo.getParentId() != null) {
+                restoreDirInfo(dirInfo.getParentId());
+            }
+            directoryCrudService.restoreById(dirInfo.getId());
+            List<FileInfo> fileInfos = fileInfoCrudService.findByDirId(dirInfo.getId());
+            for (FileInfo fileInfo : fileInfos) {
+                fileInfoCrudService.restoreById(fileInfo.getId());
+            }
         }
     }
 

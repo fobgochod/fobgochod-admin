@@ -1,7 +1,7 @@
 package com.fobgochod.repository.impl;
 
 import com.fobgochod.domain.GroupBy;
-import com.fobgochod.entity.spda.Medicine;
+import com.fobgochod.entity.medicine.Medicine;
 import com.fobgochod.repository.MedicineRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;

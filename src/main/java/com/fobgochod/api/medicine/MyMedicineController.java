@@ -6,9 +6,9 @@ import com.fobgochod.domain.medicine.MedicineItemVO;
 import com.fobgochod.domain.medicine.MedicineVO;
 import com.fobgochod.domain.medicine.MyMedicine;
 import com.fobgochod.entity.admin.User;
-import com.fobgochod.entity.spda.Medicine;
-import com.fobgochod.entity.spda.MedicineItem;
-import com.fobgochod.entity.spda.MedicineRecord;
+import com.fobgochod.entity.medicine.Medicine;
+import com.fobgochod.entity.medicine.MedicineItem;
+import com.fobgochod.entity.medicine.MedicineRecord;
 import com.fobgochod.repository.MedicineItemRepository;
 import com.fobgochod.repository.MedicineRecordRepository;
 import com.fobgochod.repository.MedicineRepository;
@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Bucket 存储区
+ * Medicine 药品信息
  *
  * @author zhouxiao
  * @date 2020/10/29
@@ -84,43 +84,35 @@ public class MyMedicineController {
     }
 
     @PostMapping("/eat")
-    public ResponseEntity<?> eat(@RequestBody Medicine body) {
-        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
-        medicines.forEach(medicine -> {
-            MedicineItem item = medicineItemRepository.findItem(medicine.getId());
-            if (item == null || item.getSlice() <= 0) {
-                return;
-            }
-            eatMedicine(medicine.getId(), item, LocalDate.now(), LocalTime.now());
-        });
-
-        calcTotalMedicine(medicines);
-        return ResponseEntity.ok().build();
-    }
-
-    @PostMapping("/eat/day")
     public ResponseEntity<?> eat(@RequestBody EatMedicine body) {
         List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
         medicines.forEach(medicine -> {
-            List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
-            items.forEach(item -> {
-                if (item.getSlice() <= 0) {
-                    return;
+            if (body.getDate() == null) {
+                MedicineItem item = medicineItemRepository.findItem(medicine.getId());
+                if (item != null && item.getSlice() > 0) {
+                    eatMedicine(medicine, item, LocalDate.now(), LocalTime.now());
                 }
-                eatMedicine(medicine.getId(), item, body.getDate(), item.getStart());
-            });
+            } else {
+                List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
+                items.forEach(item -> {
+                    if (item.getSlice() > 0) {
+                        eatMedicine(medicine, item, body.getDate(), item.getStart());
+                    }
+                });
+            }
         });
         calcTotalMedicine(medicines);
         return ResponseEntity.ok().build();
     }
 
-    private void eatMedicine(String medicineId, MedicineItem item, LocalDate date, LocalTime time) {
-        MedicineRecord record = medicineRecordRepository.findRecord(medicineId, item.getType(), date);
+    private void eatMedicine(Medicine medicine, MedicineItem item, LocalDate date, LocalTime time) {
+        MedicineRecord record = medicineRecordRepository.findRecord(medicine.getId(), item.getType(), date);
         if (record != null) {
             return;
         }
         MedicineRecord medicineRecord = new MedicineRecord();
-        medicineRecord.setMedicineId(medicineId);
+        medicineRecord.setUserId(medicine.getUserId());
+        medicineRecord.setMedicineId(medicine.getId());
         medicineRecord.setType(item.getType());
         medicineRecord.setSlice(-item.getSlice());
         medicineRecord.setDate(date);
@@ -133,7 +125,9 @@ public class MyMedicineController {
         Map<String, Float> medicineCountMap = medicineCounts.stream().collect(Collectors.toMap(GroupBy::getId, GroupBy::getSum));
         medicines.forEach(medicine -> {
             medicine.setTotal(medicineCountMap.getOrDefault(medicine.getId(), 0f));
-            Float day = medicine.getMorning() + medicine.getNoon() + medicine.getNight();
+
+            List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
+            double day = items.stream().collect(Collectors.summarizingDouble(MedicineItem::getSlice)).getSum();
             medicine.setRemain((int) (medicine.getTotal() / day));
             medicineRepository.update(medicine);
         });

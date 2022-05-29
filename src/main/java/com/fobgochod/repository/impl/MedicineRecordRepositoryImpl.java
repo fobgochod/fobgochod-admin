@@ -1,7 +1,7 @@
 package com.fobgochod.repository.impl;
 
 import com.fobgochod.domain.GroupBy;
-import com.fobgochod.entity.spda.MedicineRecord;
+import com.fobgochod.entity.medicine.MedicineRecord;
 import com.fobgochod.repository.MedicineRecordRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -27,6 +27,11 @@ public class MedicineRecordRepositoryImpl extends BaseEntityRepository<MedicineR
     @Override
     public MedicineRecord findRecord(String medicineId, String type, LocalDate date) {
         return mongoTemplate.findOne(Query.query(Criteria.where("medicineId").is(medicineId).and("type").is(type).and("date").is(date)), getEntityClass());
+    }
+
+    @Override
+    public List<MedicineRecord> findRecord(String medicineId) {
+        return mongoTemplate.find(Query.query(Criteria.where("medicineId").is(medicineId).and("date").is(LocalDate.now())), getEntityClass());
     }
 
     @Override

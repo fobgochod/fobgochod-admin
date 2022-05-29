@@ -34,6 +34,9 @@ public abstract class BaseEntityRepository<T extends BaseEntity> implements Enti
         if (data.getId() == null) {
             data.setId(SnowFlake.getInstance().get());
         }
+        if (data.getDeleted() == null) {
+            data.setDeleted(false);
+        }
         UserUtil.setCreateFields(data);
         return mongoTemplate.insert(data).getId();
     }

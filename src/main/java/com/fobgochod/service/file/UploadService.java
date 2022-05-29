@@ -18,10 +18,8 @@ public interface UploadService {
      *
      * @param fileInfo 文件信息
      * @param source   数据
-     * @return 上传文件的id
+     * @return 文件信息
      */
-    String uploadFileToId(FileInfo fileInfo, InputStream source);
-
     FileInfo uploadFile(FileInfo fileInfo, InputStream source);
 
     /**

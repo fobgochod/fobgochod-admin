@@ -1,10 +1,8 @@
 package com.fobgochod.service.crud.impl;
 
 import com.fobgochod.constant.BaseField;
-import com.fobgochod.service.crud.DirectoryCrudService;
-import com.fobgochod.service.crud.FileInfoCrudService;
-import com.fobgochod.service.crud.base.BaseEntityService;
 import com.fobgochod.domain.FileTree;
+import com.fobgochod.domain.StatsResult;
 import com.fobgochod.domain.base.EnvProperties;
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.domain.base.Page;
@@ -14,13 +12,19 @@ import com.fobgochod.domain.select.ImageOption;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.exception.SystemException;
+import com.fobgochod.service.crud.DirectoryCrudService;
+import com.fobgochod.service.crud.FileInfoCrudService;
+import com.fobgochod.service.crud.base.BaseEntityService;
 import com.fobgochod.service.mongo.FilesCollection;
 import com.fobgochod.util.FileUtil;
 import com.fobgochod.util.IdUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
+import com.mongodb.client.model.Accumulators;
+import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +33,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
@@ -55,10 +60,7 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
     @Override
     public FileInfo findByDirIdAndName(String directoryId, String fileName) {
         MongoCollection<FileInfo> mongoCollection = this.getCollection();
-        Bson filter = Filters.and(
-                Filters.eq(BaseField.DIRECTORY_ID, directoryId),
-                Filters.eq(BaseField.FILE_NAME, fileName)
-        );
+        Bson filter = Filters.and(Filters.eq(BaseField.DIRECTORY_ID, directoryId), Filters.eq(BaseField.FILE_NAME, fileName));
         return mongoCollection.find(filter).first();
     }
 
@@ -72,7 +74,7 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
     @Override
     public void fillFileInfo(FileInfo fileInfo) {
         if (fileInfo == null || StringUtils.isEmpty(fileInfo.getName())) {
-            throw new SystemException(I18nCode.ERROR_10001);
+            throw new SystemException(I18nCode.FILE_NAME_NONE);
         }
         String dirId = IdUtil.getDirId(fileInfo.getDirectoryId());
         if (!directoryCrudService.exists(dirId)) {
@@ -139,20 +141,14 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
             page = new Page();
         }
         Bson condFilter = page.filter();
-        Bson imageFilter = Filters.or(
-                Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_JPEG),
-                Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_PNG),
-                Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_BMP),
-                Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_GIF)
-        );
+        Bson imageFilter = Filters.or(Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_JPEG), Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_PNG), Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_BMP), Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_GIF));
         Bson filter = Filters.and(imageFilter, condFilter);
         MongoCollection<FileInfo> mongoCollection = this.getCollection();
         long total = mongoCollection.countDocuments(filter);
         if (total <= 0) {
             return PageData.zero();
         }
-        MongoCursor<FileInfo> iterator = mongoCollection.find(filter).sort(page.sort())
-                .skip(page.skip()).limit(page.limit()).iterator();
+        MongoCursor<FileInfo> iterator = mongoCollection.find(filter).sort(page.sort()).skip(page.skip()).limit(page.limit()).iterator();
         List<ImageOption> lists = new ArrayList<>();
         while (iterator.hasNext()) {
             FileInfo fileInfo = iterator.next();
@@ -163,6 +159,47 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
             lists.add(option);
         }
         return PageData.data(total, lists);
+    }
+
+    /**
+     * @formatter:off
+     *  db.getCollection("fileinfo").aggregate([
+     *     {
+     *         $group: {
+     *             _id: null,
+     *             size: { $sum: "$size" },
+     *             count: { $sum: 1 }
+     *         }
+     *     },
+     * ])
+     * @formatter:on
+     */
+    @Override
+    public StatsResult fileDiskStats() {
+        MongoCollection<FileInfo> mongoCollection = this.getCollection();
+        Bson group = Aggregates.group(null, Accumulators.sum("size", "$size"), Accumulators.sum("count", 1));
+        return mongoCollection.aggregate(Arrays.asList(group), StatsResult.class).first();
+    }
+
+    /**
+     * @formatter:off
+     * db.getCollection("fileinfo").aggregate([
+     *     {
+     *         $group: {
+     *             _id: "$tenantId",
+     *             size: { $sum: "$size" },
+     *             count: { $sum: 1 }
+     *         }
+     *     },
+     * ])
+     * @formatter:on
+     */
+    @Override
+    public List<StatsResult> fileDiskStatsByTenant() {
+        MongoCollection<FileInfo> mongoCollection = this.getCollection();
+        Bson group = Aggregates.group("$tenantId", Accumulators.sum("size", "$size"), Accumulators.sum("count", 1));
+        Bson projection = Aggregates.project(new Document("tenantId", "$_id").append("size", "$size").append("count", "$count").append("_id", false));
+        return mongoCollection.aggregate(Arrays.asList(group, projection), StatsResult.class).into(new ArrayList<>());
     }
 
     @Override

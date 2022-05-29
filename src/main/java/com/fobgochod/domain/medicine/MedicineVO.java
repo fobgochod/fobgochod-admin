@@ -1,7 +1,7 @@
 package com.fobgochod.domain.medicine;
 
 import com.fobgochod.domain.AbstractConverter;
-import com.fobgochod.entity.spda.Medicine;
+import com.fobgochod.entity.medicine.Medicine;
 
 import java.util.List;
 

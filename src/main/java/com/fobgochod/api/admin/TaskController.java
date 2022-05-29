@@ -62,7 +62,7 @@ public class TaskController {
     public ResponseEntity<?> option() {
         List<Option> options = new ArrayList<>();
         List<Task> tasks = taskRepository.findAll();
-        tasks.forEach(o -> options.add(new Option(o.getCode(), o.getName())));
+        tasks.forEach(o -> options.add(new Option(o.getId(), o.getCode(), o.getName())));
         return ResponseEntity.ok(options);
     }
 }

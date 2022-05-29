@@ -1,11 +1,12 @@
 package com.fobgochod.service.crud;
 
-import com.fobgochod.service.crud.base.EntityService;
 import com.fobgochod.domain.FileTree;
+import com.fobgochod.domain.StatsResult;
 import com.fobgochod.domain.base.Page;
 import com.fobgochod.domain.base.PageData;
 import com.fobgochod.domain.select.ImageOption;
 import com.fobgochod.entity.file.FileInfo;
+import com.fobgochod.service.crud.base.EntityService;
 import org.bson.types.ObjectId;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,4 +27,8 @@ public interface FileInfoCrudService extends EntityService<FileInfo> {
     FileTree getFileTree(String directoryId, String filePath);
 
     PageData<ImageOption> getImageByPage(Page page);
+
+    StatsResult fileDiskStats();
+
+    List<StatsResult> fileDiskStatsByTenant();
 }

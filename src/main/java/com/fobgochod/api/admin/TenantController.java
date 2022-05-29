@@ -11,6 +11,7 @@ import com.fobgochod.entity.admin.Tenant;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
+import com.fobgochod.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -64,6 +66,10 @@ public class TenantController {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<Tenant> body) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
+            Tenant baseEntity = body.getCond();
+            baseEntity.setOwner(UserUtil.getUserId());
+        }
         return ResponseEntity.ok(tenantRepository.findByPage(body));
     }
 
@@ -82,37 +88,35 @@ public class TenantController {
     public ResponseEntity<?> option() {
         List<Option> options = new ArrayList<>();
         List<Tenant> tenants = tenantRepository.findAll();
-        tenants.forEach(o -> options.add(new Option(o.getCode(), o.getName())));
+        tenants.forEach(o -> options.add(new Option(o.getId(), o.getCode(), o.getName(), o.getOwner())));
         return ResponseEntity.ok(options);
     }
 
     @GetMapping("/option/group")
     public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
 
-        List<Options> optionGroup = new ArrayList<>();
-        List<Tenant> myBuckets = tenantRepository.findByOwner(loginUser.getUsername());
-
-        Options myOptions = new Options();
-        for (Tenant bucket : myBuckets) {
-            myOptions.getOptions().add(new Option(bucket.getCode(), bucket.getName(), bucket.getOwner()));
-        }
-        myOptions.setKey(99);
-        myOptions.setLabel("我的租户");
-        optionGroup.add(myOptions);
-
+        List<Tenant> tenants;
         User user = userRepository.findByCode(loginUser.getUsername());
-        if (RoleEnum.Admin.equals(user.getRole())) {
-            List<Tenant> buckets = tenantRepository.findAll();
+        if (RoleEnum.Admin.name().equals(user.getRole())) {
+            tenants = tenantRepository.findAll();
+        } else {
+            tenants = tenantRepository.findByOwner(loginUser.getUsername());
+        }
+
+        List<Options> optionGroup = new ArrayList<>();
+        Map<String, List<Tenant>> tenantsMap = tenants.stream().collect(Collectors.groupingBy(Tenant::getOwner));
+        for (Map.Entry<String, List<Tenant>> entry : tenantsMap.entrySet()) {
             Options options = new Options();
-            for (Tenant bucket : buckets) {
-                options.getOptions().add(new Option(bucket.getCode(), bucket.getName(), bucket.getOwner()));
+            for (Tenant tenant : entry.getValue()) {
+                options.getOptions().add(new Option(tenant.getId(), tenant.getCode(), tenant.getName(), tenant.getOwner()));
             }
-            options.setKey(1);
-            options.setLabel("租户");
+            User temp = userRepository.findByCode(entry.getKey());
+            options.setKey(temp.getId());
+            options.setLabel(temp.getName());
             optionGroup.add(options);
         }
         return ResponseEntity.ok(optionGroup.stream()
-                .sorted(Comparator.comparing(Options::getKey).reversed())
+                .sorted(Comparator.comparing(Options::getKey))
                 .collect(Collectors.toList()));
     }
 }

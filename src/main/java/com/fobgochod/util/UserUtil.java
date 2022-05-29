@@ -47,6 +47,10 @@ public class UserUtil {
         return getJwtUser().getUsername();
     }
 
+    public static String getTenantId() {
+        return getJwtUser().getTenantId();
+    }
+
     public static void setCreateFields(BaseEntity entity) {
         entity.setCreateBy(getUserSid());
         entity.setCreateById(getUserName());

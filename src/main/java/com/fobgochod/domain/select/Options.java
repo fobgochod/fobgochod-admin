@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class Options {
 
-    private long key;
+    private String key;
     private String label;
     private List<Option> options;
 
@@ -19,11 +19,12 @@ public class Options {
         this.options = new ArrayList<>();
     }
 
-    public long getKey() {
+
+    public String getKey() {
         return key;
     }
 
-    public void setKey(long key) {
+    public void setKey(String key) {
         this.key = key;
     }
 

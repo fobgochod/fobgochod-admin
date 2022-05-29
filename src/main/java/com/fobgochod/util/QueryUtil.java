@@ -83,6 +83,7 @@ public class QueryUtil {
 
     public static Bson filter(Map<String, Object> filter) {
         List<Bson> filters = new ArrayList<>();
+        filters.add(Filters.or(Filters.eq("deleted", false), Filters.eq("deleted", null)));
         for (Map.Entry<String, Object> entry : filter.entrySet()) {
             if (BaseField.PID.equals(entry.getKey())) {
                 filters.add(Filters.eq(BaseField.ID, entry.getValue().toString()));

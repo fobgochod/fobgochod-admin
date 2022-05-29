@@ -2,7 +2,7 @@ package com.fobgochod.service.login.impl;
 
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.entity.spda.SmsRecord;
+import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.exception.SystemException;
 import com.fobgochod.repository.SmsRecordRepository;
@@ -56,12 +56,13 @@ public class SmsLoginServiceImpl implements LoginService {
             }
         }
         User user = userRepository.findByTelephone(loginUser.getTelephone());
+        loginUser.setTenantId(user.getTenantId());
         loginUser.setUsername(user.getCode());
         loginUser.setToken(userTokenService.getToken(loginUser));
     }
 
     @Override
-    public String refresh(String token, String tenantId) {
+    public LoginUser refresh(String token, String tenantId) {
         return null;
     }
 

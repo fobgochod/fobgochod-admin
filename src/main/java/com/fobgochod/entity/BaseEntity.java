@@ -21,8 +21,9 @@ public abstract class BaseEntity extends Filter implements Serializable, Cloneab
     private Long modifyBy;
     private String modifyById;
     private LocalDateTime modifyDate;
-    private String bucket;
+    private Boolean deleted;
     private String tenantId;
+    private Long order;
 
     public String getId() {
         return id;
@@ -80,12 +81,12 @@ public abstract class BaseEntity extends Filter implements Serializable, Cloneab
         this.modifyDate = modifyDate;
     }
 
-    public String getBucket() {
-        return bucket;
+    public Boolean getDeleted() {
+        return deleted;
     }
 
-    public void setBucket(String bucket) {
-        this.bucket = bucket;
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 
     public String getTenantId() {
@@ -94,5 +95,13 @@ public abstract class BaseEntity extends Filter implements Serializable, Cloneab
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public Long getOrder() {
+        return order;
+    }
+
+    public void setOrder(Long order) {
+        this.order = order;
     }
 }

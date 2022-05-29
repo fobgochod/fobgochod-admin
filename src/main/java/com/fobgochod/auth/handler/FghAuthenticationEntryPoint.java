@@ -2,7 +2,6 @@ package com.fobgochod.auth.handler;
 
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.util.ExceptionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -13,9 +12,6 @@ import java.io.Serializable;
 
 @Component
 public class FghAuthenticationEntryPoint implements AuthenticationEntryPoint, Serializable {
-
-    @Value("${spring.application.name}")
-    private String sourceId;
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,

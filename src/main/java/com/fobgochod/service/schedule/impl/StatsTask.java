@@ -1,22 +1,23 @@
 package com.fobgochod.service.schedule.impl;
 
-import com.fobgochod.domain.base.EnvProperties;
-import com.fobgochod.domain.BucketStats;
+import com.fobgochod.domain.StatsResult;
 import com.fobgochod.entity.admin.Stats;
 import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.StatsRepository;
 import com.fobgochod.repository.TaskRepository;
 import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
+import com.fobgochod.service.crud.FileInfoCrudService;
 import com.fobgochod.service.schedule.TaskIdEnum;
 import com.fobgochod.service.schedule.TaskService;
-import com.fobgochod.util.DataUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * Bucket 总量统计
@@ -30,8 +31,6 @@ public class StatsTask extends TaskService {
     private static final Logger logger = LoggerFactory.getLogger(StatsTask.class);
 
     @Autowired
-    private EnvProperties env;
-    @Autowired
     private TaskRepository taskRepository;
     @Autowired
     private UserRepository userRepository;
@@ -39,22 +38,30 @@ public class StatsTask extends TaskService {
     private TenantRepository tenantRepository;
     @Autowired
     private StatsRepository statsRepository;
+    @Autowired
+    private FileInfoCrudService fileInfoCrudService;
 
     @Override
     public void execute() {
         Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS002.name());
         if (task != null) {
-            statsRepository.deleteByYearMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
+            LocalDate now = LocalDate.now();
+            String year = now.format(DateTimeFormatter.ofPattern("yyyy"));
+            String month = now.format(DateTimeFormatter.ofPattern("MM"));
+
+            statsRepository.deleteByYearMonth(year, month);
             long start = System.currentTimeMillis();
-            BucketStats bucketStats = statsRepository.getBucketStats(env.getDatabase());
+            StatsResult statsResult = fileInfoCrudService.fileDiskStats();
+            List<StatsResult> statsResults = fileInfoCrudService.fileDiskStatsByTenant();
+
             Stats stats = new Stats();
-            stats.setYear(LocalDate.now().getYear());
-            stats.setMonth(LocalDate.now().getMonthValue());
+            stats.setYear(year);
+            stats.setMonth(month);
             stats.setUserCount(userRepository.findAll().size());
             stats.setTenantCount(tenantRepository.findAll().size());
-            stats.setFileCount(bucketStats.getFiles());
-            stats.setTotalSize(bucketStats.getSize());
-            stats.setTotalSizeReadable(DataUtil.byteSwitch(stats.getTotalSize()));
+            stats.setFileCount(statsResult.getCount());
+            stats.setTotalSize(statsResult.getSize());
+            stats.setTenants(statsResults);
             statsRepository.insert(stats);
             long end = System.currentTimeMillis();
             logger.info("统计系统使用状况成功，耗时：{}ms.", (end - start));

@@ -1,7 +1,7 @@
 package com.fobgochod.domain.medicine;
 
 import com.fobgochod.domain.AbstractConverter;
-import com.fobgochod.entity.spda.MedicineItem;
+import com.fobgochod.entity.medicine.MedicineItem;
 
 import java.time.LocalTime;
 

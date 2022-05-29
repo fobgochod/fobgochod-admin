@@ -1,6 +1,5 @@
 package com.fobgochod.entity.admin;
 
-import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -26,7 +25,7 @@ public class User extends BaseEntity {
     private String email;
     private String password;
     private List<String> contacts;
-    private RoleEnum role;
+    private String role;
 
     public String getCode() {
         return code;
@@ -108,11 +107,11 @@ public class User extends BaseEntity {
         this.contacts = contacts;
     }
 
-    public RoleEnum getRole() {
+    public String getRole() {
         return role;
     }
 
-    public void setRole(RoleEnum role) {
+    public void setRole(String role) {
         this.role = role;
     }
 }

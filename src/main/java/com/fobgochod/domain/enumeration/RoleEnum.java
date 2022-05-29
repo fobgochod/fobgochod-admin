@@ -9,9 +9,13 @@ package com.fobgochod.domain.enumeration;
 public enum RoleEnum {
 
     /**
-     * 系统管理员
+     * 管理员
      */
     Admin,
+    /**
+     * 所有者
+     */
+    Owner,
     /**
      * 一般用户
      */

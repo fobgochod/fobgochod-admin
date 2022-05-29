@@ -1,6 +1,6 @@
 package com.fobgochod.repository;
 
-import com.fobgochod.entity.spda.SmsRecord;
+import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.repository.base.EntityRepository;
 
 /**

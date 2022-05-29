@@ -1,5 +1,7 @@
 package com.fobgochod.domain.select;
 
+import com.fobgochod.util.SnowFlake;
+
 /**
  * 下拉项
  *
@@ -8,31 +10,35 @@ package com.fobgochod.domain.select;
  */
 public class Option {
 
-    private long key;
+    private String key;
     private String value;
     private String label;
     private String other;
 
     public Option() {
-        this.key = System.currentTimeMillis();
+        this.key = SnowFlake.getInstance().get();
     }
 
-    public Option(String value, String label) {
+    public Option(String key, String value) {
+        this.key = key;
         this.value = value;
+    }
+
+    public Option(String key, String value, String label) {
+        this(key, value);
         this.label = label;
     }
 
-    public Option(String value, String label, String other) {
-        this.value = value;
-        this.label = label;
+    public Option(String key, String value, String label, String other) {
+        this(key, value, label);
         this.other = other;
     }
 
-    public long getKey() {
+    public String getKey() {
         return key;
     }
 
-    public void setKey(long key) {
+    public void setKey(String key) {
         this.key = key;
     }
 

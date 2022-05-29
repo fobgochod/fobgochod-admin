@@ -39,15 +39,19 @@ public class LoginServiceImpl implements LoginService {
     public void login(LoginUser loginUser) {
         User user = userRepository.findByCodeAndPassword(loginUser.getUsername(), loginUser.getPassword());
         if (user != null) {
+            loginUser.setTenantId(user.getTenantId());
             loginUser.setTelephone(user.getTelephone());
             loginUser.setToken(userTokenService.getToken(loginUser));
         }
     }
 
     @Override
-    public String refresh(String token, String tenantId) {
-        LoginUser jwtUser = userTokenService.getData(token);
-        return userTokenService.getToken(jwtUser);
+    public LoginUser refresh(String token, String tenantId) {
+        LoginUser loginUser = userTokenService.getData(token);
+        loginUser.setTenantId(tenantId);
+        loginUser.setToken(null);
+        loginUser.setToken(userTokenService.getToken(loginUser));
+        return loginUser;
     }
 
     @Override

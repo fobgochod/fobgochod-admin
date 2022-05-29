@@ -15,6 +15,7 @@ public class FghConstants {
 
     public static final String DEFAULT_TENANT = "default";
 
+    public static final String ADMIN_USER = "admin";
     public static final String ANONYMOUS_USER = "anonymousUser";
 
     public static final char AT = '@';

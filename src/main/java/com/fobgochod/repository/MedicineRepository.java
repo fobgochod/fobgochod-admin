@@ -1,6 +1,6 @@
 package com.fobgochod.repository;
 
-import com.fobgochod.entity.spda.Medicine;
+import com.fobgochod.entity.medicine.Medicine;
 import com.fobgochod.repository.base.EntityRepository;
 import org.springframework.data.repository.query.Param;
 

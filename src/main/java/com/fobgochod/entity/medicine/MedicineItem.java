@@ -1,4 +1,4 @@
-package com.fobgochod.entity.spda;
+package com.fobgochod.entity.medicine;
 
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.data.mongodb.core.mapping.Document;

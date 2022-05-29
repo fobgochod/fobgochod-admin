@@ -1,6 +1,5 @@
 package com.fobgochod.domain.base;
 
-import com.fobgochod.entity.file.ShareRecord;
 import com.fobgochod.serializer.Constants;
 import org.springframework.beans.factory.InitializingBean;
 
@@ -20,7 +19,6 @@ public class BatchFid extends Fid implements InitializingBean {
     private List<String> ids;
     private List<String> fileIds;
     private List<String> dirIds;
-    private List<String> shareIds;
     private List<String> recycleIds;
     private LocalDateTime expireDate;
 
@@ -28,16 +26,15 @@ public class BatchFid extends Fid implements InitializingBean {
         this.ids = new ArrayList<>();
         this.fileIds = new ArrayList<>();
         this.dirIds = new ArrayList<>();
-        this.shareIds = new ArrayList<>();
         this.recycleIds = new ArrayList<>();
     }
 
-    public BatchFid(ShareRecord shareRecord) {
-        this();
-        if (shareRecord != null) {
-            this.fileIds = shareRecord.getFileIds();
-            this.dirIds = shareRecord.getDirIds();
-        }
+    private static String format(List<String> ids) {
+        return ids.stream().map(o -> String.format("\"%s\"", o)).collect(Collectors.joining(",", "[", "]"));
+    }
+
+    private static String format(LocalDateTime date) {
+        return date == null ? null : String.format("\"%s\"", Constants.DATETIME_FORMATTER.format(date));
     }
 
     public List<String> getIds() {
@@ -64,14 +61,6 @@ public class BatchFid extends Fid implements InitializingBean {
         this.dirIds = dirIds;
     }
 
-    public List<String> getShareIds() {
-        return shareIds;
-    }
-
-    public void setShareIds(List<String> shareIds) {
-        this.shareIds = shareIds;
-    }
-
     public List<String> getRecycleIds() {
         return recycleIds;
     }
@@ -86,14 +75,6 @@ public class BatchFid extends Fid implements InitializingBean {
 
     public void setExpireDate(LocalDateTime expireDate) {
         this.expireDate = expireDate;
-    }
-
-    private static String format(List<String> ids) {
-        return ids.stream().map(o -> String.format("\"%s\"", o)).collect(Collectors.joining(",", "[", "]"));
-    }
-
-    private static String format(LocalDateTime date) {
-        return date == null ? null : String.format("\"%s\"", Constants.DATETIME_FORMATTER.format(date));
     }
 
     @Override
@@ -129,8 +110,6 @@ public class BatchFid extends Fid implements InitializingBean {
                 + format(fileIds)
                 + ",\"dirIds\":"
                 + format(dirIds)
-                + ",\"shareIds\":"
-                + format(shareIds)
                 + ",\"recycleIds\":"
                 + format(recycleIds)
                 + ",\"expireDate\":"

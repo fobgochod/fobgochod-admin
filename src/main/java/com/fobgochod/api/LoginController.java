@@ -9,10 +9,7 @@ import com.fobgochod.service.message.sms.AliyunSmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -40,7 +37,7 @@ public class LoginController {
             }
         }
         if (!StringUtils.hasText(body.getToken())) {
-            throw new UnauthorizedException(I18nCode.ERROR_LOGIN);
+            throw new UnauthorizedException(I18nCode.LOGIN_AUTH_FAIL);
         }
         return ResponseEntity.ok(body);
     }
@@ -52,7 +49,18 @@ public class LoginController {
     }
 
     @PostMapping(value = "/token/analyze")
-    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
-        return ResponseEntity.ok(loginUser);
+    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser body) {
+        return ResponseEntity.ok(body);
+    }
+
+    @PostMapping(value = "/token/refresh")
+    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN) String token,
+                                     @RequestBody LoginUser body) {
+        for (LoginService loginService : loginServices) {
+            if (loginService.support(body)) {
+                return ResponseEntity.ok(loginService.refresh(token, body.getTenantId()));
+            }
+        }
+        return ResponseEntity.ok(body);
     }
 }

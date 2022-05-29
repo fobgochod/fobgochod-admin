@@ -1,12 +1,10 @@
 package com.fobgochod.entity.file;
 
-import com.fobgochod.domain.DirTree;
+import com.fobgochod.domain.enumeration.FileTypeEnum;
 import com.fobgochod.entity.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 /**
  * 垃圾回收站
@@ -18,9 +16,13 @@ import java.util.List;
 public class RecycleBin extends BaseEntity {
 
     /**
-     * 文件名称
+     * 文件目录ID
      */
-    private String name;
+    private String fileId;
+    /**
+     * 文件目录名称
+     */
+    private String fileName;
     /**
      * 原位置
      */
@@ -36,20 +38,22 @@ public class RecycleBin extends BaseEntity {
     /**
      * 类型：File、Directory
      */
-    private String contentType;
-    @JsonIgnore
-    private FileInfo fileInfo;
-    @JsonIgnore
-    private DirTree dirInfo;
-    @JsonIgnore
-    private List<DirInfo> dirInfos;
+    private FileTypeEnum type;
 
-    public String getName() {
-        return name;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public String getPaths() {
@@ -76,35 +80,11 @@ public class RecycleBin extends BaseEntity {
         this.size = size;
     }
 
-    public String getContentType() {
-        return contentType;
+    public FileTypeEnum getType() {
+        return type;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
-    }
-
-    public FileInfo getFileInfo() {
-        return fileInfo;
-    }
-
-    public void setFileInfo(FileInfo fileInfo) {
-        this.fileInfo = fileInfo;
-    }
-
-    public DirTree getDirInfo() {
-        return dirInfo;
-    }
-
-    public void setDirInfo(DirTree dirTree) {
-        this.dirInfo = dirTree;
-    }
-
-    public List<DirInfo> getDirInfos() {
-        return dirInfos;
-    }
-
-    public void setDirInfos(List<DirInfo> dirInfos) {
-        this.dirInfos = dirInfos;
+    public void setType(FileTypeEnum type) {
+        this.type = type;
     }
 }

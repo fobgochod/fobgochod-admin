@@ -11,6 +11,7 @@ import com.fobgochod.util.UserUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.DeleteResult;
 import org.bson.conversions.Bson;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     public String insert(T data) {
         if (data.getId() == null) {
             data.setId(SnowFlake.getInstance().get());
+        }
+        if (data.getDeleted() == null) {
+            data.setDeleted(false);
         }
         UserUtil.setCreateFields(data);
         MongoCollection<T> mongoCollection = this.getCollection();
@@ -116,6 +120,18 @@ public abstract class BaseEntityService<T extends BaseEntity> extends EntityColl
     public void dropCollection() {
         MongoCollection<T> mongoCollection = this.getCollection();
         mongoCollection.drop();
+    }
+
+    @Override
+    public void removeById(String id) {
+        MongoCollection<T> mongoCollection = this.getCollection();
+        mongoCollection.updateOne(Filters.eq(BaseField.ID, id), Updates.set("deleted", true));
+    }
+
+    @Override
+    public void restoreById(String id) {
+        MongoCollection<T> mongoCollection = this.getCollection();
+        mongoCollection.updateOne(Filters.eq(BaseField.ID, id), Updates.set("deleted", false));
     }
 
     @Override

@@ -1,10 +1,10 @@
-package com.fobgochod.api.medicine;
+package com.fobgochod.api.admin;
 
 import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
-import com.fobgochod.entity.spda.SmsRecord;
+import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.SmsRecordRepository;
 import com.fobgochod.repository.UserRepository;

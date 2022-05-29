@@ -1,9 +1,11 @@
 package com.fobgochod.api.medicine;
 
+import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
-import com.fobgochod.entity.spda.Medicine;
+import com.fobgochod.entity.medicine.Medicine;
 import com.fobgochod.repository.MedicineRepository;
+import com.fobgochod.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +25,7 @@ public class MedicineController {
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Medicine body) {
+        body.setStatus(false);
         String id = medicineRepository.insert(body);
         return ResponseEntity.ok(medicineRepository.findById(id));
     }
@@ -46,6 +49,10 @@ public class MedicineController {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<Medicine> body) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
+            Medicine medicine = body.getCond();
+            medicine.setUserId(UserUtil.getUserId());
+        }
         return ResponseEntity.ok(medicineRepository.findByPage(body));
     }
 
