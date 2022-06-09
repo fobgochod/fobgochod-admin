@@ -22,6 +22,7 @@ public class Fid implements Serializable {
      */
     protected String fileId;
     protected String dirId;
+    protected String recycleId;
 
     public String getId() {
         return id;
@@ -45,5 +46,13 @@ public class Fid implements Serializable {
 
     public void setDirId(String dirId) {
         this.dirId = dirId;
+    }
+
+    public String getRecycleId() {
+        return recycleId;
+    }
+
+    public void setRecycleId(String recycleId) {
+        this.recycleId = recycleId;
     }
 }

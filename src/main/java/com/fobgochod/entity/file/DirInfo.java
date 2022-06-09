@@ -22,10 +22,6 @@ public class DirInfo extends BaseEntity {
      * 目录名称，不区分大小写
      */
     private String name;
-    /**
-     * 显示名称，区分大小写
-     */
-    private String displayName;
 
     /**
      * 判断2个目录是否相等
@@ -61,14 +57,6 @@ public class DirInfo extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
     }
 
     @Override

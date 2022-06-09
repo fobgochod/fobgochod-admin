@@ -1,6 +1,6 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.holder.AuthoredUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
@@ -37,19 +37,19 @@ public class TenantController {
     @Autowired
     private TenantRepository tenantRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody Tenant body) {
         String id = tenantRepository.insert(body);
         return ResponseEntity.ok(tenantRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        tenantRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody Tenant body) {
+        tenantRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody Tenant body) {
         Tenant tenant = tenantRepository.findById(body.getId());
         if (tenant != null) {
@@ -59,29 +59,29 @@ public class TenantController {
         return ResponseEntity.ok(tenant);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(tenantRepository.findById(id));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody Tenant body) {
+        return ResponseEntity.ok(tenantRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page<Tenant> body) {
+    public ResponseEntity<?> search(@RequestBody Page<Tenant> body) {
         if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
-            Tenant baseEntity = body.getCond();
+            Tenant baseEntity = body.getFilter().getEq();
             baseEntity.setOwner(UserUtil.getUserId());
         }
         return ResponseEntity.ok(tenantRepository.findByPage(body));
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
-        return ResponseEntity.ok(tenantRepository.deleteByIdIn(body.getIds()));
     }
 
     @DeleteMapping("/drop")
     public ResponseEntity<?> dropCollection() {
         tenantRepository.dropCollection();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(tenantRepository.deleteByIdIn(body.getIds()));
     }
 
     @GetMapping("/option")
@@ -93,14 +93,14 @@ public class TenantController {
     }
 
     @GetMapping("/option/group")
-    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
+    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
 
         List<Tenant> tenants;
-        User user = userRepository.findByCode(loginUser.getUsername());
+        User user = userRepository.findByCode(authoredUser.getUserId());
         if (RoleEnum.Admin.name().equals(user.getRole())) {
             tenants = tenantRepository.findAll();
         } else {
-            tenants = tenantRepository.findByOwner(loginUser.getUsername());
+            tenants = tenantRepository.findByOwner(authoredUser.getUserId());
         }
 
         List<Options> optionGroup = new ArrayList<>();

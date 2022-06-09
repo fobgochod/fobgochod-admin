@@ -7,7 +7,7 @@ import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.RoleRepository;
 import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
-import com.fobgochod.util.AESCipher;
+import com.fobgochod.util.SecureUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -65,7 +65,7 @@ class FghListener implements ApplicationListener<ContextRefreshedEvent>, Applica
             user.setName("管理员");
             user.setTelephone("16800000001");
             user.setEmail("admin@nobody.com");
-            user.setPassword(AESCipher.getSHA256("vivi229229"));
+            user.setPassword(SecureUtils.sha256("vivi229229"));
             user.setRole(RoleEnum.Admin.name());
             userRepository.insert(user);
         }

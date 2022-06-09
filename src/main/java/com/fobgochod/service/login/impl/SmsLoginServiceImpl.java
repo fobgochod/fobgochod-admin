@@ -2,10 +2,14 @@ package com.fobgochod.service.login.impl;
 
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.entity.SmsRecord;
+import com.fobgochod.entity.admin.Tenant;
 import com.fobgochod.entity.admin.User;
-import com.fobgochod.exception.SystemException;
+import com.fobgochod.exception.UnauthorizedException;
 import com.fobgochod.repository.SmsRecordRepository;
+import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.login.LoginService;
 import com.fobgochod.service.login.token.UserTokenService;
@@ -32,6 +36,8 @@ public class SmsLoginServiceImpl implements LoginService {
     @Autowired
     private UserTokenService userTokenService;
     @Autowired
+    private TenantRepository tenantRepository;
+    @Autowired
     private SmsRecordRepository smsRecordRepository;
 
     @Override
@@ -45,29 +51,33 @@ public class SmsLoginServiceImpl implements LoginService {
     }
 
     @Override
-    public void login(LoginUser loginUser) {
+    public AuthoredUser login(LoginUser loginUser) {
         if (!SKELETON.equals(loginUser.getCaptcha())) {
             SmsRecord smsRecord = smsRecordRepository.findByTelephoneAndCode(loginUser.getTelephone(), loginUser.getCaptcha());
             if (smsRecord == null) {
-                return;
+                throw new UnauthorizedException(I18nCode.LOGIN_CAPTCHA_FAIL);
             }
             if (LocalDateTime.now().isAfter(smsRecord.getCaptchaExpire())) {
-                throw new SystemException("验证码已经过期");
+                throw new UnauthorizedException(I18nCode.LOGIN_CAPTCHA_FAIL);
             }
         }
         User user = userRepository.findByTelephone(loginUser.getTelephone());
-        loginUser.setTenantId(user.getTenantId());
-        loginUser.setUsername(user.getCode());
-        loginUser.setToken(userTokenService.getToken(loginUser));
+        if (user == null) {
+            throw new UnauthorizedException(I18nCode.LOGIN_ACCOUNT_FAIL);
+        }
+        Tenant tenant = tenantRepository.findByCode(user.getTenantId());
+        AuthoredUser authoredUser = AuthoredUser.of(user, tenant);
+        authoredUser.setToken(userTokenService.getToken(authoredUser));
+        return authoredUser;
     }
 
     @Override
-    public LoginUser refresh(String token, String tenantId) {
+    public AuthoredUser refresh(String token, String tenantId) {
         return null;
     }
 
     @Override
-    public LoginUser analysis(String token) {
+    public AuthoredUser analysis(String token) {
         return userTokenService.getData(token);
     }
 }

@@ -25,48 +25,43 @@ public class RoleController {
     @Autowired
     private RoleRepository roleRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody Role body) {
         String id = roleRepository.insert(body);
         return ResponseEntity.ok(roleRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        roleRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody Role body) {
+        roleRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody Role body) {
         roleRepository.update(body);
         return ResponseEntity.ok(roleRepository.findById(body.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(roleRepository.findById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<?> find(@RequestBody(required = false) Role body) {
-        return ResponseEntity.ok(roleRepository.findAll(body));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody Role body) {
+        return ResponseEntity.ok(roleRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page<Role> body) {
+    public ResponseEntity<?> search(@RequestBody Page<Role> body) {
         return ResponseEntity.ok(roleRepository.findByPage(body));
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
-        return ResponseEntity.ok(roleRepository.deleteByIdIn(body.getIds()));
     }
 
     @DeleteMapping("/drop")
     public ResponseEntity<?> dropCollection() {
         roleRepository.dropCollection();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(roleRepository.deleteByIdIn(body.getIds()));
     }
 
     @GetMapping("/option")

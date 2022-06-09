@@ -85,6 +85,9 @@ public class BatchFid extends Fid implements InitializingBean {
         if (dirIds == null) {
             dirIds = new ArrayList<>();
         }
+        if (recycleIds == null) {
+            recycleIds = new ArrayList<>();
+        }
         if (this.fileId != null) {
             if (!fileIds.contains(fileId)) {
                 fileIds.add(fileId);
@@ -97,6 +100,12 @@ public class BatchFid extends Fid implements InitializingBean {
             }
             this.dirId = null;
         }
+        if (recycleId != null) {
+            if (!recycleIds.contains(recycleId)) {
+                recycleIds.add(recycleId);
+            }
+            this.recycleId = null;
+        }
     }
 
     @Override
@@ -106,6 +115,8 @@ public class BatchFid extends Fid implements InitializingBean {
                 + fileId
                 + ",\"dirId\":"
                 + dirId
+                + ",\"recycleId\":"
+                + recycleId
                 + ",\"fileIds\":"
                 + format(fileIds)
                 + ",\"dirIds\":"

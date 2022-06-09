@@ -1,6 +1,6 @@
 package com.fobgochod.util;
 
-import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.holder.AuthoredUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,27 +24,27 @@ public class UserUtil {
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    public static LoginUser getJwtUser() {
+    public static AuthoredUser getJwtUser() {
         Authentication authentication = getAuthentication();
         if (authentication != null) {
             Object principal = authentication.getPrincipal();
-            if (principal instanceof LoginUser) {
-                return (LoginUser) principal;
+            if (principal instanceof AuthoredUser) {
+                return (AuthoredUser) principal;
             }
         }
-        return new LoginUser(FghConstants.ANONYMOUS_USER);
+        return AuthoredUser.of(FghConstants.ANONYMOUS_USER);
     }
 
-    public static long getUserSid() {
-        return 0L;
+    public static Long getUserSid() {
+        return Long.valueOf(getJwtUser().getSid());
     }
 
     public static String getUserId() {
-        return getJwtUser().getUsername();
+        return getJwtUser().getUserId();
     }
 
     public static String getUserName() {
-        return getJwtUser().getUsername();
+        return getJwtUser().getUserName();
     }
 
     public static String getTenantId() {

@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  * @author zhouxiao
  * @date 2020/4/27
  */
-public abstract class BaseEntity extends Filter implements Serializable, Cloneable {
+public abstract class BaseEntity implements Serializable, Cloneable {
 
     @Id
     private String id;

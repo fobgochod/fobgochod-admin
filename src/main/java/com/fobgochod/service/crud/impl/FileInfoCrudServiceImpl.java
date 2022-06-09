@@ -5,10 +5,6 @@ import com.fobgochod.domain.FileTree;
 import com.fobgochod.domain.StatsResult;
 import com.fobgochod.domain.base.EnvProperties;
 import com.fobgochod.domain.base.I18nCode;
-import com.fobgochod.domain.base.Page;
-import com.fobgochod.domain.base.PageData;
-import com.fobgochod.domain.enumeration.MimeType;
-import com.fobgochod.domain.select.ImageOption;
 import com.fobgochod.entity.file.DirInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.exception.SystemException;
@@ -20,7 +16,6 @@ import com.fobgochod.util.FileUtil;
 import com.fobgochod.util.IdUtil;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Accumulators;
 import com.mongodb.client.model.Aggregates;
 import com.mongodb.client.model.Filters;
@@ -32,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -58,13 +55,6 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
     }
 
     @Override
-    public FileInfo findByDirIdAndName(String directoryId, String fileName) {
-        MongoCollection<FileInfo> mongoCollection = this.getCollection();
-        Bson filter = Filters.and(Filters.eq(BaseField.DIRECTORY_ID, directoryId), Filters.eq(BaseField.FILE_NAME, fileName));
-        return mongoCollection.find(filter).first();
-    }
-
-    @Override
     public boolean needDelete(String id, ObjectId fileId) {
         MongoCollection<FileInfo> mongoCollection = this.getCollection();
         Bson filter = Filters.and(Filters.ne(BaseField.ID, id), Filters.eq(BaseField.FILE_ID, fileId));
@@ -83,11 +73,8 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
         fileInfo.setDirectoryId(dirId);
 
         String fileName = fileInfo.getName();
-        if (fileInfo.getDisplayName() == null) {
-            fileInfo.setDisplayName(FileUtil.getFileNameNoExt(fileName));
-        }
-        if (fileInfo.getExtension() == null) {
-            fileInfo.setExtension(FileUtil.getFileExt(fileName));
+        if (fileInfo.getSuffix() == null) {
+            fileInfo.setSuffix(FileUtil.getFileExt(fileName));
         }
         fileInfo.setCompleted(false);
     }
@@ -97,13 +84,21 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
         if (fileInfo.getName() == null) {
             fileInfo.setName(file.getOriginalFilename());
         }
-        if (fileInfo.getExtension() == null) {
-            fileInfo.setExtension(FileUtil.getFileExt(fileInfo.getName()));
+        if (fileInfo.getSuffix() == null) {
+            fileInfo.setSuffix(FileUtil.getFileExt(fileInfo.getName()));
         }
-        if (fileInfo.getContentType() == null) {
-            fileInfo.setContentType(file.getContentType());
+        if (fileInfo.getMediaType() == null) {
+            fileInfo.setMediaType(file.getContentType());
         }
         fileInfo.setSize(file.getSize());
+        try {
+            BufferedImage image = ImageIO.read(file.getInputStream());
+            fileInfo.setWidth(image.getWidth());
+            fileInfo.setHeight(image.getHeight());
+        } catch (Exception ignored) {
+            fileInfo.setWidth(0);
+            fileInfo.setHeight(0);
+        }
     }
 
     @Override
@@ -133,32 +128,6 @@ public class FileInfoCrudServiceImpl extends BaseEntityService<FileInfo> impleme
             return dirTree;
         }
         return null;
-    }
-
-    @Override
-    public PageData<ImageOption> getImageByPage(Page page) {
-        if (page == null) {
-            page = new Page();
-        }
-        Bson condFilter = page.filter();
-        Bson imageFilter = Filters.or(Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_JPEG), Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_PNG), Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_BMP), Filters.eq(BaseField.CONTENT_TYPE, MimeType.IMAGE_GIF));
-        Bson filter = Filters.and(imageFilter, condFilter);
-        MongoCollection<FileInfo> mongoCollection = this.getCollection();
-        long total = mongoCollection.countDocuments(filter);
-        if (total <= 0) {
-            return PageData.zero();
-        }
-        MongoCursor<FileInfo> iterator = mongoCollection.find(filter).sort(page.sort()).skip(page.skip()).limit(page.limit()).iterator();
-        List<ImageOption> lists = new ArrayList<>();
-        while (iterator.hasNext()) {
-            FileInfo fileInfo = iterator.next();
-            ImageOption option = new ImageOption();
-            option.setFileId(fileInfo.getId());
-            option.setFileName(fileInfo.getName());
-            option.setUri(String.format("%s%s/file/preview/%s", envProperties.getBaseUri(), envProperties.getContextPath(), fileInfo.getId()));
-            lists.add(option);
-        }
-        return PageData.data(total, lists);
     }
 
     /**

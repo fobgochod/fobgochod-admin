@@ -35,20 +35,20 @@ public class UserController {
     private UserRepository userRepository;
 
     @Encrypt
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody User body) {
         String id = userRepository.insert(body);
         return ResponseEntity.ok(userRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        userRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody User body) {
+        userRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
     @Encrypt
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody User body) {
         User user = userRepository.findById(body.getId());
         if (user != null) {
@@ -59,29 +59,20 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(userRepository.findById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<?> find(@RequestBody(required = false) User body) {
-        return ResponseEntity.ok(userRepository.findAll(body));
+    @Encrypt
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody User body) {
+        return ResponseEntity.ok(userRepository.findById(body.getId()));
     }
 
     @Encrypt
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page<User> body) {
+    public ResponseEntity<?> search(@RequestBody Page<User> body) {
         if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
-            BaseEntity baseEntity = body.getCond();
+            BaseEntity baseEntity = body.getFilter().getEq();
             baseEntity.setTenantId(UserUtil.getTenantId());
         }
         return ResponseEntity.ok(userRepository.findByPage(body));
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
-        return ResponseEntity.ok(userRepository.deleteByIdIn(body.getIds()));
     }
 
     @DeleteMapping("/drop")
@@ -90,14 +81,9 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/name")
-    public ResponseEntity<?> modifyName(@RequestBody User body) {
-        User user = userRepository.findById(body.getId());
-        if (user != null) {
-            user.setEmail(body.getEmail());
-            userRepository.update(user);
-        }
-        return ResponseEntity.ok(user);
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(userRepository.deleteByIdIn(body.getIds()));
     }
 
     @PostMapping("/password/check")
@@ -125,12 +111,6 @@ public class UserController {
         user.setPassword(body.getPwdHash());
         userRepository.update(user);
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/name/{name}")
-    public ResponseEntity<?> findByName(@PathVariable String name) {
-        User user = userRepository.findAny(name);
-        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/option/group")

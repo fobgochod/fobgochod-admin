@@ -31,6 +31,6 @@ public final class AppAuthContextHolder {
     }
 
     public static AuthoredUser createEmptyContext() {
-        return new AuthoredUser();
+        return  AuthoredUser.of();
     }
 }

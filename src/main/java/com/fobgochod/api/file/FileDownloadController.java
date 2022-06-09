@@ -1,9 +1,9 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.service.crud.FileInfoCrudService;
 import com.fobgochod.domain.FileTree;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.enumeration.InlineAttachment;
+import com.fobgochod.service.crud.FileInfoCrudService;
 import com.fobgochod.service.file.CompressService;
 import com.fobgochod.service.file.DownloadService;
 import com.fobgochod.util.IdUtil;
@@ -26,19 +26,31 @@ import java.util.List;
 public class FileDownloadController {
 
     @Autowired
-    private DownloadService downloadService;
-    @Autowired
     private CompressService compressService;
     @Autowired
+    private DownloadService downloadService;
+    @Autowired
     private FileInfoCrudService fileInfoCrudService;
+
+    /**
+     * 预览文件
+     *
+     * @param fileId 文件ID
+     */
+    @GetMapping("/preview")
+    public void preview(@RequestParam String fileId,
+                        HttpServletRequest request,
+                        HttpServletResponse response) {
+        downloadService.downloadFile(fileId, InlineAttachment.inline, request, response);
+    }
 
     /**
      * 文件下载-指定文件
      *
      * @param fileId 文件ID
      */
-    @GetMapping("/download/{fileId}")
-    public void download(@PathVariable String fileId,
+    @GetMapping("/download")
+    public void download(@RequestParam String fileId,
                          HttpServletRequest request,
                          HttpServletResponse response) {
         downloadService.downloadFile(fileId, InlineAttachment.attachment, request, response);
@@ -49,8 +61,8 @@ public class FileDownloadController {
      *
      * @param dirId 目录ID
      */
-    @GetMapping("/download/dir/{dirId}")
-    public void downloadDir(@PathVariable String dirId,
+    @GetMapping("/download/dir")
+    public void downloadDir(@RequestParam String dirId,
                             HttpServletResponse response) {
         FileTree dirTree = fileInfoCrudService.getFileTree(IdUtil.getDirId(dirId), null);
         List<FileTree> fileTrees = Collections.singletonList(dirTree);

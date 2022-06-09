@@ -29,6 +29,8 @@ public enum I18nCode implements I18nHandler {
      */
     NOT_FOUND(20404, "system.error.notfound"),
 
+    LOGIN_ACCOUNT_FAIL(20000, "login.account.fail"),
+    LOGIN_CAPTCHA_FAIL(20000, "login.captcha.fail"),
 
     FILE_NAME_NONE(20000, "filename.notnull"),
     LOGIN_AUTH_FAIL(20000, "login.auth.fail"),

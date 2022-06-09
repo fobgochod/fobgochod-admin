@@ -2,6 +2,7 @@ package com.fobgochod.util;
 
 import com.fobgochod.constant.BaseField;
 import com.fobgochod.domain.base.Page;
+import com.fobgochod.entity.Filter;
 import com.mongodb.client.model.Filters;
 import org.bson.BsonDocument;
 import org.bson.conversions.Bson;
@@ -15,10 +16,8 @@ import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * 查询条件处理
@@ -42,7 +41,7 @@ public class QueryUtil {
         if (object == null) {
             return query;
         }
-        for (Field field : getFields(object)) {
+        for (Field field : SqlUtil.getFields(object)) {
             field.setAccessible(true);
             org.springframework.data.mongodb.core.mapping.Field annotation = field.getAnnotation(org.springframework.data.mongodb.core.mapping.Field.class);
             if (annotation != null) {
@@ -66,7 +65,7 @@ public class QueryUtil {
     public static Bson filter(Object object) {
         List<Bson> filters = new ArrayList<>();
         if (object != null) {
-            for (Field field : getFields(object)) {
+            for (Field field : SqlUtil.getFields(object)) {
                 field.setAccessible(true);
                 Bson bson = getBson(field, object);
                 if (bson != null) {
@@ -81,48 +80,51 @@ public class QueryUtil {
         return Filters.and(filters);
     }
 
-    public static Bson filter(Map<String, Object> filter) {
+    public static Bson filter(Filter<?> filter) {
         List<Bson> filters = new ArrayList<>();
-        filters.add(Filters.or(Filters.eq("deleted", false), Filters.eq("deleted", null)));
-        for (Map.Entry<String, Object> entry : filter.entrySet()) {
-            if (BaseField.PID.equals(entry.getKey())) {
-                filters.add(Filters.eq(BaseField.ID, entry.getValue().toString()));
-            } else if (BaseField.DIR_PARENT_ID.equals(entry.getKey())) {
-                filters.add(Filters.eq(entry.getKey(), entry.getValue().toString()));
-            } else if (entry.getValue() instanceof String) {
-                filters.add(Filters.regex(entry.getKey(), String.format(LIKE, entry.getValue())));
-            } else {
-                filters.add(Filters.eq(entry.getKey(), entry.getValue()));
+        try {
+            filters.add(Filters.or(Filters.eq("deleted", false), Filters.eq("deleted", null)));
+
+            List<Field> fields = SqlUtil.getFields(filter.getEq());
+            for (Field field : fields) {
+                field.setAccessible(true);
+                // 处理equal
+                Object filterEq = filter.getEq();
+                if (filterEq != null) {
+                    Object value = field.get(filter.getEq());
+                    if (value != null) {
+                        if (BaseField.PID.equals(field.getName())) {
+                            filters.add(Filters.eq(BaseField.ID, value));
+                        } else {
+                            filters.add(Filters.eq(field.getName(), value));
+                        }
+                    }
+                }
+                // 处理like
+                Object filterLike = filter.getLike();
+                if (filterLike != null) {
+                    Object value = field.get(filterLike);
+                    if (value != null) {
+                        filters.add(Filters.regex(field.getName(), String.format(LIKE, value)));
+                    }
+                }
+                field.setAccessible(false);
             }
+        } catch (IllegalAccessException ignored) {
         }
-        return filters.isEmpty() ? new BsonDocument() : Filters.and(filters);
+        return Filters.and(filters);
+
     }
 
-    public static Query query(Page page) {
+    public static Query query(Page<?> page) {
         if (page == null) {
             return new Query();
         }
-        Query query = query(page.getFilters());
+        Query query = query(page.getFilter());
         query.with(sort(page.getOrders()));
         return query.skip(page.skip()).limit(page.limit());
     }
 
-    public static Query query(Map<String, Object> filter) {
-        Query query = new Query();
-        if (CollectionUtils.isEmpty(filter)) {
-            return query;
-        }
-        for (Map.Entry<String, Object> entry : filter.entrySet()) {
-            if (BaseField.PID.equals(entry.getKey())) {
-                query.addCriteria(Criteria.where(BaseField.ID).is(entry.getValue().toString()));
-            } else if (entry.getValue() instanceof String) {
-                query.addCriteria(Criteria.where(entry.getKey()).regex(String.format(LIKE, entry.getValue())));
-            } else {
-                query.addCriteria(Criteria.where(entry.getKey()).is(entry.getValue()));
-            }
-        }
-        return query;
-    }
 
     public static Sort sort(Map<String, Object> order) {
         ArrayList<Sort.Order> sort = new ArrayList<>();
@@ -147,24 +149,6 @@ public class QueryUtil {
         return Sort.by(sort);
     }
 
-    /**
-     * 获取对象所有字段
-     *
-     * @param object
-     * @return
-     */
-    private static List<Field> getFields(Object object) {
-        List<Field> fields = new ArrayList<>();
-        Class<?> aClass = object.getClass();
-        //当父类为null的时候说明到达了最上层的父类(Object类).
-        while (aClass != null) {
-            Field[] declaredFields = aClass.getDeclaredFields();
-            fields.addAll(Arrays.stream(declaredFields).filter(o -> !o.isSynthetic()).collect(Collectors.toList()));
-            //得到父类,然后赋给自己
-            aClass = aClass.getSuperclass();
-        }
-        return fields;
-    }
 
     private static Criteria getCriteria(Field field, Object object) {
         return getCriteria(field.getName(), field, object);

@@ -26,14 +26,14 @@ public class StatsController {
     @Autowired
     private StatsRepository statsRepository;
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        statsRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody Stats body) {
+        statsRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page<Stats> body) {
+    public ResponseEntity<?> search(@RequestBody Page<Stats> body) {
         return ResponseEntity.ok(statsRepository.findByPage(body));
     }
 

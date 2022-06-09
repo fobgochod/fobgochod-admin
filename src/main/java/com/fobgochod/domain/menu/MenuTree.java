@@ -1,6 +1,6 @@
-package com.fobgochod.domain;
+package com.fobgochod.domain.menu;
 
-import com.fobgochod.entity.admin.Menu;
+import com.fobgochod.entity.menu.Menu;
 import org.springframework.beans.BeanUtils;
 
 import java.util.ArrayList;

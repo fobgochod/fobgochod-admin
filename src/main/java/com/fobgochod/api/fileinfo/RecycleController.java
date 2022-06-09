@@ -1,6 +1,7 @@
 package com.fobgochod.api.fileinfo;
 
 import com.fobgochod.domain.base.Page;
+import com.fobgochod.entity.file.RecycleBin;
 import com.fobgochod.service.crud.RecycleCrudService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class RecycleController {
     private RecycleCrudService recycleCrudService;
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page body) {
+    public ResponseEntity<?> search(@RequestBody Page<RecycleBin> body) {
         return ResponseEntity.ok(recycleCrudService.findByPage(body));
     }
 }

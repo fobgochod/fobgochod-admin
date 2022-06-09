@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -24,45 +23,41 @@ public class SqlUtil {
     private static final String LIKE = "^.*%s.*$";
 
     public static Query cond(Page<?> page) {
-        Query query = SqlUtil.cond(page.getCond());
+        Query query = SqlUtil.cond(page.getFilter());
         query.with(SqlUtil.sort(page.getOrders()));
         return query.skip(page.skip()).limit(page.limit());
     }
 
-    public static Query cond(Object cond) {
+    public static Query cond(Filter<?> filter) {
         Query query = new Query();
         try {
-            // 处理equal
-            for (Field field : SqlUtil.getFields(cond)) {
+            List<Field> fields = SqlUtil.getFields(filter.getEq());
+
+            for (Field field : fields) {
                 field.setAccessible(true);
-                Object value = field.get(cond);
-                if (value != null) {
-                    query.addCriteria(Criteria.where(field.getName()).is(value));
+                // 处理equal
+                Object filterEq = filter.getEq();
+                if (filterEq != null) {
+                    Object value = field.get(filterEq);
+                    if (value != null) {
+                        query.addCriteria(Criteria.where(field.getName()).is(value));
+                    }
+                }
+                // 处理like
+                Object filterLike = filter.getLike();
+                if (filterLike != null) {
+                    Object value = field.get(filterLike);
+                    if (value != null) {
+                        query.addCriteria(Criteria.where(field.getName()).regex(String.format(LIKE, value)));
+                    }
                 }
                 field.setAccessible(false);
             }
 
-            if (cond instanceof Filter) {
-                Filter filter = (Filter) cond;
-                // 处理like
-                Filter.Like like = filter.getLike();
-                if (like != null && StringUtils.hasLength(like.getValue())) {
-                    query.addCriteria(Criteria.where(like.getKey()).regex(String.format(LIKE, like.getValue())));
-                }
-                for (Filter.Like item : filter.getLikes()) {
-                    if (StringUtils.hasLength(item.getValue())) {
-                        query.addCriteria(Criteria.where(item.getKey()).regex(String.format(LIKE, item.getValue())));
-                    }
-                }
-
-                // 处理Between
-                Filter.Between between = filter.getBetween();
-                if (between != null) {
-                    query.addCriteria(Criteria.where(between.getKey()).gte(between.getBegin()).lte(between.getEnd()));
-                }
-                for (Filter.Between item : filter.getBetweens()) {
-                    query.addCriteria(Criteria.where(item.getKey()).gte(item.getBegin()).lte(item.getEnd()));
-                }
+            // 处理Between
+            Filter.Between between = filter.getBetween();
+            if (between != null) {
+                query.addCriteria(Criteria.where(between.getKey()).gte(between.getBegin()).lte(between.getEnd()));
             }
         } catch (IllegalAccessException ignored) {
         }
@@ -98,15 +93,17 @@ public class SqlUtil {
      * @param object 对象
      * @return 字段集合
      */
-    private static List<Field> getFields(Object object) {
+    public static List<Field> getFields(Object object) {
         List<Field> fields = new ArrayList<>();
-        Class<?> clazz = object.getClass();
-        //最顶层的查询条件实体不获取.
-        while (clazz != Filter.class) {
-            Field[] declaredFields = clazz.getDeclaredFields();
-            fields.addAll(Arrays.stream(declaredFields).filter(o -> !o.isSynthetic()).collect(Collectors.toList()));
-            //得到父类,然后赋给自己
-            clazz = clazz.getSuperclass();
+        if (object != null) {
+            Class<?> clazz = object.getClass();
+            //最顶层的查询条件实体不获取.
+            while (clazz != null) {
+                Field[] declaredFields = clazz.getDeclaredFields();
+                fields.addAll(Arrays.stream(declaredFields).filter(o -> !o.isSynthetic()).collect(Collectors.toList()));
+                //得到父类,然后赋给自己
+                clazz = clazz.getSuperclass();
+            }
         }
         return fields;
     }

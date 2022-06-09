@@ -1,6 +1,7 @@
 package com.fobgochod.domain.base;
 
 import com.fobgochod.constant.BaseField;
+import com.fobgochod.entity.Filter;
 import com.fobgochod.util.QueryUtil;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -22,11 +23,7 @@ public class Page<T> {
     /**
      * 查询条件
      */
-    private T cond;
-    /**
-     * 查询条件
-     */
-    private Map<String, Object> filters;
+    private Filter<T> filter;
     /**
      * 页码，从1开始
      */
@@ -45,7 +42,7 @@ public class Page<T> {
     private long total;
 
     public Page() {
-        this.filters = Collections.emptyMap();
+        this.filter = new Filter<>();
         this.pageNum = 1;
         this.pageSize = 10;
         this.orders = Collections.singletonMap(BaseField.CREATE_DATE, -1);
@@ -55,20 +52,12 @@ public class Page<T> {
         return OK;
     }
 
-    public T getCond() {
-        return cond;
+    public Filter<T> getFilter() {
+        return filter;
     }
 
-    public void setCond(T cond) {
-        this.cond = cond;
-    }
-
-    public Map<String, Object> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(Map<String, Object> filters) {
-        this.filters = filters;
+    public void setFilter(Filter<T> filter) {
+        this.filter = filter;
     }
 
     public int getPageNum() {
@@ -103,16 +92,12 @@ public class Page<T> {
         this.total = total;
     }
 
-    public Query queryFilter() {
-        return QueryUtil.query(this.filters);
-    }
-
     public Query query() {
         return QueryUtil.query(this);
     }
 
     public Bson filter() {
-        return QueryUtil.filter(this.filters);
+        return QueryUtil.filter(this.filter);
     }
 
     public Bson sort() {

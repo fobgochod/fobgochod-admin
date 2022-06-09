@@ -26,16 +26,6 @@ public class DirectoryCrudServiceImpl extends BaseEntityService<DirInfo> impleme
     }
 
     @Override
-    public DirInfo findByName(String parentId, String name) {
-        MongoCollection<DirInfo> mongoCollection = this.getCollection();
-        Bson filter = Filters.and(
-                Filters.eq(BaseField.DIR_PARENT_ID, parentId),
-                Filters.eq(BaseField.DIR_NAME, name)
-        );
-        return mongoCollection.find(filter).first();
-    }
-
-    @Override
     public List<DirInfo> findByParentId(String parentId) {
         MongoCollection<DirInfo> mongoCollection = this.getCollection();
         FindIterable<DirInfo> iterable = mongoCollection.find(Filters.eq(BaseField.DIR_PARENT_ID, parentId));

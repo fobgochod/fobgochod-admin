@@ -21,27 +21,27 @@ public class MedicineItemController {
     @Autowired
     private MedicineItemRepository medicineItemRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody MedicineItem body) {
         String id = medicineItemRepository.insert(body);
         return ResponseEntity.ok(medicineItemRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        medicineItemRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody MedicineItem body) {
+        medicineItemRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody MedicineItem body) {
         medicineItemRepository.update(body);
         return ResponseEntity.ok(medicineItemRepository.findById(body.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(medicineItemRepository.findById(id));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody MedicineItem body) {
+        return ResponseEntity.ok(medicineItemRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
@@ -49,14 +49,14 @@ public class MedicineItemController {
         return ResponseEntity.ok(medicineItemRepository.findByPage(body));
     }
 
-    @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
-        return ResponseEntity.ok(medicineItemRepository.deleteByIdIn(body.getIds()));
-    }
-
     @DeleteMapping("/drop")
     public ResponseEntity<?> dropCollection() {
         medicineItemRepository.dropCollection();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(medicineItemRepository.deleteByIdIn(body.getIds()));
     }
 }

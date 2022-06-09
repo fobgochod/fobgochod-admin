@@ -41,7 +41,7 @@ public class FileUploadController {
      */
     @PostMapping("/upload")
     public Callable<?> upload(@RequestPart("file") MultipartFile file,
-                              @RequestPart(required = false, name = "fileInfo") FileInfo body) {
+                              @RequestPart(required = false, name = "fileInfo") FileInfo body) throws Exception {
         return () -> uploadService.uploadFile(body, file);
     }
 

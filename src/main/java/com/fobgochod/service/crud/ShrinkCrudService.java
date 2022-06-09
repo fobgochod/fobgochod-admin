@@ -1,7 +1,7 @@
 package com.fobgochod.service.crud;
 
-import com.fobgochod.service.crud.base.EntityService;
 import com.fobgochod.entity.file.ShrinkImage;
+import com.fobgochod.service.crud.base.EntityService;
 
 import java.util.List;
 
@@ -16,25 +16,25 @@ public interface ShrinkCrudService extends EntityService<ShrinkImage> {
     /**
      * 删除压缩记录
      *
-     * @param targetId
+     * @param shrinkId
      */
-    void deleteByTargetId(String targetId);
+    void deleteByShrinkId(String shrinkId);
 
     /**
      * 按压缩
      *
-     * @param sourceId
+     * @param fileId
      * @param width
      * @param height
      * @return
      */
-    ShrinkImage findByProperty(String sourceId, int width, int height);
+    ShrinkImage findByWidthAndHeight(String fileId, int width, int height);
 
     /**
      * 获取原图所有压缩图片
      *
-     * @param sourceId 文件id
+     * @param fileId 文件id
      * @return ImageShrink
      */
-    List<ShrinkImage> findBySourceId(String sourceId);
+    List<ShrinkImage> findByFileId(String fileId);
 }

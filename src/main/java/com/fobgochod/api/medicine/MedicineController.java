@@ -23,34 +23,34 @@ public class MedicineController {
     @Autowired
     private MedicineRepository medicineRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody Medicine body) {
         body.setStatus(false);
         String id = medicineRepository.insert(body);
         return ResponseEntity.ok(medicineRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        medicineRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody Medicine body) {
+        medicineRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody Medicine body) {
         medicineRepository.update(body);
         return ResponseEntity.ok(medicineRepository.findById(body.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(medicineRepository.findById(id));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody Medicine body) {
+        return ResponseEntity.ok(medicineRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page<Medicine> body) {
+    public ResponseEntity<?> search(@RequestBody Page<Medicine> body) {
         if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
-            Medicine medicine = body.getCond();
+            Medicine medicine = body.getFilter().getEq();
             medicine.setUserId(UserUtil.getUserId());
         }
         return ResponseEntity.ok(medicineRepository.findByPage(body));

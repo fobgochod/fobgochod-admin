@@ -23,46 +23,46 @@ public class MedicineRecordController {
     @Autowired
     private MedicineRecordRepository medicineRecordRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody MedicineRecord body) {
         String id = medicineRecordRepository.insert(body);
         return ResponseEntity.ok(medicineRecordRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        medicineRecordRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody MedicineRecord body) {
+        medicineRecordRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody MedicineRecord body) {
         medicineRecordRepository.update(body);
         return ResponseEntity.ok(medicineRecordRepository.findById(body.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(medicineRecordRepository.findById(id));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody MedicineRecord body) {
+        return ResponseEntity.ok(medicineRecordRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody Page<MedicineRecord> body) {
         if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
-            MedicineRecord medicine = body.getCond();
+            MedicineRecord medicine = body.getFilter().getEq();
             medicine.setUserId(UserUtil.getUserId());
         }
         return ResponseEntity.ok(medicineRecordRepository.findByPage(body));
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
-        return ResponseEntity.ok(medicineRecordRepository.deleteByIdIn(body.getIds()));
     }
 
     @DeleteMapping("/drop")
     public ResponseEntity<?> dropCollection() {
         medicineRecordRepository.dropCollection();
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(medicineRecordRepository.deleteByIdIn(body.getIds()));
     }
 }

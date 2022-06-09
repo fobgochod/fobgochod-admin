@@ -1,8 +1,8 @@
-package com.fobgochod.api.admin;
+package com.fobgochod.api.menu;
 
 import com.fobgochod.domain.menu.MenuCheck;
-import com.fobgochod.entity.admin.Menu;
-import com.fobgochod.entity.admin.MenuRole;
+import com.fobgochod.entity.menu.Menu;
+import com.fobgochod.entity.menu.MenuRole;
 import com.fobgochod.entity.admin.Role;
 import com.fobgochod.repository.MenuRepository;
 import com.fobgochod.repository.MenuRoleRepository;

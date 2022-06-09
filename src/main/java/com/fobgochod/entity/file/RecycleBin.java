@@ -34,7 +34,7 @@ public class RecycleBin extends BaseEntity {
     /**
      * 大小
      */
-    private long size;
+    private Long size;
     /**
      * 类型：File、Directory
      */
@@ -72,11 +72,11 @@ public class RecycleBin extends BaseEntity {
         this.deleteDate = deleteDate;
     }
 
-    public long getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 

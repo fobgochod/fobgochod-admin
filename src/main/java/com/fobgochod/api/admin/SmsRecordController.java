@@ -1,6 +1,6 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.holder.AuthoredUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
@@ -30,37 +30,32 @@ public class SmsRecordController {
     @Autowired
     private SmsRecordRepository smsRecordRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody SmsRecord body) {
         String id = smsRecordRepository.insert(body);
         return ResponseEntity.ok(smsRecordRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        smsRecordRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody SmsRecord body) {
+        smsRecordRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody SmsRecord body) {
         smsRecordRepository.update(body);
         return ResponseEntity.ok(smsRecordRepository.findById(body.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(smsRecordRepository.findById(id));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody SmsRecord body) {
+        return ResponseEntity.ok(smsRecordRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<SmsRecord> body) {
         return ResponseEntity.ok(smsRecordRepository.findByPage(body));
-    }
-
-    @PostMapping("/delete")
-    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
-        return ResponseEntity.ok(smsRecordRepository.deleteByIdIn(body.getIds()));
     }
 
     @DeleteMapping("/drop")
@@ -69,9 +64,14 @@ public class SmsRecordController {
         return ResponseEntity.ok().build();
     }
 
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        return ResponseEntity.ok(smsRecordRepository.deleteByIdIn(body.getIds()));
+    }
+
     @PostMapping("/test")
-    public ResponseEntity<?> test(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser loginUser) {
-        User user = userRepository.findByCode(loginUser.getUsername());
+    public ResponseEntity<?> test(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
+        User user = userRepository.findByCode(authoredUser.getUserId());
         aliyunSmsService.test(user.getTelephone(), user.getName());
         return ResponseEntity.ok().build();
     }

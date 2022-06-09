@@ -9,8 +9,6 @@ public interface DirectoryCrudService extends EntityService<DirInfo> {
 
     boolean exists(String id);
 
-    DirInfo findByName(String parentId, String name);
-
     List<DirInfo> findByParentId(String parentId);
 
     List<DirInfo> getDirInfos(String id);

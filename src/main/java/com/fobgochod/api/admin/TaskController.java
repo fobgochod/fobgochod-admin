@@ -24,31 +24,31 @@ public class TaskController {
     @Autowired
     private TaskRepository taskRepository;
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<?> create(@RequestBody Task body) {
         String id = taskRepository.insert(body);
         return ResponseEntity.ok(taskRepository.findById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable String id) {
-        taskRepository.deleteById(id);
+    @PostMapping("/del")
+    public ResponseEntity<?> delete(@RequestBody Task body) {
+        taskRepository.deleteById(body.getId());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping
+    @PostMapping("/mod")
     public ResponseEntity<?> modify(@RequestBody Task body) {
         taskRepository.update(body);
         return ResponseEntity.ok(taskRepository.findById(body.getId()));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<?> findById(@PathVariable String id) {
-        return ResponseEntity.ok(taskRepository.findById(id));
+    @PostMapping("/get")
+    public ResponseEntity<?> findById(@RequestBody Task body) {
+        return ResponseEntity.ok(taskRepository.findById(body.getId()));
     }
 
     @PostMapping("/search")
-    public ResponseEntity<?> search(@RequestBody(required = false) Page<Task> body) {
+    public ResponseEntity<?> search(@RequestBody Page<Task> body) {
         return ResponseEntity.ok(taskRepository.findByPage(body));
     }
 

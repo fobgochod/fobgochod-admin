@@ -1,18 +1,14 @@
 package com.fobgochod.auth;
 
-import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.domain.FghAuthenticationToken;
+import com.fobgochod.auth.holder.AuthoredUser;
 import com.fobgochod.constant.FghConstants;
-import com.fobgochod.domain.FileOpTreeContextHolder;
 import com.fobgochod.exception.FghException;
-import com.fobgochod.service.login.LoginService;
 import com.fobgochod.service.login.token.UserTokenService;
 import com.fobgochod.util.ExceptionUtils;
 import com.fobgochod.util.I18nUtils;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -20,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
 
 /**
  * FghAuthenticationFilter.java
@@ -42,18 +37,13 @@ public class FghAuthenticationFilter extends OncePerRequestFilter {
             LocaleContextHolder.setLocale(I18nUtils.getLocale(request));
             String userToken = request.getHeader(FghConstants.HTTP_HEADER_USER_TOKEN);
             if (userToken != null) {
-                LoginUser loginUser = userTokenService.getData(userToken);
-                request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO, loginUser);
-                AbstractAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(loginUser, null, Collections.emptyList());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                AuthoredUser authoredUser = userTokenService.getData(userToken);
+                request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO, authoredUser);
+                SecurityContextHolder.getContext().setAuthentication(new FghAuthenticationToken(authoredUser));
             }
             chain.doFilter(request, response);
         } catch (FghException e) {
             ExceptionUtils.writeUnAuth(request, response, e);
-        } finally {
-            SecurityContextHolder.clearContext();
-            FileOpTreeContextHolder.resetContext();
         }
     }
 }

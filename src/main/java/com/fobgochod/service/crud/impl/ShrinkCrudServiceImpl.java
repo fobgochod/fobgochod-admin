@@ -1,8 +1,8 @@
 package com.fobgochod.service.crud.impl;
 
+import com.fobgochod.entity.file.ShrinkImage;
 import com.fobgochod.service.crud.ShrinkCrudService;
 import com.fobgochod.service.crud.base.BaseEntityService;
-import com.fobgochod.entity.file.ShrinkImage;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.model.Filters;
@@ -15,23 +15,18 @@ import java.util.List;
 @Service
 public class ShrinkCrudServiceImpl extends BaseEntityService<ShrinkImage> implements ShrinkCrudService {
 
-    /**
-     * 原图片信息ID
-     */
-    private static final String IMAGE_SHRINK_SOURCE_ID = "sourceId";
-
     @Override
-    public void deleteByTargetId(String targetId) {
+    public void deleteByShrinkId(String shrinkId) {
         MongoCollection<ShrinkImage> mongoCollection = this.getCollection();
-        mongoCollection.deleteOne(Filters.eq("targetId", targetId));
+        mongoCollection.deleteOne(Filters.eq("shrinkId", shrinkId));
     }
 
     @Override
-    public ShrinkImage findByProperty(String sourceId, int width, int height) {
+    public ShrinkImage findByWidthAndHeight(String fileId, int width, int height) {
         List<Bson> filters = new ArrayList<>();
-        Bson field1 = Filters.eq("sourceId", sourceId);
-        Bson field2 = Filters.eq("property.width", width);
-        Bson field3 = Filters.eq("property.height", height);
+        Bson field1 = Filters.eq("fileId", fileId);
+        Bson field2 = Filters.eq("width", width);
+        Bson field3 = Filters.eq("height", height);
         filters.add(field1);
         filters.add(field2);
         filters.add(field3);
@@ -41,8 +36,8 @@ public class ShrinkCrudServiceImpl extends BaseEntityService<ShrinkImage> implem
 
 
     @Override
-    public List<ShrinkImage> findBySourceId(String sourceId) {
-        Bson filter = Filters.eq(IMAGE_SHRINK_SOURCE_ID, sourceId);
+    public List<ShrinkImage> findByFileId(String fileId) {
+        Bson filter = Filters.eq("fileId", fileId);
         MongoCollection<ShrinkImage> mongoCollection = this.getCollection();
         MongoCursor<ShrinkImage> result = mongoCollection.find(filter, ShrinkImage.class).iterator();
         List<ShrinkImage> shrinkImages = new ArrayList<>();

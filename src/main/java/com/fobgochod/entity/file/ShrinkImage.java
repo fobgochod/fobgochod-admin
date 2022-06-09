@@ -1,7 +1,7 @@
 package com.fobgochod.entity.file;
 
 import com.fobgochod.entity.BaseEntity;
-import org.bson.Document;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * 原图和缩略图关系(FileInfo的id关联)
@@ -9,34 +9,49 @@ import org.bson.Document;
  * @author zhouxiao
  * @date 2020/5/21
  */
-@org.springframework.data.mongodb.core.mapping.Document("ShrinkImage")
+@Document("ShrinkImage")
 public class ShrinkImage extends BaseEntity {
 
-    private String sourceId;
-    private Document property;
-    private String targetId;
+    /**
+     * 原图文件ID
+     */
+    private String fileId;
+    /**
+     * 压缩后的图片文件ID
+     */
+    private String shrinkId;
+    private Integer width;
+    private Integer height;
 
-    public String getSourceId() {
-        return sourceId;
+    public String getFileId() {
+        return fileId;
     }
 
-    public void setSourceId(String sourceId) {
-        this.sourceId = sourceId;
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
     }
 
-    public Document getProperty() {
-        return property;
+    public String getShrinkId() {
+        return shrinkId;
     }
 
-    public void setProperty(Document property) {
-        this.property = property;
+    public void setShrinkId(String shrinkId) {
+        this.shrinkId = shrinkId;
     }
 
-    public String getTargetId() {
-        return targetId;
+    public Integer getWidth() {
+        return width;
     }
 
-    public void setTargetId(String targetId) {
-        this.targetId = targetId;
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+
+    public Integer getHeight() {
+        return height;
+    }
+
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 }

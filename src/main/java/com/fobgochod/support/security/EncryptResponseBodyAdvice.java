@@ -2,6 +2,7 @@ package com.fobgochod.support.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fobgochod.util.JsonUtils;
+import com.fobgochod.util.SecureUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -24,7 +25,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return null;
         }
         try {
-            return AESUtils.encrypt(JsonUtils.createObjectMapper().writeValueAsString(body));
+            return SecureUtils.aesEncrypt(JsonUtils.createObjectMapper().writeValueAsString(body));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

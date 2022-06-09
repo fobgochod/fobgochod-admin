@@ -63,7 +63,7 @@ public class DownloadServiceImpl implements DownloadService {
             // 操作记录，预览没有Token，不用记录
             fileInfoCrudService.update(fileInfo);
         }
-        if (MimeType.isVideo(fileInfo.getContentType())) {
+        if (MimeType.isVideo(fileInfo.getMediaType())) {
             this.downloadFileRange(fileInfo, type, request, response);
         } else {
             this.downloadFile(fileInfoId, type, response);
@@ -75,10 +75,10 @@ public class DownloadServiceImpl implements DownloadService {
         FileInfo fileInfo = fileOpService.findFileInfo(fileInfoId);
         byte[] fileBytes = this.downloadToBytes(fileInfoId);
         try {
-            if (!StringUtils.hasText(fileInfo.getContentType())) {
+            if (!StringUtils.hasText(fileInfo.getMediaType())) {
                 response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             } else {
-                response.setContentType(fileInfo.getContentType());
+                response.setContentType(fileInfo.getMediaType());
             }
             response.setHeader(HttpHeaders.CONTENT_LENGTH, String.valueOf(fileInfo.getSize()));
             String fileName = URLEncoder.encode(fileInfo.getName(), StandardCharsets.UTF_8.name());
@@ -101,7 +101,7 @@ public class DownloadServiceImpl implements DownloadService {
     @Override
     public void downloadFileRange(FileInfo fileInfo, InlineAttachment type, HttpServletRequest request, HttpServletResponse response) {
         try {
-            response.setContentType(fileInfo.getContentType());
+            response.setContentType(fileInfo.getMediaType());
             response.setHeader(HttpHeaders.ACCEPT_RANGES, "bytes");
             response.setHeader(HttpHeaders.ETAG, fileInfo.getName());
             response.setHeader(HttpHeaders.LAST_MODIFIED, new Date().toString());

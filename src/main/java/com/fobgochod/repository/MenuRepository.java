@@ -1,6 +1,6 @@
 package com.fobgochod.repository;
 
-import com.fobgochod.entity.admin.Menu;
+import com.fobgochod.entity.menu.Menu;
 import com.fobgochod.repository.base.EntityRepository;
 import org.springframework.data.repository.query.Param;
 

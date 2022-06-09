@@ -4,13 +4,12 @@ import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.entity.BaseEntity;
 import com.fobgochod.exception.SystemException;
 import com.fobgochod.util.JsonUtils;
-import org.bson.Document;
 import org.bson.types.ObjectId;
-import org.springframework.util.StringUtils;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.util.ObjectUtils;
 
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDateTime;
 
 /**
  * 文件信息
@@ -18,26 +17,25 @@ import java.time.LocalDateTime;
  * @author zhouxiao
  * @date 2021/3/2
  */
-@org.springframework.data.mongodb.core.mapping.Document("FileInfo")
+@Document("FileInfo")
 public class FileInfo extends BaseEntity {
 
     private String name;
-    private String displayName;
-    private String tag;
-    private long size;
-    private String extension;
-    private String contentType;
-    private boolean completed;
-    private LocalDateTime expireDate;
-    private Document metadata = new Document();
+    private Long size;
+    private String suffix;
+    private String mediaType;
+    private Integer width;
+    private Integer height;
     private String directoryId;
+    private String tag;
     private ObjectId fileId;
+    private Boolean completed;
 
     public static FileInfo get(String fileJson) {
         try {
             FileInfo fileInfo = JsonUtils.createObjectMapper()
                     .readValue(URLDecoder.decode(fileJson, StandardCharsets.UTF_8.name()), FileInfo.class);
-            if (StringUtils.isEmpty(fileInfo.name)) {
+            if (ObjectUtils.isEmpty(fileInfo.name)) {
                 throw new SystemException(I18nCode.FILE_NAME_NONE);
             }
             return fileInfo;
@@ -54,68 +52,44 @@ public class FileInfo extends BaseEntity {
         this.name = name;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public long getSize() {
+    public Long getSize() {
         return size;
     }
 
-    public void setSize(long size) {
+    public void setSize(Long size) {
         this.size = size;
     }
 
-    public String getExtension() {
-        return extension;
+    public String getSuffix() {
+        return suffix;
     }
 
-    public void setExtension(String extension) {
-        this.extension = extension;
+    public void setSuffix(String suffix) {
+        this.suffix = suffix;
     }
 
-    public String getContentType() {
-        return contentType;
+    public String getMediaType() {
+        return mediaType;
     }
 
-    public void setContentType(String contentType) {
-        this.contentType = contentType;
+    public void setMediaType(String mediaType) {
+        this.mediaType = mediaType;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public Integer getWidth() {
+        return width;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setWidth(Integer width) {
+        this.width = width;
     }
 
-    public LocalDateTime getExpireDate() {
-        return expireDate;
+    public Integer getHeight() {
+        return height;
     }
 
-    public void setExpireDate(LocalDateTime expireDate) {
-        this.expireDate = expireDate;
-    }
-
-    public Document getMetadata() {
-        return metadata;
-    }
-
-    public void setMetadata(Document metadata) {
-        this.metadata = metadata;
+    public void setHeight(Integer height) {
+        this.height = height;
     }
 
     public String getDirectoryId() {
@@ -126,12 +100,28 @@ public class FileInfo extends BaseEntity {
         this.directoryId = directoryId;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
     public ObjectId getFileId() {
         return fileId;
     }
 
     public void setFileId(ObjectId fileId) {
         this.fileId = fileId;
+    }
+
+    public Boolean getCompleted() {
+        return completed;
+    }
+
+    public void setCompleted(Boolean completed) {
+        this.completed = completed;
     }
 
     @Override

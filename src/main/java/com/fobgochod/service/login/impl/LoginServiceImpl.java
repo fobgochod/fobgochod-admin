@@ -2,13 +2,20 @@ package com.fobgochod.service.login.impl;
 
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.domain.base.I18nCode;
+import com.fobgochod.entity.admin.Tenant;
 import com.fobgochod.entity.admin.User;
+import com.fobgochod.exception.UnauthorizedException;
+import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.login.LoginService;
 import com.fobgochod.service.login.token.UserTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 /**
  * DMC 管理员账号登录
@@ -23,6 +30,8 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserRepository userRepository;
     @Autowired
+    private TenantRepository tenantRepository;
+    @Autowired
     private UserTokenService userTokenService;
 
     @Override
@@ -36,26 +45,31 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public void login(LoginUser loginUser) {
-        User user = userRepository.findByCodeAndPassword(loginUser.getUsername(), loginUser.getPassword());
-        if (user != null) {
-            loginUser.setTenantId(user.getTenantId());
-            loginUser.setTelephone(user.getTelephone());
-            loginUser.setToken(userTokenService.getToken(loginUser));
+    public AuthoredUser login(LoginUser loginUser) {
+        User user = userRepository.findByCode(loginUser.getUsername());
+        if (user == null) {
+            throw new UnauthorizedException(I18nCode.LOGIN_ACCOUNT_FAIL);
         }
+        if (!Objects.equals(user.getPassword(), loginUser.getPassword())) {
+            throw new UnauthorizedException(I18nCode.LOGIN_ACCOUNT_FAIL);
+        }
+        Tenant tenant = tenantRepository.findByCode(user.getTenantId());
+        AuthoredUser authoredUser = AuthoredUser.of(user, tenant);
+        authoredUser.setToken(userTokenService.getToken(authoredUser));
+        return authoredUser;
     }
 
     @Override
-    public LoginUser refresh(String token, String tenantId) {
-        LoginUser loginUser = userTokenService.getData(token);
-        loginUser.setTenantId(tenantId);
-        loginUser.setToken(null);
-        loginUser.setToken(userTokenService.getToken(loginUser));
-        return loginUser;
+    public AuthoredUser refresh(String token, String tenantId) {
+        AuthoredUser authoredUser = userTokenService.getData(token);
+        authoredUser.of(tenantRepository.findByCode(tenantId));
+        authoredUser.setToken(null);
+        authoredUser.setToken(userTokenService.getToken(authoredUser));
+        return authoredUser;
     }
 
     @Override
-    public LoginUser analysis(String token) {
+    public AuthoredUser analysis(String token) {
         return userTokenService.getData(token);
     }
 }

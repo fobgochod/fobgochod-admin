@@ -1,30 +1,23 @@
 package com.fobgochod.api.file;
 
-import com.fobgochod.service.crud.FileInfoCrudService;
-import com.fobgochod.service.crud.ShrinkCrudService;
-import com.fobgochod.domain.ImageHandle;
-import com.fobgochod.domain.ImageInfo;
 import com.fobgochod.entity.file.FileInfo;
 import com.fobgochod.entity.file.ShrinkImage;
 import com.fobgochod.exception.SystemException;
+import com.fobgochod.service.crud.FileInfoCrudService;
+import com.fobgochod.service.crud.ShrinkCrudService;
 import com.fobgochod.service.file.DownloadService;
 import com.fobgochod.service.file.FileOpService;
 import com.fobgochod.service.file.UploadService;
 import com.fobgochod.util.SnowFlake;
 import net.coobird.thumbnailator.Thumbnails;
-import org.bson.Document;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 @RestController
 public class ImageFileController {
@@ -39,56 +32,45 @@ public class ImageFileController {
     private ShrinkCrudService shrinkCrudService;
     @Autowired
     private FileInfoCrudService fileInfoCrudService;
-    @Autowired
-    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     /**
      * 按比压缩图片分享地址
      *
-     * @param fileId 文件id
-     * @param width  缩小宽度(px)
-     * @param height 缩小高度(px)
+     * @param body#id     文件id
+     * @param body#width  缩小宽度(px)
+     * @param body#height 缩小高度(px)
      * @throws Exception 异常信息
      */
-    @GetMapping("/buckets/images/{fileId}")
-    public ResponseEntity<?> getImage(@PathVariable String fileId,
-                                      @RequestParam(defaultValue = "0") Integer width,
-                                      @RequestParam(defaultValue = "0") Integer height) throws Exception {
-        FileInfo fileInfo = fileOpService.findFileInfo(fileId);
-        ImageHandle imageHandle = new ImageHandle(new ImageInfo(width, height), fileInfo);
+    @PostMapping("/file/images/shrink")
+    public Callable<?> getImage(@RequestBody ShrinkImage body) throws Exception {
+        FileInfo fileInfo = fileOpService.findFileInfo(body.getFileId());
 
-        FileInfo shrinkInfo;
-        ShrinkImage imageShrink = shrinkCrudService.findByProperty(fileId, width, height);
+        ShrinkImage imageShrink = shrinkCrudService.findByWidthAndHeight(body.getFileId(), body.getWidth(), body.getHeight());
         if (imageShrink != null) {
-            shrinkInfo = fileInfoCrudService.findById(imageShrink.getTargetId());
+            FileInfo shrinkInfo = fileInfoCrudService.findById(imageShrink.getShrinkId());
+            return () -> shrinkInfo;
         } else {
-            Future<FileInfo> result = threadPoolTaskExecutor.submit(new ShrinkImageTask(imageHandle));
-            shrinkInfo = result.get();
+            return new ShrinkImageTask(body.getWidth(), body.getHeight(), fileInfo);
         }
-        return ResponseEntity.ok(shrinkInfo);
     }
 
     private class ShrinkImageTask implements Callable<FileInfo> {
-        private final ImageHandle imageHandle;
+        private final Integer width;
+        private final Integer height;
+        private final FileInfo fileInfo;
 
-        public ShrinkImageTask(ImageHandle imageHandle) {
-            this.imageHandle = imageHandle;
+        public ShrinkImageTask(Integer width, Integer height, FileInfo fileInfo) {
+            this.width = width;
+            this.height = height;
+            this.fileInfo = fileInfo;
         }
 
         @Override
         public FileInfo call() {
             try {
-                FileInfo fileInfo = imageHandle.getFileInfo();
-                ImageInfo imageInfo = imageHandle.getImageInfo();
-                if (!imageInfo.shrink()) {
-                    // 不压缩，直接获取原图
-                    return fileInfoCrudService.findById(fileInfo.getId());
-                }
                 byte[] bytes = downloadService.downloadToBytes(fileInfo.getId());
                 // 压缩图片并保存
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                int width = imageInfo.getWidth();
-                int height = imageInfo.getHeight();
                 if (width > 0 && height > 0) {
                     Thumbnails.of(new ByteArrayInputStream(bytes)).size(width, height).keepAspectRatio(false).toOutputStream(outputStream);
                 } else if (width > 0) {
@@ -98,12 +80,15 @@ public class ImageFileController {
                 }
                 FileInfo shrinkInfo = fileInfo.clone();
                 shrinkInfo.setId(SnowFlake.getInstance().get());
+                shrinkInfo.setWidth(width);
+                shrinkInfo.setHeight(height);
                 uploadService.uploadFile(shrinkInfo, new ByteArrayInputStream(outputStream.toByteArray()));
                 // 保存压缩和原图关系
                 ShrinkImage imageShrink = new ShrinkImage();
-                imageShrink.setSourceId(fileInfo.getId());
-                imageShrink.setProperty(new Document().append("width", imageInfo.getWidth()).append("height", imageInfo.getHeight()));
-                imageShrink.setTargetId(shrinkInfo.getId());
+                imageShrink.setFileId(fileInfo.getId());
+                imageShrink.setWidth(width);
+                imageShrink.setHeight(height);
+                imageShrink.setShrinkId(shrinkInfo.getId());
                 shrinkCrudService.insert(imageShrink);
                 return shrinkInfo;
             } catch (Exception e) {

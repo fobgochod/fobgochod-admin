@@ -4,8 +4,6 @@ import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.service.file.FileOpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,50 +23,39 @@ public class FileRecycleController {
     private FileOpService fileOpService;
 
     /**
-     * 回收站-删除文件
-     *
-     * @param recycleId 垃圾箱内容id
-     * @return 空
+     * 删除文件
      */
-    @DeleteMapping("/delete/{recycleId}")
-    public ResponseEntity<?> delete(@PathVariable String recycleId) {
-        fileOpService.deleteRecycleBin(recycleId);
+    @PostMapping("/delete")
+    public ResponseEntity<?> delete(@RequestBody BatchFid body) {
+        if (body.getId() != null) {
+            fileOpService.deleteRecycleBin(body.getId());
+        }
+        for (String recycleId : body.getRecycleIds()) {
+            fileOpService.deleteRecycleBin(recycleId);
+        }
         return ResponseEntity.ok().build();
     }
 
     /**
-     * 回收站-清空
-     *
-     * @return 空
-     */
-    @DeleteMapping("/clear")
-    public ResponseEntity<?> clear() {
-        fileOpService.clearRecycleBin();
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 回收站-恢复指定文件
-     *
-     * @param recycleId 垃圾箱内容ID
-     * @return 空
-     */
-    @PostMapping("/restore/{recycleId}")
-    public ResponseEntity<?> recycleRestore(@PathVariable String recycleId) {
-        fileOpService.restoreFile(recycleId);
-        return ResponseEntity.ok().build();
-    }
-
-    /**
-     * 回收站-恢复选择文件
-     *
-     * @return 空
+     * 恢复文件
      */
     @PostMapping("/restore")
     public ResponseEntity<?> recycleRestore(@RequestBody BatchFid body) {
+        if (body.getId() != null) {
+            fileOpService.restoreFile(body.getId());
+        }
         for (String recycleId : body.getRecycleIds()) {
             fileOpService.restoreFile(recycleId);
         }
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 清空回收站
+     */
+    @PostMapping("/clear")
+    public ResponseEntity<?> clear() {
+        fileOpService.clearRecycleBin();
         return ResponseEntity.ok().build();
     }
 }

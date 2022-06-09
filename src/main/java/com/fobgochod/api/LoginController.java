@@ -1,18 +1,21 @@
 package com.fobgochod.api;
 
 import com.fobgochod.auth.domain.LoginUser;
+import com.fobgochod.auth.holder.AuthoredUser;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.exception.UnauthorizedException;
 import com.fobgochod.service.login.LoginService;
 import com.fobgochod.service.message.sms.AliyunSmsService;
+import com.fobgochod.util.SecureUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 登录
@@ -30,16 +33,15 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUser body) {
+        String password = SecureUtils.aesDecrypt(body.getPassword());
+        body.setPassword(SecureUtils.sha256(password));
         for (LoginService loginService : loginServices) {
             if (loginService.support(body)) {
-                loginService.login(body);
-                break;
+                AuthoredUser authoredUser = loginService.login(body);
+                return ResponseEntity.ok(authoredUser);
             }
         }
-        if (!StringUtils.hasText(body.getToken())) {
-            throw new UnauthorizedException(I18nCode.LOGIN_AUTH_FAIL);
-        }
-        return ResponseEntity.ok(body);
+        throw new UnauthorizedException(I18nCode.LOGIN_CAPTCHA_FAIL);
     }
 
     @PostMapping(value = "/login/captcha")
@@ -49,8 +51,8 @@ public class LoginController {
     }
 
     @PostMapping(value = "/token/analyze")
-    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) LoginUser body) {
-        return ResponseEntity.ok(body);
+    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
+        return ResponseEntity.ok(authoredUser);
     }
 
     @PostMapping(value = "/token/refresh")
@@ -62,5 +64,14 @@ public class LoginController {
             }
         }
         return ResponseEntity.ok(body);
+    }
+
+    @PostMapping(value = "/login/security")
+    public ResponseEntity<?> publicKey(@RequestBody Map<String, String> body) {
+        String publicKey = body.get("publicKey");
+        String encryptSecretKey = SecureUtils.rsaEncrypt(SecureUtils.AES_SECRET_KEY, publicKey);
+
+        Map<String, String> map = Collections.singletonMap("secretKey", encryptSecretKey);
+        return ResponseEntity.ok(map);
     }
 }

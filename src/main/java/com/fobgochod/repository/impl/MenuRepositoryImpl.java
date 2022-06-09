@@ -1,6 +1,6 @@
 package com.fobgochod.repository.impl;
 
-import com.fobgochod.entity.admin.Menu;
+import com.fobgochod.entity.menu.Menu;
 import com.fobgochod.repository.MenuRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.query.Criteria;

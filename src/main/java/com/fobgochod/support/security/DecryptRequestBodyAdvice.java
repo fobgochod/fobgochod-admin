@@ -1,5 +1,6 @@
 package com.fobgochod.support.security;
 
+import com.fobgochod.util.SecureUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpInputMessage;
@@ -25,7 +26,7 @@ public class DecryptRequestBodyAdvice extends RequestBodyAdviceAdapter {
         byte[] body = new byte[inputMessage.getBody().available()];
         inputMessage.getBody().read(body);
         try {
-            byte[] decrypt = AESUtils.decrypt(body);
+            byte[] decrypt = SecureUtils.aesDecrypt(body);
             final ByteArrayInputStream bais = new ByteArrayInputStream(decrypt);
             return new HttpInputMessage() {
                 @Override
