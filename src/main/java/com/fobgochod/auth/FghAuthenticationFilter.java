@@ -1,7 +1,7 @@
 package com.fobgochod.auth;
 
 import com.fobgochod.auth.domain.FghAuthenticationToken;
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.exception.FghException;
 import com.fobgochod.service.login.token.UserTokenService;
@@ -37,9 +37,9 @@ public class FghAuthenticationFilter extends OncePerRequestFilter {
             LocaleContextHolder.setLocale(I18nUtils.getLocale(request));
             String userToken = request.getHeader(FghConstants.HTTP_HEADER_USER_TOKEN);
             if (userToken != null) {
-                AuthoredUser authoredUser = userTokenService.getData(userToken);
-                request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO, authoredUser);
-                SecurityContextHolder.getContext().setAuthentication(new FghAuthenticationToken(authoredUser));
+                UserDetails userDetails = userTokenService.getData(userToken);
+                request.setAttribute(FghConstants.HTTP_HEADER_USER_INFO, userDetails);
+                SecurityContextHolder.getContext().setAuthentication(new FghAuthenticationToken(userDetails));
             }
             chain.doFilter(request, response);
         } catch (FghException e) {

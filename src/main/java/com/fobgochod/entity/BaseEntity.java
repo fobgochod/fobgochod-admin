@@ -15,14 +15,14 @@ public abstract class BaseEntity implements Serializable, Cloneable {
 
     @Id
     private String id;
-    private Long createBy;
-    private String createById;
+    private String createCode;
+    private String createName;
     private LocalDateTime createDate;
-    private Long modifyBy;
-    private String modifyById;
+    private String modifyCode;
+    private String modifyName;
     private LocalDateTime modifyDate;
     private Boolean deleted;
-    private String tenantId;
+    private String tenantCode;
     private Long order;
 
     public String getId() {
@@ -33,20 +33,20 @@ public abstract class BaseEntity implements Serializable, Cloneable {
         this.id = id;
     }
 
-    public Long getCreateBy() {
-        return createBy;
+    public String getCreateCode() {
+        return createCode;
     }
 
-    public void setCreateBy(Long createBy) {
-        this.createBy = createBy;
+    public void setCreateCode(String createCode) {
+        this.createCode = createCode;
     }
 
-    public String getCreateById() {
-        return createById;
+    public String getCreateName() {
+        return createName;
     }
 
-    public void setCreateById(String createById) {
-        this.createById = createById;
+    public void setCreateName(String createName) {
+        this.createName = createName;
     }
 
     public LocalDateTime getCreateDate() {
@@ -57,20 +57,20 @@ public abstract class BaseEntity implements Serializable, Cloneable {
         this.createDate = createDate;
     }
 
-    public Long getModifyBy() {
-        return modifyBy;
+    public String getModifyCode() {
+        return modifyCode;
     }
 
-    public void setModifyBy(Long modifyBy) {
-        this.modifyBy = modifyBy;
+    public void setModifyCode(String modifyCode) {
+        this.modifyCode = modifyCode;
     }
 
-    public String getModifyById() {
-        return modifyById;
+    public String getModifyName() {
+        return modifyName;
     }
 
-    public void setModifyById(String modifyById) {
-        this.modifyById = modifyById;
+    public void setModifyName(String modifyName) {
+        this.modifyName = modifyName;
     }
 
     public LocalDateTime getModifyDate() {
@@ -89,12 +89,12 @@ public abstract class BaseEntity implements Serializable, Cloneable {
         this.deleted = deleted;
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getTenantCode() {
+        return tenantCode;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 
     public Long getOrder() {

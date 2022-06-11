@@ -22,18 +22,13 @@ public class MedicineRepositoryImpl extends BaseEntityRepository<Medicine> imple
     }
 
     @Override
-    public List<Medicine> findByUserId(String userId) {
-        return mongoTemplate.find(Query.query(Criteria.where("userId").is(userId)), getEntityClass());
+    public List<Medicine> findByUserCode(String userCode, boolean status) {
+        return mongoTemplate.find(Query.query(Criteria.where("userCode").is(userCode).and("status").is(status)), getEntityClass());
     }
 
     @Override
-    public List<Medicine> findByUserId(String userId, boolean status) {
-        return mongoTemplate.find(Query.query(Criteria.where("userId").is(userId).and("status").is(status)), getEntityClass());
-    }
-
-    @Override
-    public List<String> findUserIds() {
-        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group("userId").count().as("count"))
+    public List<String> findUserCodes() {
+        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group("userCode").count().as("count"))
                 .withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
         AggregationResults<GroupBy> results = mongoTemplate.aggregate(aggregation, "medicine", GroupBy.class);
         return results.getMappedResults().stream().map(GroupBy::getId).collect(Collectors.toList());

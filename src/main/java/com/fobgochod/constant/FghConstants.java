@@ -16,7 +16,9 @@ public class FghConstants {
     public static final String DEFAULT_TENANT = "default";
 
     public static final String ADMIN_USER = "admin";
-    public static final String ANONYMOUS_USER = "anonymousUser";
+    public static final String ANONYMOUS_USER = "anonymous";
+
+    public static final String OK = "OK";
 
     public static final char AT = '@';
     public static final char DOT = '.';
@@ -46,8 +48,4 @@ public class FghConstants {
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
     public static final String ACCEPT_LANGUAGE = "Accept-Language";
     public static final String LOCALE = "Locale";
-
-    public static final String ENV_DEV = "dev";
-    public static final String ENV_PROD = "prod";
-    public static final String ENV_TEST = "test";
 }

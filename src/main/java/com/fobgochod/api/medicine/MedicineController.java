@@ -49,9 +49,9 @@ public class MedicineController {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody Page<Medicine> body) {
-        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserCode())) {
             Medicine medicine = body.getFilter().getEq();
-            medicine.setUserId(UserUtil.getUserId());
+            medicine.setUserCode(UserUtil.getUserCode());
         }
         return ResponseEntity.ok(medicineRepository.findByPage(body));
     }

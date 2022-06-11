@@ -8,7 +8,7 @@ package com.fobgochod.auth.domain;
  */
 public class LoginUser {
 
-    private String tenantId;
+    private String tenantCode;
     private String username;
     private String password;
 
@@ -20,12 +20,12 @@ public class LoginUser {
     public LoginUser() {
     }
 
-    public String getTenantId() {
-        return tenantId;
+    public String getTenantCode() {
+        return tenantCode;
     }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 
     public String getUsername() {

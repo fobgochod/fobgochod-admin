@@ -15,19 +15,19 @@ import java.time.LocalTime;
 @Document("medicine_record")
 public class MedicineRecord extends BaseEntity {
 
-    private String userId;
+    private String userCode;
     private String medicineId;
     private String type;
     private Float slice;
     private LocalDate date;
     private LocalTime time;
 
-    public String getUserId() {
-        return userId;
+    public String getUserCode() {
+        return userCode;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
     public String getMedicineId() {

@@ -10,16 +10,16 @@ import java.util.List;
  */
 public class MyMedicine {
 
-    private String userId;
+    private String userCode;
     private String userName;
     private List<MedicineVO> medicines;
 
-    public String getUserId() {
-        return userId;
+    public String getUserCode() {
+        return userCode;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
     public String getUserName() {

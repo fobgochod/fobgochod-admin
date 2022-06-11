@@ -31,10 +31,9 @@ public class SecureUtils {
     private static final RSA rsa;
 
     static {
-        Base64.encode("Cyrus Smith_____");
-
         aes = SecureUtil.aes();
-        AES_SECRET_KEY = Base64.encode(aes.getSecretKey().getEncoded());
+        // AES_SECRET_KEY = Base64.encode(aes.getSecretKey().getEncoded());
+        AES_SECRET_KEY = Base64.encode("Cyrus Smith_____");
         logger.info("aes secret key: {}", AES_SECRET_KEY);
 
         rsa = SecureUtil.rsa();
@@ -79,6 +78,11 @@ public class SecureUtils {
         byte[] bytes = Base64.decode(data);
         byte[] decrypt = SecureUtil.aes(Base64.decode(secretKeyBase64)).decrypt(bytes);
         return new String(decrypt);
+    }
+
+    public static byte[] aesDecrypt(byte[] data, String secretKeyBase64) {
+        byte[] bytes = Base64.decode(data);
+        return SecureUtil.aes(Base64.decode(secretKeyBase64)).decrypt(bytes);
     }
 
     public static String rsaEncrypt(String data) {

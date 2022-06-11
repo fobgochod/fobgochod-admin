@@ -16,9 +16,7 @@ public interface MedicineRepository extends EntityRepository<Medicine> {
 
     boolean existsByCode(@Param("code") String code);
 
-    List<Medicine> findByUserId(@Param("userId") String userId);
+    List<Medicine> findByUserCode(@Param("userCode") String userCode, @Param("status") boolean status);
 
-    List<Medicine> findByUserId(@Param("userId") String userId, @Param("status") boolean status);
-
-    List<String> findUserIds();
+    List<String> findUserCodes();
 }

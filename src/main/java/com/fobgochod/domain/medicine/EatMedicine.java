@@ -4,15 +4,15 @@ import java.time.LocalDate;
 
 public class EatMedicine {
 
-    private String userId;
+    private String userCode;
     private LocalDate date;
 
-    public String getUserId() {
-        return userId;
+    public String getUserCode() {
+        return userCode;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
     public LocalDate getDate() {

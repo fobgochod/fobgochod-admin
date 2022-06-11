@@ -13,62 +13,56 @@ import java.util.Objects;
  * @author seven
  * @date 2020/6/15
  */
-public class AuthoredUser implements Serializable {
+public class UserDetails implements Serializable {
 
-    private String sid;
     private String userId;
+    private String userCode;
     private String userName;
     private String telephone;
     private String role;
-    private String tenantSid;
     private String tenantId;
+    private String tenantCode;
     private String tenantName;
     private String token;
 
-    private AuthoredUser() {
+    private UserDetails() {
     }
 
-    public static AuthoredUser of() {
-        return new AuthoredUser();
+    public static UserDetails of() {
+        return new UserDetails();
     }
 
-    public static AuthoredUser of(String userId) {
-        AuthoredUser authoredUser = of();
-        authoredUser.setUserId(userId);
-        return authoredUser;
+    public static UserDetails of(String userId) {
+        UserDetails userDetails = of();
+        userDetails.setUserCode(userId);
+        return userDetails;
     }
 
-
-    public static AuthoredUser of(User user, Tenant tenant) {
-        AuthoredUser authoredUser = new AuthoredUser();
-        authoredUser.setSid(user.getId());
-        authoredUser.setUserId(user.getCode());
-        authoredUser.setUserName(user.getName());
-        authoredUser.setTelephone(user.getTelephone());
-        authoredUser.setRole(user.getRole());
-        authoredUser.of(tenant);
-        return authoredUser;
+    public static UserDetails of(User user, Tenant tenant) {
+        UserDetails userDetails = new UserDetails();
+        userDetails.setUserId(user.getId());
+        userDetails.setUserCode(user.getCode());
+        userDetails.setUserName(user.getName());
+        userDetails.setTelephone(user.getTelephone());
+        userDetails.setRole(user.getRole());
+        userDetails.of(tenant);
+        return userDetails;
     }
 
     public void of(Tenant tenant) {
         if (tenant == null) {
-            return;
+            this.tenantId = null;
+            this.tenantCode = null;
+            this.tenantName = null;
+        } else {
+            this.tenantId = tenant.getId();
+            this.tenantCode = tenant.getCode();
+            this.tenantName = tenant.getName();
         }
-        this.tenantSid = tenant.getId();
-        this.tenantId = tenant.getCode();
-        this.tenantName = tenant.getName();
     }
 
     public String uniqueKey() {
-        return String.format("%s:%s", this.tenantId == null ? FghConstants.DEFAULT_TENANT : this.tenantId, this.userId).toLowerCase();
-    }
-
-    public String getSid() {
-        return sid;
-    }
-
-    public void setSid(String sid) {
-        this.sid = sid;
+        return String.format("%s:%s", this.tenantCode == null ? FghConstants.DEFAULT_TENANT : this.tenantCode, this.userCode).toLowerCase();
     }
 
     public String getUserId() {
@@ -77,6 +71,14 @@ public class AuthoredUser implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
     }
 
     public String getUserName() {
@@ -103,20 +105,20 @@ public class AuthoredUser implements Serializable {
         this.role = role;
     }
 
-    public String getTenantSid() {
-        return tenantSid;
-    }
-
-    public void setTenantSid(String tenantSid) {
-        this.tenantSid = tenantSid;
-    }
-
     public String getTenantId() {
         return tenantId;
     }
 
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
+    }
+
+    public String getTenantCode() {
+        return tenantCode;
+    }
+
+    public void setTenantCode(String tenantCode) {
+        this.tenantCode = tenantCode;
     }
 
     public String getTenantName() {
@@ -139,12 +141,12 @@ public class AuthoredUser implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AuthoredUser that = (AuthoredUser) o;
-        return sid.equals(that.sid) && Objects.equals(tenantSid, that.tenantSid);
+        UserDetails that = (UserDetails) o;
+        return userId.equals(that.userId) && Objects.equals(tenantId, that.tenantId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sid, tenantSid);
+        return Objects.hash(userId, tenantId);
     }
 }

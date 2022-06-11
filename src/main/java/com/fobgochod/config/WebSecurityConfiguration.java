@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] AUTH_WHITELIST = {
-            "/", "/env", "/actuator", "/security/**", "/login/**", "/medicines/me", "/file/preview"
+            "/", "/env", "/actuator", "/security/**", "/login/**", "/medicines/me/**", "/file/preview"
     };
     @Autowired
     private UserTokenService userTokenService;

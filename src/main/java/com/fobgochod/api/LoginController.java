@@ -1,7 +1,7 @@
 package com.fobgochod.api;
 
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.exception.UnauthorizedException;
@@ -33,12 +33,12 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginUser body) {
-        String password = SecureUtils.aesDecrypt(body.getPassword());
+        String password = SecureUtils.aesDecrypt(body.getPassword(), SecureUtils.AES_SECRET_KEY);
         body.setPassword(SecureUtils.sha256(password));
         for (LoginService loginService : loginServices) {
             if (loginService.support(body)) {
-                AuthoredUser authoredUser = loginService.login(body);
-                return ResponseEntity.ok(authoredUser);
+                UserDetails userDetails = loginService.login(body);
+                return ResponseEntity.ok(userDetails);
             }
         }
         throw new UnauthorizedException(I18nCode.LOGIN_CAPTCHA_FAIL);
@@ -51,16 +51,15 @@ public class LoginController {
     }
 
     @PostMapping(value = "/token/analyze")
-    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
-        return ResponseEntity.ok(authoredUser);
+    public ResponseEntity<?> analyze(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) UserDetails userDetails) {
+        return ResponseEntity.ok(userDetails);
     }
 
     @PostMapping(value = "/token/refresh")
-    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN) String token,
-                                     @RequestBody LoginUser body) {
+    public ResponseEntity<?> refresh(@RequestHeader(FghConstants.HTTP_HEADER_USER_TOKEN) String token, @RequestBody LoginUser body) {
         for (LoginService loginService : loginServices) {
             if (loginService.support(body)) {
-                return ResponseEntity.ok(loginService.refresh(token, body.getTenantId()));
+                return ResponseEntity.ok(loginService.refresh(token, body.getTenantCode()));
             }
         }
         return ResponseEntity.ok(body);

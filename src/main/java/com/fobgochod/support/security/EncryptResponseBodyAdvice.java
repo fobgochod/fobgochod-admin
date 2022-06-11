@@ -25,7 +25,8 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return null;
         }
         try {
-            return SecureUtils.aesEncrypt(JsonUtils.createObjectMapper().writeValueAsString(body));
+            String value = JsonUtils.createObjectMapper().writeValueAsString(body);
+            return SecureUtils.aesEncrypt(value, SecureUtils.AES_SECRET_KEY);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

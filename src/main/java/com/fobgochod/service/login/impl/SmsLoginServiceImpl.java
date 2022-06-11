@@ -2,7 +2,7 @@ package com.fobgochod.service.login.impl;
 
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.entity.admin.Tenant;
@@ -51,7 +51,7 @@ public class SmsLoginServiceImpl implements LoginService {
     }
 
     @Override
-    public AuthoredUser login(LoginUser loginUser) {
+    public UserDetails login(LoginUser loginUser) {
         if (!SKELETON.equals(loginUser.getCaptcha())) {
             SmsRecord smsRecord = smsRecordRepository.findByTelephoneAndCode(loginUser.getTelephone(), loginUser.getCaptcha());
             if (smsRecord == null) {
@@ -65,19 +65,19 @@ public class SmsLoginServiceImpl implements LoginService {
         if (user == null) {
             throw new UnauthorizedException(I18nCode.LOGIN_ACCOUNT_FAIL);
         }
-        Tenant tenant = tenantRepository.findByCode(user.getTenantId());
-        AuthoredUser authoredUser = AuthoredUser.of(user, tenant);
-        authoredUser.setToken(userTokenService.getToken(authoredUser));
-        return authoredUser;
+        Tenant tenant = tenantRepository.findByCode(user.getTenantCode());
+        UserDetails userDetails = UserDetails.of(user, tenant);
+        userDetails.setToken(userTokenService.getToken(userDetails));
+        return userDetails;
     }
 
     @Override
-    public AuthoredUser refresh(String token, String tenantId) {
+    public UserDetails refresh(String token, String tenantCode) {
         return null;
     }
 
     @Override
-    public AuthoredUser analysis(String token) {
+    public UserDetails analysis(String token) {
         return userTokenService.getData(token);
     }
 }

@@ -68,9 +68,9 @@ public class UserController {
     @Encrypt
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody Page<User> body) {
-        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserCode())) {
             BaseEntity baseEntity = body.getFilter().getEq();
-            baseEntity.setTenantId(UserUtil.getTenantId());
+            baseEntity.setTenantCode(UserUtil.getTenantCode());
         }
         return ResponseEntity.ok(userRepository.findByPage(body));
     }

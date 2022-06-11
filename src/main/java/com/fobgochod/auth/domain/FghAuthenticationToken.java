@@ -1,6 +1,6 @@
 package com.fobgochod.auth.domain;
 
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 
@@ -14,9 +14,9 @@ import javax.validation.constraints.NotNull;
  */
 public class FghAuthenticationToken extends AbstractAuthenticationToken {
 
-    private final AuthoredUser user;
+    private final UserDetails user;
 
-    public FghAuthenticationToken(@NotNull AuthoredUser user) {
+    public FghAuthenticationToken(@NotNull UserDetails user) {
         super(AuthorityUtils.NO_AUTHORITIES);
         this.user = user;
         super.setDetails(user);

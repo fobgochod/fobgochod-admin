@@ -47,10 +47,10 @@ public class MedicineTask extends TaskService {
         if (task == null) {
             return;
         }
-        List<String> userIds = medicineRepository.findUserIds();
-        for (String userId : userIds) {
-            List<Medicine> medicines = medicineRepository.findByUserId(userId, false);
-            User user = userRepository.findByCode(userId);
+        List<String> userCodes = medicineRepository.findUserCodes();
+        for (String userCode : userCodes) {
+            List<Medicine> medicines = medicineRepository.findByUserCode(userCode, false);
+            User user = userRepository.findByCode(userCode);
             if (user != null && user.getTelephone() != null) {
                 // 1、吃药提醒
                 boolean match = medicines.stream().anyMatch(medicine -> {

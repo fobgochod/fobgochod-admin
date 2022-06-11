@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @Document("sms_record")
 public class SmsRecord extends BaseEntity {
 
+    private String type;
     private String telephone;
     private Boolean status;
     private LocalDateTime sendDate;
@@ -24,6 +25,14 @@ public class SmsRecord extends BaseEntity {
     private String smsCode;
     private String smsMessage;
     private String remark;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getTelephone() {
         return telephone;

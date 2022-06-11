@@ -1,6 +1,6 @@
 package com.fobgochod.util;
 
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.entity.BaseEntity;
 import org.springframework.security.core.Authentication;
@@ -20,67 +20,59 @@ public class UserUtil {
         return SecurityContextHolder.getContext().getAuthentication();
     }
 
-    public static void setAuthentication(Authentication authentication) {
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
-
-    public static AuthoredUser getJwtUser() {
+    public static UserDetails getUser() {
         Authentication authentication = getAuthentication();
         if (authentication != null) {
             Object principal = authentication.getPrincipal();
-            if (principal instanceof AuthoredUser) {
-                return (AuthoredUser) principal;
+            if (principal instanceof UserDetails) {
+                return (UserDetails) principal;
             }
         }
-        return AuthoredUser.of(FghConstants.ANONYMOUS_USER);
+        return UserDetails.of(FghConstants.ANONYMOUS_USER);
     }
 
-    public static Long getUserSid() {
-        return Long.valueOf(getJwtUser().getSid());
-    }
-
-    public static String getUserId() {
-        return getJwtUser().getUserId();
+    public static String getUserCode() {
+        return getUser().getUserCode();
     }
 
     public static String getUserName() {
-        return getJwtUser().getUserName();
+        return getUser().getUserName();
     }
 
-    public static String getTenantId() {
-        return getJwtUser().getTenantId();
+    public static String getTenantCode() {
+        return getUser().getTenantCode();
     }
 
     public static void setCreateFields(BaseEntity entity) {
-        entity.setCreateBy(getUserSid());
-        entity.setCreateById(getUserName());
+        entity.setCreateCode(getUserCode());
+        entity.setCreateName(getUserName());
         entity.setCreateDate(LocalDateTime.now());
-        entity.setModifyBy(getUserSid());
-        entity.setModifyById(getUserName());
+        entity.setModifyCode(getUserCode());
+        entity.setModifyName(getUserName());
         entity.setModifyDate(LocalDateTime.now());
     }
 
     public static void setModifyFields(BaseEntity entity) {
-        entity.setModifyBy(getUserSid());
-        entity.setModifyById(getUserName());
+        entity.setModifyCode(getUserCode());
+        entity.setModifyName(getUserName());
         entity.setModifyDate(LocalDateTime.now());
     }
 
     public static void setModifyFields(BaseEntity data, BaseEntity old) {
         if (old != null) {
-            data.setCreateBy(old.getCreateBy());
-            data.setCreateById(old.getCreateById());
+            data.setCreateCode(old.getCreateCode());
+            data.setCreateName(old.getCreateName());
             data.setCreateDate(old.getCreateDate());
         }
         setModifyFields(data);
     }
 
     public static void copyCreate(BaseEntity source, BaseEntity target) {
-        source.setCreateBy(target.getCreateBy());
-        source.setCreateById(target.getCreateById());
+        source.setCreateCode(target.getCreateCode());
+        source.setCreateName(target.getCreateName());
         source.setCreateDate(target.getCreateDate());
-        source.setModifyBy(target.getModifyBy());
-        source.setModifyById(target.getModifyById());
+        source.setModifyCode(target.getModifyCode());
+        source.setModifyName(target.getModifyName());
         source.setModifyDate(target.getModifyDate());
     }
 }

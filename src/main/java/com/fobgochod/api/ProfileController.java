@@ -1,6 +1,6 @@
 package com.fobgochod.api;
 
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.enumeration.RoleEnum;
 import com.fobgochod.domain.menu.MenuTree;
@@ -39,8 +39,8 @@ public class ProfileController {
     private MenuRoleRepository menuRoleRepository;
 
     @PostMapping("/menu")
-    public ResponseEntity<?> tree(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
-        User user = userRepository.findByCode(authoredUser.getUserId());
+    public ResponseEntity<?> tree(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) UserDetails userDetails) {
+        User user = userRepository.findByCode(userDetails.getUserCode());
         Role role = roleRepository.findByCode(user.getRole());
         List<Menu> menus;
         if (!RoleEnum.Admin.name().equals(role.getCode())) {

@@ -49,8 +49,8 @@ public class MyMedicineController {
 
     @PostMapping("/me")
     public ResponseEntity<?> medicines(@RequestBody Medicine body) {
-        User user = userRepository.findByCode(body.getUserId());
-        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
+        User user = userRepository.findByCode(body.getUserCode());
+        List<Medicine> medicines = medicineRepository.findByUserCode(body.getUserCode(), false);
         List<String> medicineIds = medicines.stream().map(Medicine::getId).collect(Collectors.toList());
         List<MedicineRecord> medicineRecords = medicineRecordRepository.findByMedicineIdIn(medicineIds);
         Map<String, List<MedicineRecord>> recordMap = medicineRecords.stream().collect(Collectors.groupingBy(MedicineRecord::getMedicineId));
@@ -58,48 +58,58 @@ public class MyMedicineController {
         List<MedicineItem> medicineItems = medicineItemRepository.findByMedicineIdIn(medicineIds);
         Map<String, List<MedicineItem>> itemMap = medicineItems.stream().collect(Collectors.groupingBy(MedicineItem::getMedicineId));
 
-        List<MedicineVO> medicineVOS = new ArrayList<>();
+        List<MedicineVO> medicineVOs = new ArrayList<>();
         medicines.forEach(m -> {
             List<String> recordTypes = recordMap.getOrDefault(m.getId(), Collections.emptyList()).stream().map(MedicineRecord::getType).collect(Collectors.toList());
 
-            List<MedicineItemVO> itemVOS = new ArrayList<>();
+            List<MedicineItemVO> itemVOs = new ArrayList<>();
             itemMap.getOrDefault(m.getId(), Collections.emptyList()).forEach(item -> {
                 MedicineItemVO itemVO = new MedicineItemVO();
                 itemVO.doBackward(item);
                 itemVO.setState(recordTypes.contains(item.getType()));
-                itemVOS.add(itemVO);
+                itemVOs.add(itemVO);
             });
 
             MedicineVO vo = new MedicineVO();
             vo.doBackward(m);
-            vo.setItems(itemVOS);
-            medicineVOS.add(vo);
+            vo.setItems(itemVOs);
+            medicineVOs.add(vo);
         });
 
         MyMedicine myMedicine = new MyMedicine();
-        myMedicine.setUserId(user.getCode());
+        myMedicine.setUserCode(user.getCode());
         myMedicine.setUserName(user.getName());
-        myMedicine.setMedicines(medicineVOS);
+        myMedicine.setMedicines(medicineVOs);
         return ResponseEntity.ok(myMedicine);
+    }
+
+    @PostMapping("/me/eat")
+    public ResponseEntity<?> meEat(@RequestBody EatMedicine body) {
+        List<Medicine> medicines = medicineRepository.findByUserCode(body.getUserCode(), false);
+        LocalTime now = LocalTime.now();
+        medicines.forEach(medicine -> {
+            List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
+            items.forEach(item -> {
+                boolean flag = now.isAfter(item.getStart()) && now.isBefore(item.getEnd());
+                if (flag && item.getSlice() > 0) {
+                    eatMedicine(medicine, item, LocalDate.now(), LocalTime.now());
+                }
+            });
+        });
+        calcTotalMedicine(medicines);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/eat")
     public ResponseEntity<?> eat(@RequestBody EatMedicine body) {
-        List<Medicine> medicines = medicineRepository.findByUserId(body.getUserId(), false);
+        List<Medicine> medicines = medicineRepository.findByUserCode(body.getUserCode(), false);
         medicines.forEach(medicine -> {
-            if (body.getDate() == null) {
-                MedicineItem item = medicineItemRepository.findItem(medicine.getId());
-                if (item != null && item.getSlice() > 0) {
-                    eatMedicine(medicine, item, LocalDate.now(), LocalTime.now());
+            List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
+            items.forEach(item -> {
+                if (item.getSlice() > 0) {
+                    eatMedicine(medicine, item, body.getDate(), item.getStart());
                 }
-            } else {
-                List<MedicineItem> items = medicineItemRepository.findItems(medicine.getId());
-                items.forEach(item -> {
-                    if (item.getSlice() > 0) {
-                        eatMedicine(medicine, item, body.getDate(), item.getStart());
-                    }
-                });
-            }
+            });
         });
         calcTotalMedicine(medicines);
         return ResponseEntity.ok().build();
@@ -111,7 +121,7 @@ public class MyMedicineController {
             return;
         }
         MedicineRecord medicineRecord = new MedicineRecord();
-        medicineRecord.setUserId(medicine.getUserId());
+        medicineRecord.setUserCode(medicine.getUserCode());
         medicineRecord.setMedicineId(medicine.getId());
         medicineRecord.setType(item.getType());
         medicineRecord.setSlice(-item.getSlice());

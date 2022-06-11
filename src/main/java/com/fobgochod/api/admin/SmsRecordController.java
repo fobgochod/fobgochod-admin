@@ -1,6 +1,6 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
@@ -70,8 +70,8 @@ public class SmsRecordController {
     }
 
     @PostMapping("/test")
-    public ResponseEntity<?> test(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
-        User user = userRepository.findByCode(authoredUser.getUserId());
+    public ResponseEntity<?> test(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) UserDetails userDetails) {
+        User user = userRepository.findByCode(userDetails.getUserCode());
         aliyunSmsService.test(user.getTelephone(), user.getName());
         return ResponseEntity.ok().build();
     }

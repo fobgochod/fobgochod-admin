@@ -2,7 +2,7 @@ package com.fobgochod.service.login.impl;
 
 import com.fobgochod.auth.domain.LoginType;
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.domain.base.I18nCode;
 import com.fobgochod.entity.admin.Tenant;
 import com.fobgochod.entity.admin.User;
@@ -45,7 +45,7 @@ public class LoginServiceImpl implements LoginService {
     }
 
     @Override
-    public AuthoredUser login(LoginUser loginUser) {
+    public UserDetails login(LoginUser loginUser) {
         User user = userRepository.findByCode(loginUser.getUsername());
         if (user == null) {
             throw new UnauthorizedException(I18nCode.LOGIN_ACCOUNT_FAIL);
@@ -53,23 +53,23 @@ public class LoginServiceImpl implements LoginService {
         if (!Objects.equals(user.getPassword(), loginUser.getPassword())) {
             throw new UnauthorizedException(I18nCode.LOGIN_ACCOUNT_FAIL);
         }
-        Tenant tenant = tenantRepository.findByCode(user.getTenantId());
-        AuthoredUser authoredUser = AuthoredUser.of(user, tenant);
-        authoredUser.setToken(userTokenService.getToken(authoredUser));
-        return authoredUser;
+        Tenant tenant = tenantRepository.findByCode(user.getTenantCode());
+        UserDetails userDetails = UserDetails.of(user, tenant);
+        userDetails.setToken(userTokenService.getToken(userDetails));
+        return userDetails;
     }
 
     @Override
-    public AuthoredUser refresh(String token, String tenantId) {
-        AuthoredUser authoredUser = userTokenService.getData(token);
-        authoredUser.of(tenantRepository.findByCode(tenantId));
-        authoredUser.setToken(null);
-        authoredUser.setToken(userTokenService.getToken(authoredUser));
-        return authoredUser;
+    public UserDetails refresh(String token, String tenantCode) {
+        UserDetails userDetails = userTokenService.getData(token);
+        userDetails.of(tenantRepository.findByCode(tenantCode));
+        userDetails.setToken(null);
+        userDetails.setToken(userTokenService.getToken(userDetails));
+        return userDetails;
     }
 
     @Override
-    public AuthoredUser analysis(String token) {
+    public UserDetails analysis(String token) {
         return userTokenService.getData(token);
     }
 }

@@ -1,6 +1,6 @@
 package com.fobgochod.api.admin;
 
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
@@ -66,9 +66,9 @@ public class TenantController {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody Page<Tenant> body) {
-        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserId())) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserCode())) {
             Tenant baseEntity = body.getFilter().getEq();
-            baseEntity.setOwner(UserUtil.getUserId());
+            baseEntity.setOwner(UserUtil.getUserCode());
         }
         return ResponseEntity.ok(tenantRepository.findByPage(body));
     }
@@ -93,14 +93,14 @@ public class TenantController {
     }
 
     @GetMapping("/option/group")
-    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) AuthoredUser authoredUser) {
+    public ResponseEntity<?> optionGroup(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) UserDetails userDetails) {
 
         List<Tenant> tenants;
-        User user = userRepository.findByCode(authoredUser.getUserId());
+        User user = userRepository.findByCode(userDetails.getUserCode());
         if (RoleEnum.Admin.name().equals(user.getRole())) {
             tenants = tenantRepository.findAll();
         } else {
-            tenants = tenantRepository.findByOwner(authoredUser.getUserId());
+            tenants = tenantRepository.findByOwner(userDetails.getUserCode());
         }
 
         List<Options> optionGroup = new ArrayList<>();

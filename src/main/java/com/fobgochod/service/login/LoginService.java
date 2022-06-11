@@ -1,7 +1,7 @@
 package com.fobgochod.service.login;
 
 import com.fobgochod.auth.domain.LoginUser;
-import com.fobgochod.auth.holder.AuthoredUser;
+import com.fobgochod.auth.holder.UserDetails;
 
 /**
  * 统一登录接口
@@ -33,16 +33,16 @@ public interface LoginService {
      * @param loginUser
      * @return
      */
-    AuthoredUser login(LoginUser loginUser);
+    UserDetails login(LoginUser loginUser);
 
     /**
      * 刷新token
      *
      * @param token
-     * @param tenantId
+     * @param tenantCode
      * @return
      */
-    AuthoredUser refresh(String token, String tenantId);
+    UserDetails refresh(String token, String tenantCode);
 
     /**
      * 解析token
@@ -50,5 +50,5 @@ public interface LoginService {
      * @param token
      * @return
      */
-    AuthoredUser analysis(String token);
+    UserDetails analysis(String token);
 }

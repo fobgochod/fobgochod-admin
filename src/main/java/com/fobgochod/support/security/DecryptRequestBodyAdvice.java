@@ -26,7 +26,7 @@ public class DecryptRequestBodyAdvice extends RequestBodyAdviceAdapter {
         byte[] body = new byte[inputMessage.getBody().available()];
         inputMessage.getBody().read(body);
         try {
-            byte[] decrypt = SecureUtils.aesDecrypt(body);
+            byte[] decrypt = SecureUtils.aesDecrypt(body, SecureUtils.AES_SECRET_KEY);
             final ByteArrayInputStream bais = new ByteArrayInputStream(decrypt);
             return new HttpInputMessage() {
                 @Override
