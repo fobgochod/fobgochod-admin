@@ -1,4 +1,4 @@
-package com.fobgochod.serializer;
+package com.fobgochod.support.serializer;
 
 import java.time.format.DateTimeFormatter;
 

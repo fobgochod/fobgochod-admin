@@ -16,7 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- *  WebMvcConfiguration.java
+ * WebMvcConfiguration.java
  *
  * @author Xiao
  * @date 2022/3/20 3:48
@@ -53,11 +53,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
     @Override
     protected void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
         for (HttpMessageConverter<?> httpMessageConverter : converters) {
-            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter) {
-                ((MappingJackson2HttpMessageConverter) httpMessageConverter).setObjectMapper(JsonUtils.createObjectMapper());
+            if (httpMessageConverter instanceof MappingJackson2HttpMessageConverter converter) {
+                converter.setObjectMapper(JsonUtils.createObjectMapper());
             }
-            if (httpMessageConverter instanceof StringHttpMessageConverter) {
-                ((StringHttpMessageConverter) httpMessageConverter).setDefaultCharset(StandardCharsets.UTF_8);
+            if (httpMessageConverter instanceof StringHttpMessageConverter converter) {
+                converter.setDefaultCharset(StandardCharsets.UTF_8);
             }
         }
     }

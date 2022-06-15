@@ -7,7 +7,37 @@ package com.fobgochod.util;
  */
 public class SnowFlake {
 
+    /**
+     * 时间起始标记点，作为基准，一般取系统的最近时间（一旦确定不能变动）
+     * 2020-02-20 02:02:02
+     */
+    private final static long START_STAMP = 1582135322000L;
+    /**
+     * 每一部分占用的位数
+     * SEQUENCE_BIT 序列号占用的位数
+     * MACHINE_BIT 机器标识占用的位数
+     * DATA_CENTER_BIT 数据中心占用的位数
+     */
+    private final static long SEQUENCE_BIT = 6;
+    private final static long MACHINE_BIT = 3;
+    private final static long DATA_CENTER_BIT = 3;
+    /**
+     * 每一部分的最大值
+     */
+    private final static long MAX_DATA_CENTER_NUM = -1L ^ (-1L << DATA_CENTER_BIT);
+    private final static long MAX_MACHINE_NUM = -1L ^ (-1L << MACHINE_BIT);
+    private final static long MAX_SEQUENCE = -1L ^ (-1L << SEQUENCE_BIT);
+    /**
+     * 每一部分向左的位移
+     */
+    private final static long MACHINE_LEFT = SEQUENCE_BIT;
+    private final static long DATA_CENTER_LEFT = SEQUENCE_BIT + MACHINE_BIT;
+    private final static long TIMESTAMP_LEFT = DATA_CENTER_LEFT + DATA_CENTER_BIT;
     private static volatile SnowFlake instance;
+    private long dataCenterId;
+    private long machineId;
+    private long sequence = 0L;
+    private long lastStamp = -1L;
 
     private SnowFlake() {
         this.dataCenterId = 1;
@@ -26,46 +56,10 @@ public class SnowFlake {
     }
 
     /**
-     * 时间起始标记点，作为基准，一般取系统的最近时间（一旦确定不能变动）
-     * 2020-02-20 02:02:02
-     */
-    private final static long START_STAMP = 1582135322000L;
-
-    /**
-     * 每一部分占用的位数
-     * SEQUENCE_BIT 序列号占用的位数
-     * MACHINE_BIT 机器标识占用的位数
-     * DATA_CENTER_BIT 数据中心占用的位数
-     */
-    private final static long SEQUENCE_BIT = 6;
-    private final static long MACHINE_BIT = 3;
-    private final static long DATA_CENTER_BIT = 3;
-
-    /**
-     * 每一部分的最大值
-     */
-    private final static long MAX_DATA_CENTER_NUM = -1L ^ (-1L << DATA_CENTER_BIT);
-    private final static long MAX_MACHINE_NUM = -1L ^ (-1L << MACHINE_BIT);
-    private final static long MAX_SEQUENCE = -1L ^ (-1L << SEQUENCE_BIT);
-
-    /**
-     * 每一部分向左的位移
-     */
-    private final static long MACHINE_LEFT = SEQUENCE_BIT;
-    private final static long DATA_CENTER_LEFT = SEQUENCE_BIT + MACHINE_BIT;
-    private final static long TIMESTAMP_LEFT = DATA_CENTER_LEFT + DATA_CENTER_BIT;
-
-    private long dataCenterId;
-    private long machineId;
-    private long sequence = 0L;
-    private long lastStamp = -1L;
-
-
-    /**
      * Setup DatacenterId & MachineId. Default is 1,1
      *
-     * @param dataCenterId 服务器id
-     * @param machineId
+     * @param dataCenterId 数据中心Id
+     * @param machineId    机器ID
      */
     public void init(long dataCenterId, long machineId) {
         if (dataCenterId > MAX_DATA_CENTER_NUM || dataCenterId < 0) {

@@ -61,11 +61,6 @@ public class FghExceptionHandler {
         return printError(req, e, I18nCode.UNEXPECTED);
     }
 
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({NoHandlerFoundException.class, HttpRequestMethodNotSupportedException.class})
-    public StdError notFound(HttpServletRequest req, ServletException e) {
-        return printError(req, e, I18nCode.NOT_FOUND);
-    }
 
     @ExceptionHandler({ConstraintViolationException.class, MethodArgumentNotValidException.class})
     public StdError validation(HttpServletRequest req, Exception e) {
@@ -75,8 +70,7 @@ public class FghExceptionHandler {
             for (ConstraintViolation<?> error : ((ConstraintViolationException) e).getConstraintViolations()) {
                 builder.append(error.getPropertyPath()).append(": ").append(error.getMessage()).append("; ");
             }
-        } else if (e instanceof MethodArgumentNotValidException) {
-            MethodArgumentNotValidException methodArgumentNotValidException = (MethodArgumentNotValidException) e;
+        } else if (e instanceof MethodArgumentNotValidException methodArgumentNotValidException) {
             BindingResult result = methodArgumentNotValidException.getBindingResult();
             final List<FieldError> fieldErrors = result.getFieldErrors();
             for (FieldError error : fieldErrors) {

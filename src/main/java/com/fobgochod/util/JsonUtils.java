@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fobgochod.serializer.*;
+import com.fobgochod.support.serializer.*;
 import org.bson.types.ObjectId;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -22,8 +22,7 @@ import java.time.LocalTime;
  */
 public final class JsonUtils {
 
-    static volatile ObjectMapper objectMapper = null;
-
+    private static volatile ObjectMapper objectMapper = null;
 
     public static ObjectMapper createObjectMapper() {
         if (objectMapper == null) {

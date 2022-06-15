@@ -1,4 +1,4 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:17.0.2-jdk-oracle
 WORKDIR /usr/local/fobgochod
 COPY . ./
 ENV TZ=Asia/Shanghai

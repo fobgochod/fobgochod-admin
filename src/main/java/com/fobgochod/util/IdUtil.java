@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class IdUtil {
 
-    public static final List<String> ROOT_DIR = new ArrayList<String>() {{
+    public static final List<String> ROOT_DIR = new ArrayList<>() {{
         add(null);
         add("null");
         add(BaseField.ROOT_DIR);

@@ -18,6 +18,7 @@ public class Medicine extends BaseEntity {
     private String userCode;
     private String code;
     private String name;
+    private Integer slice;
     private Float total;
     private Integer remain;
     private Boolean status;
@@ -47,6 +48,14 @@ public class Medicine extends BaseEntity {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getSlice() {
+        return slice;
+    }
+
+    public void setSlice(Integer slice) {
+        this.slice = slice;
     }
 
     public Float getTotal() {

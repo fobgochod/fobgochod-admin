@@ -24,10 +24,6 @@ public enum I18nCode implements I18nHandler {
      * 用户token无效
      */
     USER_TOKEN_INVALID(20004, "system.error.userTokenInvalid"),
-    /**
-     * 404 页面不存在
-     */
-    NOT_FOUND(20404, "system.error.notfound"),
 
     LOGIN_ACCOUNT_FAIL(20000, "login.account.fail"),
     LOGIN_CAPTCHA_FAIL(20000, "login.captcha.fail"),

@@ -6,6 +6,8 @@ import com.fobgochod.repository.MedicineRepository;
 import com.fobgochod.repository.base.BaseEntityRepository;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.GroupOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -28,8 +30,9 @@ public class MedicineRepositoryImpl extends BaseEntityRepository<Medicine> imple
 
     @Override
     public List<String> findUserCodes() {
-        Aggregation aggregation = Aggregation.newAggregation(Aggregation.group("userCode").count().as("count"))
-                .withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
+        MatchOperation match = Aggregation.match(Criteria.where("status").is(false));
+        GroupOperation group = Aggregation.group("userCode").count().as("count");
+        Aggregation aggregation = Aggregation.newAggregation(match, group).withOptions(Aggregation.newAggregationOptions().allowDiskUse(true).build());
         AggregationResults<GroupBy> results = mongoTemplate.aggregate(aggregation, "medicine", GroupBy.class);
         return results.getMappedResults().stream().map(GroupBy::getId).collect(Collectors.toList());
     }

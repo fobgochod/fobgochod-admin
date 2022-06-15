@@ -1,6 +1,6 @@
 package com.fobgochod.domain.base;
 
-import com.fobgochod.serializer.Constants;
+import com.fobgochod.support.serializer.Constants;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.time.LocalDateTime;

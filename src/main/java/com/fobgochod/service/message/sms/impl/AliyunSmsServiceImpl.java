@@ -9,7 +9,7 @@ import com.fobgochod.domain.medicine.MedicType;
 import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.exception.SystemException;
 import com.fobgochod.repository.SmsRecordRepository;
-import com.fobgochod.serializer.Constants;
+import com.fobgochod.support.serializer.Constants;
 import com.fobgochod.service.message.sms.AliyunSms;
 import com.fobgochod.service.message.sms.AliyunSmsService;
 import com.fobgochod.util.CaptchaUtils;

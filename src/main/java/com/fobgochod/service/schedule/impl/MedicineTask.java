@@ -65,7 +65,7 @@ public class MedicineTask extends TaskService {
                     aliyunSmsService.medicine(user.getTelephone(), user.getName(), MedicType.current());
                 }
                 // 2、每日提醒（每天9点后还没吃完，提醒联系人）
-                if (now.getHour() > 20) {
+                if (now.getHour() == 21) {
                     boolean match2 = medicines.stream().anyMatch(medicine -> {
                         int items = medicineItemRepository.findItems(medicine.getId()).size();
                         int records = medicineRecordRepository.findRecord(medicine.getId()).size();

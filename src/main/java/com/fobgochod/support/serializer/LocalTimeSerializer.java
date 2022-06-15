@@ -1,4 +1,4 @@
-package com.fobgochod.serializer;
+package com.fobgochod.support.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
