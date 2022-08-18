@@ -2,9 +2,7 @@ package com.fobgochod.service.schedule.impl;
 
 import com.fobgochod.domain.StatsResult;
 import com.fobgochod.entity.admin.Stats;
-import com.fobgochod.entity.admin.Task;
 import com.fobgochod.repository.StatsRepository;
-import com.fobgochod.repository.TaskRepository;
 import com.fobgochod.repository.TenantRepository;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.crud.FileInfoCrudService;
@@ -20,18 +18,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Bucket 总量统计
+ * 系统统计
  *
  * @author zhouxiao
  * @date 2021/1/26
+ * @see TaskIdEnum#TS002
  */
 @Component
 public class StatsTask extends TaskService {
 
     private static final Logger logger = LoggerFactory.getLogger(StatsTask.class);
 
-    @Autowired
-    private TaskRepository taskRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -43,28 +40,25 @@ public class StatsTask extends TaskService {
 
     @Override
     public void execute() {
-        Task task = taskRepository.findValidTaskByCode(TaskIdEnum.TS002.name());
-        if (task != null) {
-            LocalDate now = LocalDate.now();
-            String year = now.format(DateTimeFormatter.ofPattern("yyyy"));
-            String month = now.format(DateTimeFormatter.ofPattern("MM"));
+        LocalDate now = LocalDate.now();
+        String year = now.format(DateTimeFormatter.ofPattern("yyyy"));
+        String month = now.format(DateTimeFormatter.ofPattern("MM"));
 
-            statsRepository.deleteByYearMonth(year, month);
-            long start = System.currentTimeMillis();
-            StatsResult statsResult = fileInfoCrudService.fileDiskStats();
-            List<StatsResult> statsResults = fileInfoCrudService.fileDiskStatsByTenant();
+        statsRepository.deleteByYearMonth(year, month);
+        long start = System.currentTimeMillis();
+        StatsResult statsResult = fileInfoCrudService.fileDiskStats();
+        List<StatsResult> statsResults = fileInfoCrudService.fileDiskStatsByTenant();
 
-            Stats stats = new Stats();
-            stats.setYear(year);
-            stats.setMonth(month);
-            stats.setUserCount(userRepository.findAll().size());
-            stats.setTenantCount(tenantRepository.findAll().size());
-            stats.setFileCount(statsResult.getCount());
-            stats.setTotalSize(statsResult.getSize());
-            stats.setTenants(statsResults);
-            statsRepository.insert(stats);
-            long end = System.currentTimeMillis();
-            logger.info("统计系统使用状况成功，耗时：{}ms.", (end - start));
-        }
+        Stats stats = new Stats();
+        stats.setYear(year);
+        stats.setMonth(month);
+        stats.setUserCount(userRepository.findAll().size());
+        stats.setTenantCount(tenantRepository.findAll().size());
+        stats.setFileCount(statsResult.getCount());
+        stats.setTotalSize(statsResult.getSize());
+        stats.setTenants(statsResults);
+        statsRepository.insert(stats);
+        long end = System.currentTimeMillis();
+        logger.info("统计系统使用状况成功，耗时：{}ms.", (end - start));
     }
 }

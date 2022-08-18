@@ -1,9 +1,6 @@
 package com.fobgochod.service.schedule;
 
-import com.fobgochod.service.schedule.impl.BirthdayTask;
-import com.fobgochod.service.schedule.impl.MedicineTask;
-import com.fobgochod.service.schedule.impl.StatsTask;
-import com.fobgochod.service.schedule.impl.TestTask;
+import com.fobgochod.service.schedule.impl.*;
 
 /**
  * 任务ID
@@ -36,9 +33,21 @@ public enum TaskIdEnum {
      */
     TS004,
     /**
+     * 监护人提醒
+     *
+     * @see GuardianTask
+     */
+    TS005,
+    /**
+     * 挂号提醒
+     *
+     * @see RegistrationTask
+     */
+    TS006,
+    /**
      * 生日提醒
      *
      * @see BirthdayTask
      */
-    TS005;
+    TS007;
 }
