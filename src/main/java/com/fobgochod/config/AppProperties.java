@@ -2,7 +2,7 @@ package com.fobgochod.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("app")
+@ConfigurationProperties("info")
 public class AppProperties {
 
     private String baseUri;

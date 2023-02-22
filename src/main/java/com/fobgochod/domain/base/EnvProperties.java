@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class EnvProperties extends SystemEnv {
 
-    @Value("${app.version:}")
+    @Value("${info.version:}")
     private String version;
-    @Value("${app.build-time}")
+    @Value("${info.build-time}")
     private String buildTime;
     @Value("${spring.profiles.active:}")
     private String active;
@@ -26,7 +26,7 @@ public class EnvProperties extends SystemEnv {
     @Value("${spring.data.mongodb.database:}")
     private String database;
 
-    @Value("${app.base-uri:}")
+    @Value("${info.base-uri:}")
     private String baseUri;
     @Value("${server.servlet.context-path:}")
     private String contextPath;

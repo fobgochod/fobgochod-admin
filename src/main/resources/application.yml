@@ -5,7 +5,7 @@ server:
     accept-count: 100
     threads:
       max: 10
-    accesslog:
+    access-log:
       enabled: true
     basedir: .logs/tomcat
   servlet:
@@ -36,25 +36,46 @@ spring:
     type: jcache
     jcache:
       config: classpath:/ehcache.xml
+  output:
+    ansi:
+      enabled: ALWAYS
+  security:
+    user:
+      name: admin
+      password: admin
+  boot:
+    admin:
+      context-path: /admin
+      client:
+        url: http://localhost:7070/admin
+        username: admin
+        password: admin
+        instance:
+          service-base-url: http://localhost:7070
+          metadata:
+            user.name: ${spring.security.user.name}
+            user.password: ${spring.security.user.password}
 management:
   endpoints:
     web:
-      base-path: /actuator
       exposure:
-        include:
-          - health
-          - log
-          - logfile
+        include: '*'
   endpoint:
     shutdown:
       enabled: false
     health:
-      show-details: always
-    logfile:
+      show-details: ALWAYS
+  info:
+    env:
       enabled: true
-      external-file: logs/error
-app:
-  base-uri: http://localhost:7070
+logging:
+  file:
+    name: .logs/spring.log
+  pattern:
+    file: "%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%21.21t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
+    console: ${logging.pattern.file}
+info:
   version: @project.version@
   build-time: @timestamp@
+  base-uri: http://localhost:7070
   wechat-uri: https://api.weixin.qq.com

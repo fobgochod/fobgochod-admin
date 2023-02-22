@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fobgochod.support.serializer.*;
+import de.codecentric.boot.admin.server.utils.jackson.AdminServerModule;
 import org.bson.types.ObjectId;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -28,21 +30,10 @@ public final class JsonUtils {
         if (objectMapper == null) {
             synchronized (JsonUtils.class) {
                 if (objectMapper == null) {
-                    JavaTimeModule javaTimeModule = new JavaTimeModule();
-                    javaTimeModule.addSerializer(ObjectId.class, new ObjectIdSerializer());
-                    javaTimeModule.addDeserializer(ObjectId.class, new ObjectIdDeserializer());
-                    javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer());
-                    javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
-                    javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
-                    javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
-                    javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer());
-                    javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer());
-                    javaTimeModule.addSerializer(Timestamp.class, new TimestampSerializer());
-                    javaTimeModule.addDeserializer(Timestamp.class, new TimestampDeserializer());
                     objectMapper = Jackson2ObjectMapperBuilder.json()
                             .serializationInclusion(JsonInclude.Include.NON_NULL)
                             .failOnUnknownProperties(false)
-                            .modules(javaTimeModule)
+                            .modules(javaTimeModule(), adminJacksonModule())
                             .build();
                     // 通过该方法对mapper对象进行设置，所有序列化的对象都将按改规则进行系列化
                     // Include.Include.ALWAYS 默认
@@ -59,5 +50,25 @@ public final class JsonUtils {
             }
         }
         return objectMapper;
+    }
+
+    private static JavaTimeModule javaTimeModule() {
+        JavaTimeModule javaTimeModule = new JavaTimeModule();
+        javaTimeModule.addSerializer(ObjectId.class, new ObjectIdSerializer());
+        javaTimeModule.addDeserializer(ObjectId.class, new ObjectIdDeserializer());
+        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer());
+        javaTimeModule.addDeserializer(LocalDate.class, new LocalDateDeserializer());
+        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer());
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer());
+        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer());
+        javaTimeModule.addDeserializer(LocalTime.class, new LocalTimeDeserializer());
+        javaTimeModule.addSerializer(Timestamp.class, new TimestampSerializer());
+        javaTimeModule.addDeserializer(Timestamp.class, new TimestampDeserializer());
+        return javaTimeModule;
+    }
+
+    private static SimpleModule adminJacksonModule() {
+        String[] metadataKeysToSanitize = new String[]{".*password$", ".*secret$", ".*key$", ".*token$", ".*credentials.*", ".*vcap_services$"};
+        return new AdminServerModule(metadataKeysToSanitize);
     }
 }

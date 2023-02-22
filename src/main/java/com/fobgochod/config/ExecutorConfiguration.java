@@ -24,7 +24,7 @@ public class ExecutorConfiguration {
         taskExecutor.setMaxPoolSize(10);
         taskExecutor.setKeepAliveSeconds(60);
         taskExecutor.setQueueCapacity(100);
-        taskExecutor.setThreadNamePrefix("task-exec-");
+        taskExecutor.setThreadNamePrefix("task-executor-");
         taskExecutor.setRejectedExecutionHandler(this.getRejectedExecutionHandler());
         return taskExecutor;
     }
