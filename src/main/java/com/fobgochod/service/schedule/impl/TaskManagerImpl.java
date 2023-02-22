@@ -128,7 +128,7 @@ public class TaskManagerImpl implements TaskManager, ApplicationContextAware {
     private void doStartTask(Task task) {
         //获取需要定时调度的接口
         TaskService taskService = scheduledTaskMap.get(task.getCode());
-        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(taskService, triggerContext -> new CronTrigger(task.getCron()).nextExecutionTime(triggerContext));
+        ScheduledFuture<?> scheduledFuture = taskScheduler.schedule(taskService, triggerContext -> new CronTrigger(task.getCron()).nextExecutionTime(triggerContext).toInstant());
         //将启动的任务放入map
         scheduledFutureMap.put(task.getCode(), scheduledFuture);
     }

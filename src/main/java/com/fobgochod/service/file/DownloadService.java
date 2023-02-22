@@ -3,8 +3,8 @@ package com.fobgochod.service.file;
 import com.fobgochod.domain.enumeration.InlineAttachment;
 import com.fobgochod.entity.file.FileInfo;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
 
 /**

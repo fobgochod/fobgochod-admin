@@ -4,7 +4,7 @@ import com.fobgochod.auth.holder.UserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.AuthorityUtils;
 
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * FghAuthenticationToken.java

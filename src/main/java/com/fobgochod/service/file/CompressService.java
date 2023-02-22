@@ -4,7 +4,7 @@ import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.FileTree;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface CompressService {

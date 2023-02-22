@@ -56,11 +56,11 @@ public class WebSecurityConfiguration {
         successHandler.setDefaultTargetUrl(this.adminServer.path("/"));
 
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers(adminServer.path("/assets/**")).permitAll()
-                        .antMatchers(adminServer.path("/actuator/info")).permitAll()
-                        .antMatchers(adminServer.path("/actuator/health")).permitAll()
-                        .antMatchers(adminServer.path("/login")).permitAll()
-                        .antMatchers(AUTH_WHITELIST).permitAll()
+                        .requestMatchers(adminServer.path("/assets/**")).permitAll()
+                        .requestMatchers(adminServer.path("/actuator/info")).permitAll()
+                        .requestMatchers(adminServer.path("/actuator/health")).permitAll()
+                        .requestMatchers(adminServer.path("/login")).permitAll()
+                        .requestMatchers(AUTH_WHITELIST).permitAll()
                         .anyRequest().authenticated())
                 .formLogin(formLogin -> formLogin.loginPage(adminServer.path("/login")).successHandler(successHandler).and())
                 .logout(logout -> logout.logoutUrl(adminServer.path("/logout")))
