@@ -43,18 +43,6 @@ spring:
     user:
       name: admin
       password: admin
-  boot:
-    admin:
-      context-path: /admin
-      client:
-        url: http://localhost:7070/admin
-        username: admin
-        password: admin
-        instance:
-          service-base-url: http://localhost:7070
-          metadata:
-            user.name: ${spring.security.user.name}
-            user.password: ${spring.security.user.password}
 management:
   endpoints:
     web:

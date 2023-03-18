@@ -4,10 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fobgochod.support.serializer.*;
-import de.codecentric.boot.admin.server.utils.jackson.AdminServerModule;
 import org.bson.types.ObjectId;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -33,7 +31,7 @@ public final class JsonUtils {
                     objectMapper = Jackson2ObjectMapperBuilder.json()
                             .serializationInclusion(JsonInclude.Include.NON_NULL)
                             .failOnUnknownProperties(false)
-                            .modules(javaTimeModule(), adminJacksonModule())
+                            .modules(javaTimeModule())
                             .build();
                     // 通过该方法对mapper对象进行设置，所有序列化的对象都将按改规则进行系列化
                     // Include.Include.ALWAYS 默认
@@ -65,10 +63,5 @@ public final class JsonUtils {
         javaTimeModule.addSerializer(Timestamp.class, new TimestampSerializer());
         javaTimeModule.addDeserializer(Timestamp.class, new TimestampDeserializer());
         return javaTimeModule;
-    }
-
-    private static SimpleModule adminJacksonModule() {
-        String[] metadataKeysToSanitize = new String[]{".*password$", ".*secret$", ".*key$", ".*token$", ".*credentials.*", ".*vcap_services$"};
-        return new AdminServerModule(metadataKeysToSanitize);
     }
 }
