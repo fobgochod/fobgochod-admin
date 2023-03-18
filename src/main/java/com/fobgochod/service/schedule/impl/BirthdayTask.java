@@ -45,15 +45,12 @@ public class BirthdayTask extends TaskService {
             }
 
             switch (before) {
-                case 0:
-                case 1:
-                case 5:
-                case 7:
+                case 0, 1, 2, 5, 7, 10 -> {
                     String telephones = String.join(",", user.getContacts());
                     if (StringUtils.hasLength(telephones)) {
                         aliyunSmsService.birthday(telephones, user.getName(), user.getBirth());
                     }
-                    break;
+                }
             }
         }
     }
