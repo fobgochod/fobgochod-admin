@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfiguration {
 
     private static final String[] AUTH_WHITELIST = {
-            "/", "/env", "/actuator", "/login/**", "/medicines/me/**", "/file/preview", "/admin/**",
+            "/", "/favicon.ico", "/env", "/error", "/actuator/**", "/login/**", "/medicines/me/**", "/file/preview"
     };
 
     private final SecurityProperties security;
