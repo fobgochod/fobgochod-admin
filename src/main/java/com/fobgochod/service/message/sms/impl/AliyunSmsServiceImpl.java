@@ -9,9 +9,9 @@ import com.fobgochod.domain.medicine.MedicType;
 import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.exception.SystemException;
 import com.fobgochod.repository.SmsRecordRepository;
-import com.fobgochod.support.serializer.Constants;
 import com.fobgochod.service.message.sms.AliyunSms;
 import com.fobgochod.service.message.sms.AliyunSmsService;
+import com.fobgochod.support.serializer.Constants;
 import com.fobgochod.util.CaptchaUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,9 +30,10 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
     private com.aliyun.dysmsapi20170525.Client smsClient;
 
     @Override
-    public void test(String telephone, String name) {
+    public void test(String tenantCode, String telephone, String name) {
         String templateParam = String.format("{\"name\":\"%s\"}", name);
         SmsRecord smsRecord = new SmsRecord();
+        smsRecord.setTenantCode(tenantCode);
         smsRecord.setTelephone(telephone);
         smsRecord.setType(AliyunSms.TemplateCode.TC_TEST.getName());
         smsRecord.setTemplateCode(AliyunSms.TemplateCode.TC_TEST.getCode());
@@ -43,11 +44,12 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
     }
 
     @Override
-    public void captcha(String telephone) {
+    public void captcha(String tenantCode, String telephone) {
         String code = CaptchaUtils.generateCaptcha();
         String templateParam = String.format("{\"code\":\"%s\"}", code);
 
         SmsRecord smsRecord = new SmsRecord();
+        smsRecord.setTenantCode(tenantCode);
         smsRecord.setTelephone(telephone);
         smsRecord.setType(AliyunSms.TemplateCode.TC_CAPTCHA.getName());
         smsRecord.setTemplateCode(AliyunSms.TemplateCode.TC_CAPTCHA.getCode());
@@ -60,10 +62,11 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
     }
 
     @Override
-    public void medicine(String telephone, String userName, MedicType type) {
+    public void medicine(String tenantCode, String telephone, String userName, MedicType type) {
         String templateParam = String.format("{\"name\":\"%s\",\"time\":\"%s\"}", userName, type.getName());
 
         SmsRecord smsRecord = new SmsRecord();
+        smsRecord.setTenantCode(tenantCode);
         smsRecord.setTelephone(telephone);
         smsRecord.setType(AliyunSms.TemplateCode.TC_MEDICINE.getName());
         smsRecord.setTemplateCode(AliyunSms.TemplateCode.TC_MEDICINE.getCode());
@@ -74,10 +77,11 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
     }
 
     @Override
-    public void registration(String telephone, String userName, int remain) {
+    public void registration(String tenantCode, String telephone, String userName, int remain) {
         String templateParam = String.format("{\"name\":\"%s\",\"remain\":\"%s\"}", userName, remain);
 
         SmsRecord smsRecord = new SmsRecord();
+        smsRecord.setTenantCode(tenantCode);
         smsRecord.setTelephone(telephone);
         smsRecord.setType(AliyunSms.TemplateCode.TC_REGISTRATION.getName());
         smsRecord.setTemplateCode(AliyunSms.TemplateCode.TC_REGISTRATION.getCode());
@@ -88,10 +92,11 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
     }
 
     @Override
-    public void birthday(String telephone, String userName, LocalDate birth) {
+    public void birthday(String tenantCode, String telephone, String userName, LocalDate birth) {
         String templateParam = String.format("{\"name\":\"%s\",\"birth\":\"%s\"}", userName, birth.format(Constants.DATE_FORMATTER));
 
         SmsRecord smsRecord = new SmsRecord();
+        smsRecord.setTenantCode(tenantCode);
         smsRecord.setTelephone(telephone);
         smsRecord.setType(AliyunSms.TemplateCode.TC_BIRTHDAY.getName());
         smsRecord.setTemplateCode(AliyunSms.TemplateCode.TC_BIRTHDAY.getCode());
@@ -101,8 +106,7 @@ public class AliyunSmsServiceImpl implements AliyunSmsService {
         sendSms(smsRecord);
     }
 
-    @Override
-    public void sendSms(SmsRecord smsRecord) {
+    private void sendSms(SmsRecord smsRecord) {
         if (ProfileEnum.PROD.name().equalsIgnoreCase(env.getActive())) {
             smsRecord.setSignName(AliyunSms.SIGN_NAME_ROBO);
         } else {

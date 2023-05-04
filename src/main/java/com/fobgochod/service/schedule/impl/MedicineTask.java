@@ -54,7 +54,7 @@ public class MedicineTask extends TaskService {
                     return record == null;
                 });
                 if (match) {
-                    aliyunSmsService.medicine(user.getTelephone(), user.getName(), MedicType.current());
+                    aliyunSmsService.medicine(user.getTenantCode(), user.getTelephone(), user.getName(), MedicType.current());
                 }
             }
         }

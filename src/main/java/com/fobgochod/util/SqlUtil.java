@@ -100,7 +100,7 @@ public class SqlUtil {
             //最顶层的查询条件实体不获取.
             while (clazz != null) {
                 Field[] declaredFields = clazz.getDeclaredFields();
-                fields.addAll(Arrays.stream(declaredFields).filter(o -> !o.isSynthetic()).collect(Collectors.toList()));
+                fields.addAll(Arrays.stream(declaredFields).filter(o -> !o.isSynthetic()).toList());
                 //得到父类,然后赋给自己
                 clazz = clazz.getSuperclass();
             }

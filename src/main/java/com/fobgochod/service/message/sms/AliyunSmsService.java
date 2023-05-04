@@ -1,7 +1,6 @@
 package com.fobgochod.service.message.sms;
 
 import com.fobgochod.domain.medicine.MedicType;
-import com.fobgochod.entity.SmsRecord;
 
 import java.time.LocalDate;
 
@@ -13,15 +12,13 @@ import java.time.LocalDate;
  */
 public interface AliyunSmsService {
 
-    void test(String telephone, String name);
+    void test(String tenantCode, String telephone, String name);
 
-    void captcha(String telephone);
+    void captcha(String tenantCode, String telephone);
 
-    void medicine(String telephone, String userName, MedicType type);
+    void medicine(String tenantCode, String telephone, String userName, MedicType type);
 
-    void registration(String telephone, String userName, int remain);
+    void registration(String tenantCode, String telephone, String userName, int remain);
 
-    void birthday(String telephone, String userName, LocalDate birth);
-
-    void sendSms(SmsRecord smsRecord);
+    void birthday(String tenantCode, String telephone, String userName, LocalDate birth);
 }

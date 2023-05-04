@@ -49,7 +49,7 @@ public class GuardianTask extends TaskService {
                     return items > records;
                 });
                 if (match) {
-                    aliyunSmsService.medicine(String.join(",", user.getContacts()), user.getName(), MedicType.current());
+                    aliyunSmsService.medicine(user.getTenantCode(), String.join(",", user.getContacts()), user.getName(), MedicType.current());
                 }
             }
         }

@@ -38,7 +38,7 @@ public class RegistrationTask extends TaskService {
             User user = userRepository.findByCode(userCode);
             if (user != null && user.getTelephone() != null && !medicines.isEmpty()) {
                 int remain = medicines.stream().map(Medicine::getRemain).min(Comparator.naturalOrder()).orElse(-1);
-                aliyunSmsService.registration(user.getTelephone(), user.getName(), remain);
+                aliyunSmsService.registration(user.getTenantCode(), user.getTelephone(), user.getName(), remain);
             }
         }
     }

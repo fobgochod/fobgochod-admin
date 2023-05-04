@@ -4,11 +4,13 @@ import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.BatchFid;
 import com.fobgochod.domain.base.Page;
+import com.fobgochod.entity.BaseEntity;
 import com.fobgochod.entity.SmsRecord;
 import com.fobgochod.entity.admin.User;
 import com.fobgochod.repository.SmsRecordRepository;
 import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.message.sms.AliyunSmsService;
+import com.fobgochod.util.UserUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +57,10 @@ public class SmsRecordController {
 
     @PostMapping("/search")
     public ResponseEntity<?> search(@RequestBody(required = false) Page<SmsRecord> body) {
+        if (!FghConstants.ADMIN_USER.equals(UserUtil.getUserCode())) {
+            BaseEntity baseEntity = body.getFilter().getEq();
+            baseEntity.setTenantCode(UserUtil.getTenantCode());
+        }
         return ResponseEntity.ok(smsRecordRepository.findByPage(body));
     }
 
@@ -72,7 +78,7 @@ public class SmsRecordController {
     @PostMapping("/test")
     public ResponseEntity<?> test(@RequestAttribute(FghConstants.HTTP_HEADER_USER_INFO) UserDetails userDetails) {
         User user = userRepository.findByCode(userDetails.getUserCode());
-        aliyunSmsService.test(user.getTelephone(), user.getName());
+        aliyunSmsService.test(user.getTenantCode(), user.getTelephone(), user.getName());
         return ResponseEntity.ok().build();
     }
 }

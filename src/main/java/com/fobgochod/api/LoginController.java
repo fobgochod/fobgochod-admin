@@ -4,15 +4,17 @@ import com.fobgochod.auth.domain.LoginUser;
 import com.fobgochod.auth.holder.UserDetails;
 import com.fobgochod.constant.FghConstants;
 import com.fobgochod.domain.base.I18nCode;
+import com.fobgochod.entity.admin.User;
 import com.fobgochod.exception.UnauthorizedException;
+import com.fobgochod.repository.UserRepository;
 import com.fobgochod.service.login.LoginService;
 import com.fobgochod.service.message.sms.AliyunSmsService;
 import com.fobgochod.util.SecureUtils;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +28,8 @@ import java.util.Map;
 @RestController
 public class LoginController {
 
+    @Autowired
+    private UserRepository userRepository;
     @Autowired
     private List<LoginService> loginServices;
     @Autowired
@@ -46,7 +50,10 @@ public class LoginController {
 
     @PostMapping(value = "/login/captcha")
     public ResponseEntity<?> captcha(@RequestBody LoginUser body) {
-        aliyunSmsService.captcha(body.getTelephone());
+        User user = userRepository.findByTelephone(body.getTelephone());
+        if (user != null) {
+            aliyunSmsService.captcha(user.getTenantCode(), user.getTelephone());
+        }
         return ResponseEntity.ok().build();
     }
 
